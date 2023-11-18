@@ -1,0 +1,4 @@
+.git
+docs/
+client/node_modules
+client/public/*.png
