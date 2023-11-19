@@ -2,3 +2,4 @@
 docs/
 client/node_modules
 client/public/*.png
+client/public/*.gif

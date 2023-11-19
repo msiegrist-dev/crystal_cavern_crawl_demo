@@ -2,9 +2,9 @@ export default {
   name: "Grublin",
   splash_text: "Tweedley Doofus. Grubby Grublus.",
   speed: 5,
-  attack: 12,
+  attack: 7,
   defense: 0,
-  hp: 25,
+  hp: 2,
   armor: .02,
   block: 0,
   options: {

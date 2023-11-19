@@ -30,60 +30,48 @@ export default ({game_state, setGameState}) => {
           </div>
         }
       </Modal>
-      <h3 className="center_text m-4">Floor {floor.number}</h3>
-      <div className="grid m-4 p-4 three_col_equal">
-        <div className="w-40 p-4" style={{margin: "0 auto 0 0"}}>
-          <h3 className="m-0">{character.name}</h3>
-          <h4 className="m-0">{character.sub_name}</h4>
-          <table>
-            <tbody>
-              <tr>
-                <td><b>HP</b></td>
-                <td>{character.hp}</td>
-              </tr>
-              {floor.type ==="combat" &&
-                <>
-                <td><b>Block</b></td>
-                <td>{character.block}</td>
-                </>
-              }
-              <tr>
-                <td><b>Attack</b></td>
-                <td>{character.attack}</td>
-              </tr>
-              <tr>
-                <td><b>Defense</b></td>
-                <td>{character.defense}</td>
-              </tr>
-              <tr>
-                <td><b>Armor</b></td>
-                <td>{displayArmorAsPct(character)}</td>
-              </tr>
-              <tr>
-                <td><b>Speed</b></td>
-                <td>{character.speed}</td>
-              </tr>
-            </tbody>
-          </table>
-          <h4 className="m-0">Gems</h4>
-          <div className="grid two_col_equal m-0 p-4">
-            <div className="grid two_col_60_40">
-              <img src="gem_red.png" style={{width: "35px", height: "35px"}} className="m-4 block" />
-              <p>x{character.gems.red}</p>
-            </div>
-            <div className="grid two_col_60_40">
-              <img src="gem_blue.png" style={{width: "35px", height: "35px"}} className="m-4 block" />
-              <p>x{character.gems.blue}</p>
-            </div>
-          </div>
-          <h4>Deck</h4>
-          <button onClick={(e) => toggleDeckModal(character.deck)}>Open</button>
-          </div>
-          {floor.type === "combat" &&
-            <Combat game_state={game_state} setGameState={setGameState} toggleDeckModal={toggleDeckModal}/>
-          }
-
+      <div className="gap-4 m-4 p-4" style={{display: "flex", borderBottom: "1px solid blue", height: "35px"}}>
+        <h3>{character.name}</h3>
+        <p>{character.sub_name}</p>
+        <table>
+          <tbody>
+            <tr>
+              <td><b>Attack</b></td>
+              <td>{character.attack}</td>
+            </tr>
+            <tr>
+              <td><b>Defense</b></td>
+              <td>{character.defense}</td>
+            </tr>
+          </tbody>
+        </table>
+        <table>
+          <tbody>
+            <tr>
+              <td><b>Armor</b></td>
+              <td>{displayArmorAsPct(character)}</td>
+            </tr>
+            <tr>
+              <td><b>Speed</b></td>
+              <td>{character.speed}</td>
+            </tr>
+          </tbody>
+        </table>
+        <div className="grid two_col_60_40">
+          <img src="gem_red.png" style={{width: "35px", height: "35px"}} className="m-4 block" />
+          <p>x{character.gems.red}</p>
+        </div>
+        <div className="grid two_col_60_40">
+          <img src="gem_blue.png" style={{width: "35px", height: "35px"}} className="m-4 block" />
+          <p>x{character.gems.blue}</p>
+        </div>
+        <button onClick={(e) => toggleDeckModal(character.deck)}>Open Deck</button>
       </div>
+      <h3 className="center_text m-0">Floor {floor.number}</h3>
+
+      {floor.type === "combat" &&
+        <Combat game_state={game_state} setGameState={setGameState} toggleDeckModal={toggleDeckModal}/>
+      }
     </div>
   )
 }

@@ -8,18 +8,17 @@ export default (
         width: "90%",
         border: "2px solid black",
         borderRadius: "12px"
-
       }} className="m-4 p-4 grid center_all_items">
-      <h4>{card.name}</h4>
-      <p>{card.type}</p>
-      <p>Value : {card.value}</p>
+      <h4 style={{margin: "0"}}>{card.name}</h4>
+      <p style={{margin: "0"}}>{card.type}</p>
+      <p style={{margin: "0"}}>Value : {card.value}</p>
       {card.hits &&
-        <p>Hits : {card.hits}</p>
+        <p style={{margin: "0"}}>Hits : {card.hits}</p>
       }
       {card.accuracy &&
-        <p>Accuracy: {card.accuracy}</p>
+        <p style={{margin: "0"}}>Accuracy: {card.accuracy}</p>
       }
-      <p>Gem REQUIRED : {card.gem_required.toString()}</p>
+      <p style={{margin: "0"}}>Gem REQUIRED : {card.gem_required.toString()}</p>
       {card.gems &&
         <>
         {Object.keys(card.gems).map((gem) => {

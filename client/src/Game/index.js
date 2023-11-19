@@ -2,6 +2,7 @@ import warrior from "../data/warrior.js"
 import warrior_deck from "../data/warrior_deck"
 import Floor0 from "./Floor0"
 import Floor from "./Floor"
+import {copyState} from "./lib"
 export default ({setPage, setGameState, game_state}) => {
 
   console.log('in game game_state', game_state)
@@ -21,7 +22,7 @@ export default ({setPage, setGameState, game_state}) => {
   }
 
   const setCharacter = character => {
-    let game_state_copy = JSON.parse(JSON.stringify(game_state))
+    let game_state_copy = copyState(game_state)
     game_state_copy.character = starting_char_map[character]
     setGameState(game_state_copy)
   }
