@@ -3,11 +3,12 @@ import default_game_state from "../data/default_game_state"
 import Card from "./Card"
 import Enemy from "./Enemy"
 import Modal from "../Modal"
-import {getTurnOrder, getEnemyAction, processAction, displayArmorAsPct, shuffleKeyedArray, startTurnDraw, playCard, copyState, goNextFloor} from "./lib"
+import {getTurnOrder, getEnemyAction, processAction, displayArmorAsPct, shuffleKeyedArray, startTurnDraw, playCard, copyState, goNextLevel} from "./lib"
 export default ({game_state, setGameState, toggleDeckModal}) => {
 
-  const {enemies} = game_state.floor
+  const {enemies} = game_state.level
   const {character} = game_state
+  const [message, setMessage] = useState("")
 
   const [turn_order, setTurnOrder] = useState(getTurnOrder(game_state))
   const [turn, setTurn] = useState(turn_order[0])
@@ -21,6 +22,9 @@ export default ({game_state, setGameState, toggleDeckModal}) => {
   const player_turn = turn.key === "player"
 
   const goNextTurn = () => {
+    if(combat_ended){
+      return
+    }
     const current_index = turn_order.indexOf(turn)
     if(current_index + 1 >= turn_order.length){
       return setTurn(turn_order[0])
@@ -47,7 +51,7 @@ export default ({game_state, setGameState, toggleDeckModal}) => {
     const enemy = enemies.find((ene) => ene.key === turn.key)
     const action = getEnemyAction(enemy)
     setGameState(
-      processAction(game_state, enemy, "player", action)
+      processAction(game_state, enemy, ["player"], action)
     )
     goNextTurn()
   }
@@ -61,7 +65,7 @@ export default ({game_state, setGameState, toggleDeckModal}) => {
 
   const combatVictory = () => {
     const game_state_copy = copyState(game_state)
-    game_state_copy.floor.combat_victory = true
+    game_state_copy.level.combat_victory = true
     setGameState(game_state_copy)
   }
 
@@ -69,7 +73,10 @@ export default ({game_state, setGameState, toggleDeckModal}) => {
     if(!selected_card || !targetting || combat_ended){
       return
     }
-    const new_game_state = playCard(selected_card, game_state, target_key, hand, graveyard)
+    const new_game_state = playCard(selected_card, game_state, [target_key], hand, graveyard, selected_card.gems)
+    if(new_game_state.error){
+      return setMessage(new_game_state.error)
+    }
     setGameState(new_game_state.game_state)
     setHand(new_game_state.hand)
     setGraveyard(new_game_state.graveyard)
@@ -97,7 +104,7 @@ export default ({game_state, setGameState, toggleDeckModal}) => {
       setCombatEnded(true)
       return defeat()
     }
-    const all_dead = game_state.floor.enemies.filter((ene) => ene.hp <= 0).length === game_state.floor.enemies.length
+    const all_dead = game_state.level.enemies.filter((ene) => ene.hp <= 0).length === game_state.level.enemies.length
     if(all_dead){
       setCombatEnded(true)
       return combatVictory()
@@ -106,8 +113,8 @@ export default ({game_state, setGameState, toggleDeckModal}) => {
 
   return (
     <div>
-      {game_state.floor.combat_victory &&
-        <Modal show_modal={game_state.floor.combat_victory} permanent={true}>
+      {game_state.level.combat_victory &&
+        <Modal show_modal={game_state.level.combat_victory} permanent={true}>
           <h2 className="center_text">Combat Victory</h2>
           <table>
             <tbody>
@@ -136,7 +143,7 @@ export default ({game_state, setGameState, toggleDeckModal}) => {
               <p>stat for card/gem</p>
             </div>
           </div>
-          <button onClick={(e) => setGameState(goNextFloor(copyState(game_state)))}>
+          <button onClick={(e) => setGameState(goNextLevel(copyState(game_state)))}>
             Continue
           </button>
         </Modal>
@@ -159,6 +166,7 @@ export default ({game_state, setGameState, toggleDeckModal}) => {
         </Modal>
       }
       <div>
+        <h2 className="center_text m-0">{message}</h2>
         <h3 className="center_text m-0">{turn.key === "player" ? "Player Turn" : "Enemy Turn"}</h3>
         {targetting && selected_card &&
           <h3 className="center_text">Please select a target for {selected_card.name}</h3>
@@ -197,9 +205,9 @@ export default ({game_state, setGameState, toggleDeckModal}) => {
         </div>
         <div className="grid eq_four_col">
           {hand.map((card) => <Card key={card.key} card={card}
-          playable={!game_state.defeat} key={card.key} game_state={game_state} setGameState={setGameState}
-          setTargetting={setTargetting} setSelectedCard={setSelectedCard} hand={hand}
-          graveyard={graveyard} setHand={setHand} setGraveyard={setGraveyard}
+            playable={!game_state.defeat} key={card.key} game_state={game_state} setGameState={setGameState}
+            setTargetting={setTargetting} setSelectedCard={setSelectedCard} hand={hand}
+            graveyard={graveyard} setHand={setHand} setGraveyard={setGraveyard} setMessage={setMessage}
           />)}
         </div>
 

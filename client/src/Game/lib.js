@@ -50,7 +50,7 @@ const giveCharacterStats = (state, stat_name, amount) => {
   state.character[stat_name] += amount
 }
 
-const generateCombatFloor = number => {
+const generateCombatLevel = number => {
   if(number >= 1 && number <= 10){
     return [
       {...basic_mob, key: 1},
@@ -59,20 +59,20 @@ const generateCombatFloor = number => {
   }
 }
 
-const getRandomFloor = number => {
-  const floor_type = getRandomValueFromList(environment.FLOOR_TYPES)
-  if(floor_type === "combat"){
+const getRandomLevel = number => {
+  const level_type = getRandomValueFromList(environment.LEVEL_TYPES)
+  if(level_type === "combat"){
     return {
       number: number,
-      type: floor_type,
-      enemies: generateCombatFloor(number)
+      type: level_type,
+      enemies: generateCombatLevel(number)
     }
   }
 }
 
-const goNextFloor = game_state => {
-  const next_floor = game_state.floor.number + 1
-  game_state.floor = getRandomFloor(next_floor)
+const goNextLevel = game_state => {
+  const next_level = game_state.level.number + 1
+  game_state.level = getRandomLevel(next_level)
   return game_state
 }
 
@@ -93,7 +93,7 @@ const getTurnOrder = game_state => {
   const speed_keys = [
     {key: "player", speed: game_state.character.speed}
   ].concat(
-    game_state.floor.enemies.map((enemy) => {
+    game_state.level.enemies.map((enemy) => {
       return {key: enemy.key, speed: enemy.speed}
     })
   )
@@ -178,32 +178,44 @@ const getIndexOfArrayItemByKey = (array, key) => {
   return null
 }
 
-const processAction = (game_state, doer, target_key, action) => {
+const processAction = (game_state, doer, target_keys, action, consume_gems) => {
 
   const game_state_copy = copyState(game_state)
   const player_action = doer.key === "player"
-
-  const doer_key = player_action ? "player" : doer.key
-  const target_enemy_index = target_key !== "player" ? getIndexOfArrayItemByKey(game_state.floor.enemies, target_key) : null
-  const doer_enemy_index = doer_key !== "player" ? getIndexOfArrayItemByKey(game_state.floor.enemies, doer_key) : null
-  const target = target_key === "player" ? game_state_copy.character : game_state_copy.floor.enemies[target_enemy_index]
-
-  if(action.type === "defend"){
-    if(player_action){
-      game_state_copy.character.block += getBlockValue(game_state_copy.character, action)
-    }
-    if(!player_action){
-      game_state_copy.floor.enemies[doer_enemy_index].block += getBlockValue(game_state_copy.floor.enemies[doer_enemy_index], action)
+  if(consume_gems){
+    for(let gem_name of Object.keys(consume_gems)){
+      game_state_copy.character.gems[gem_name] -= consume_gems[gem_name].number
     }
   }
+  console.log("TARG KEYS", target_keys)
+  for(let target_key of target_keys){
+    console.log("TARG KEY ", target_key)
+    const doer_key = player_action ? "player" : doer.key
+    const target_enemy_index = target_key !== "player" ? getIndexOfArrayItemByKey(game_state.level.enemies, target_key) : null
+    const doer_enemy_index = doer_key !== "player" ? getIndexOfArrayItemByKey(game_state.level.enemies, doer_key) : null
+    const target = target_key === "player" ? game_state_copy.character : game_state_copy.level.enemies[target_enemy_index]
 
-  if(action.type === "attack"){
-    if(player_action){
-      game_state_copy.floor.enemies[target_enemy_index] = processAttack(doer, target, action)
-    } else {
-      game_state_copy.floor.character = processAttack(doer, target, action)
+    if(action.type === "defend"){
+      if(player_action){
+        game_state_copy.character.block += getBlockValue(game_state_copy.character, action)
+      }
+      if(!player_action){
+        game_state_copy.level.enemies[doer_enemy_index].block += getBlockValue(game_state_copy.level.enemies[doer_enemy_index], action)
+      }
     }
+
+    if(action.type === "attack"){
+      if(player_action){
+        game_state_copy.level.enemies[target_enemy_index] = processAttack(doer, target, action)
+      }
+      if(!player_action){
+        console.log('doer target action', doer, target, action)
+        game_state_copy.character = processAttack(doer, target, action)
+      }
+    }
+
   }
+
   return game_state_copy
 }
 
@@ -214,8 +226,10 @@ const startTurnDraw = (draw_pile, graveyard, hand) => {
   let grave = copyState(graveyard)
   const hand_copy = copyState(hand)
 
+  const available_cards = draw.length + grave.length
+  const to_draw = available_cards >= 4 ? 4 : available_cards
   let drawn = 0
-  while(drawn < 4){
+  while(drawn < to_draw){
     if(draw.length){
       hand_copy.push(draw.shift())
       drawn += 1
@@ -243,16 +257,52 @@ const sendCardToGraveYard = (hand, card, graveyard) => {
   }
 }
 
-const playCard = (card, game_state, target_key, hand, graveyard) => {
-  console.log('gs', game_state)
+const doesCardRequireGem = card => {
+  if(!card.gems){
+    return false
+  }
+  for(let gem_name of Object.keys(card.gems)){
+    if(card.gems[gem_name].required){
+      return true
+    }
+  }
+  return false
+}
+
+const doesCharacterHaveGems = (game_state, card) => {
+  const character_gems = game_state.character.gems
+  if(!character_gems){
+    return false
+  }
+  for(let gem_name of Object.keys(card.gems)){
+    const gem_obj = card.gems[gem_name]
+    if(!gem_obj.required){
+      continue
+    }
+    if(gem_obj.number > character_gems[gem_name]){
+      return false
+    }
+  }
+  return true
+}
+
+const playCard = (card, game_state, [target_keys], hand, graveyard) => {
+  const has_gems = doesCardRequireGem(card) ? doesCharacterHaveGems(game_state, card) : true
+  if(!has_gems){
+    return {error: "You do not have enough gems to complete this action."}
+  }
   const card_sources = sendCardToGraveYard(hand, card, graveyard)
   return {
-    game_state: processAction(game_state, game_state.character, target_key, {
-      type: card.type,
-      value: card.value,
-      hits: card.hits,
-      accuracy: card.accuracy
-    }),
+    game_state:
+      processAction(game_state, game_state.character, [target_keys],
+        {
+          type: card.type,
+          value: card.value,
+          hits: card.hits,
+          accuracy: card.accuracy
+        },
+        card.gems
+      ),
     hand: card_sources.hand,
     graveyard: card_sources.graveyard
   }
@@ -266,12 +316,13 @@ export {
   giveCharacterStats,
   getRandomStatValue,
   getRandomStatName,
-  goNextFloor,
+  goNextLevel,
   getTurnOrder,
   getEnemyAction,
   processAction,
   displayArmorAsPct,
   shuffleKeyedArray,
   startTurnDraw,
-  playCard
+  playCard,
+  doesCardRequireGem
 }

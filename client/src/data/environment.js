@@ -3,5 +3,5 @@ export default {
   ALL_STATS: [
     "hp", "attack", "defense", "speed", "armor"
   ],
-  FLOOR_TYPES : ["combat"]
+  LEVEL_TYPES : ["combat"]
 }

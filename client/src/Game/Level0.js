@@ -1,7 +1,7 @@
 import {
   copyState, getRandomGemName, giveCharacterGems,
   getRandomStatName, getRandomStatValue, giveCharacterStats,
-  goNextFloor
+  goNextLevel
 } from "./lib"
 
 export default ({game_state, setGameState}) => {
@@ -10,7 +10,7 @@ export default ({game_state, setGameState}) => {
   const randomGem = () => {
     let game_state_copy = copyState(game_state)
     giveCharacterGems(game_state_copy, getRandomGemName(), 1)
-    goNextFloor(game_state_copy)
+    goNextLevel(game_state_copy)
     setGameState(game_state_copy)
   }
 
@@ -18,7 +18,7 @@ export default ({game_state, setGameState}) => {
     let game_state_copy = copyState(game_state)
     const stat_name = getRandomStatName()
     giveCharacterStats(game_state_copy, stat_name, getRandomStatValue(stat_name))
-    setGameState(goNextFloor(game_state_copy))
+    setGameState(goNextLevel(game_state_copy))
   }
 
   return (

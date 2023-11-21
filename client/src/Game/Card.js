@@ -1,7 +1,7 @@
-import {playCard} from "./lib"
+import {playCard, doesCardRequireGem} from "./lib"
 
 export default (
-  {card, playable, game_state, setTargetting, setGameState, setSelectedCard, hand, graveyard, setHand, setGraveyard}
+  {card, playable, game_state, setTargetting, setGameState, setSelectedCard, hand, graveyard, setHand, setGraveyard, setMessage}
 ) => {
   return (
     <div style={{
@@ -18,7 +18,7 @@ export default (
       {card.accuracy &&
         <p style={{margin: "0"}}>Accuracy: {card.accuracy}</p>
       }
-      <p style={{margin: "0"}}>Gem REQUIRED : {card.gem_required.toString()}</p>
+      <p style={{margin: "0"}}>Gem REQUIRED : {doesCardRequireGem(card).toString()}</p>
       {card.gems &&
         <>
         {Object.keys(card.gems).map((gem) => {
@@ -34,7 +34,11 @@ export default (
               setTargetting(true)
               return
             }
-            const new_game_state = playCard(card, game_state, "player", hand, graveyard)
+            const targets = card.type === "defend" ? "player" : game_state.level.enemies.map((en) => en.key)
+            const new_game_state = playCard(card, game_state, targets, hand, graveyard)
+            if(new_game_state.error){
+              return setMessage(new_game_state.error)
+            }
             setGameState(new_game_state.game_state)
             setHand(new_game_state.hand)
             setGraveyard(new_game_state.graveyard)

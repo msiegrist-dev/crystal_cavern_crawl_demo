@@ -1,5 +1,5 @@
 export default {
-  floor: {
+  level: {
     number: 0,
     type: null,
   },

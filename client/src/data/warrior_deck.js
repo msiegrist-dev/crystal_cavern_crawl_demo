@@ -4,24 +4,21 @@ export default [
     type: "attack",
     value: 5,
     hits: 1,
-    gem_required: false,
     accuracy: 98,
     target_required: true
   },
   {
     name: "Defend",
     type: "defend",
-    value: 5,
-    gem_required: false
+    value: 5
   },
   {
     name: "Overhead Slice",
     type: "attack",
     value: 10,
     hits: 1,
-    gem_required: true,
     gems: {
-      red: {effect: false}
+      red: {number: 1, effect: false, required: true}
     },
     accuracy: 98,
     target_required: true
@@ -30,9 +27,8 @@ export default [
     name: "Shield Brace",
     type: "defend",
     value: 10,
-    gem_required: true,
     gems: {
-      blue: {effect: false}
+      blue: {number: 1, effect: false, required: true}
     }
   },
   {
@@ -42,6 +38,7 @@ export default [
     value: 4,
     gems: {
       red: {
+        number: 1,
         effect: true,
         effect_name: "increase_base",
         value: 3

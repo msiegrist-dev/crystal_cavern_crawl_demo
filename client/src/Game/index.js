@@ -1,7 +1,7 @@
 import warrior from "../data/warrior.js"
 import warrior_deck from "../data/warrior_deck"
-import Floor0 from "./Floor0"
-import Floor from "./Floor"
+import Level0 from "./Level0"
+import Level from "./Level"
 import {copyState} from "./lib"
 export default ({setPage, setGameState, game_state}) => {
 
@@ -36,11 +36,11 @@ export default ({setPage, setGameState, game_state}) => {
           <button onClick={(e) => setCharacter("warrior")}>Warrior</button>
         </>
       }
-      {game_state.character && game_state.floor.number === 0 &&
-        <Floor0 game_state={game_state} setGameState={setGameState} />
+      {game_state.character && game_state.level.number === 0 &&
+        <Level0 game_state={game_state} setGameState={setGameState} />
       }
-      {game_state.character && game_state.floor.number >= 1 &&
-        <Floor game_state={game_state} setGameState={setGameState}/>
+      {game_state.character && game_state.level.number >= 1 &&
+        <Level game_state={game_state} setGameState={setGameState}/>
       }
     </>
   )

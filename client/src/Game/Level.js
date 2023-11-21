@@ -4,13 +4,13 @@ import Modal from "../Modal"
 import Card from "./Card"
 import {displayArmorAsPct} from "./lib"
 
-export default ({game_state, setGameState}) => {
+export default ({game_state, setGameState, setMessage}) => {
 
   const [show_modal, setShowModal] = useState("")
   const [modal_mode, setModalMode] = useState("")
   const [modal_deck, setModalDeck] = useState([])
 
-  const {character, floor} = game_state
+  const {character, level} = game_state
 
   const toggleDeckModal = deck => {
     if(show_modal){
@@ -67,10 +67,10 @@ export default ({game_state, setGameState}) => {
         </div>
         <button onClick={(e) => toggleDeckModal(character.deck)}>Open Deck</button>
       </div>
-      <h3 className="center_text m-0">Floor {floor.number}</h3>
+      <h3 className="center_text m-0">level {level.number}</h3>
 
-      {floor.type === "combat" &&
-        <Combat game_state={game_state} setGameState={setGameState} toggleDeckModal={toggleDeckModal}/>
+      {level.type === "combat" &&
+        <Combat game_state={game_state} setGameState={setGameState} toggleDeckModal={toggleDeckModal} setMessage={setMessage}/>
       }
     </div>
   )
