@@ -1,4 +1,4 @@
-const Modal = ({show_modal, setShowModal, children}) => {
+const Modal = ({show_modal, setShowModal, children, permanent}) => {
 
   const modal_class = show_modal ? "show_modal p-16 overflow-y-scroll" : "hide_modal p-16 overflow-y-scroll"
 
@@ -15,13 +15,17 @@ const Modal = ({show_modal, setShowModal, children}) => {
         background: "rgba(255, 255, 255, .8)"
       }}
       >
-      <button
-        onClick={(e) => setShowModal(false)}
-        >Close</button>
+      {!permanent &&
+        <button onClick={(e) => setShowModal(false)}>
+          Close
+        </button>
+      }
       {children}
-      <button
-        onClick={(e) => setShowModal(false)}
-        >Close</button>
+      {!permanent &&
+        <button onClick={(e) => setShowModal(false)}>
+          Close
+        </button>
+      }
     </div>
   )
 }

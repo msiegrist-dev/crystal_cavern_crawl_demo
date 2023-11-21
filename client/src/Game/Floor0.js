@@ -18,8 +18,7 @@ export default ({game_state, setGameState}) => {
     let game_state_copy = copyState(game_state)
     const stat_name = getRandomStatName()
     giveCharacterStats(game_state_copy, stat_name, getRandomStatValue(stat_name))
-    goNextFloor(game_state_copy)
-    setGameState(game_state_copy)
+    setGameState(goNextFloor(game_state_copy))
   }
 
   return (

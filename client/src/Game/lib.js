@@ -73,6 +73,7 @@ const getRandomFloor = number => {
 const goNextFloor = game_state => {
   const next_floor = game_state.floor.number + 1
   game_state.floor = getRandomFloor(next_floor)
+  return game_state
 }
 
 const shuffleKeyedArray = array => {

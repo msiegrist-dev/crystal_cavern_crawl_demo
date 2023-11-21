@@ -23,7 +23,7 @@ export default (
         <>
         {Object.keys(card.gems).map((gem) => {
           const img = `gem_${gem}.png`
-          return <img src={img} style={{height: "25px", width: "25px"}} className="block m-4 p-4" />
+          return <img key={gem} src={img} style={{height: "25px", width: "25px"}} className="block m-4 p-4" />
         })}
         </>
       }

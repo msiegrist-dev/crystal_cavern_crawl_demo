@@ -26,7 +26,7 @@ export default ({game_state, setGameState}) => {
       <Modal show_modal={show_modal} setShowModal={setShowModal}>
         {modal_mode === "deck" &&
           <div className="grid eq_four_col">
-            {modal_deck.map((card) => <Card card={card} />)}
+            {modal_deck.map((card) => <Card key={card.key} card={card} />)}
           </div>
         }
       </Modal>
