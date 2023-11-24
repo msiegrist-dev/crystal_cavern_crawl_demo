@@ -3,7 +3,7 @@ import default_game_state from "../data/default_game_state"
 import Card from "./Card"
 import Enemy from "./Enemy"
 import Modal from "../Modal"
-import {getTurnOrder, getEnemyAction, processAction, displayArmorAsPct, shuffleKeyedArray, startTurnDraw, playCard, copyState, goNextLevel} from "./lib"
+import {getTurnOrder, getEnemyAction, processAction, displayArmorAsPct, shuffleKeyedArray, startTurnDraw, playCard, copyState, goNextLevel, sendCardsToGraveYard} from "./lib"
 export default ({game_state, setGameState, toggleDeckModal}) => {
 
   const {enemies} = game_state.level
@@ -24,6 +24,12 @@ export default ({game_state, setGameState, toggleDeckModal}) => {
   const goNextTurn = () => {
     if(combat_ended){
       return
+    }
+    if(player_turn){
+      let game_state_copy = copyState(game_state)
+      const new_hands = sendCardsToGraveYard(hand, hand, graveyard)
+      setHand(new_hands.hand)
+      setGraveyard(new_hands.graveyard)
     }
     const current_index = turn_order.indexOf(turn)
     if(current_index + 1 >= turn_order.length){

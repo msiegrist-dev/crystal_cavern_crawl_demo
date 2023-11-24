@@ -245,14 +245,16 @@ const startTurnDraw = (draw_pile, graveyard, hand) => {
   }
 }
 
-const sendCardToGraveYard = (hand, card, graveyard) => {
+const sendCardsToGraveYard = (hand, cards, graveyard) => {
   let graveyard_copy = copyState(graveyard)
-
-  const card_index = getIndexOfArrayItemByKey(hand, card.key)
-  const new_hand = hand.slice(0, card_index).concat(hand.slice(card_index + 1, hand.length))
-  graveyard_copy.push(card)
+  let hand_copy = copyState(hand)
+  for(let card of cards){
+    const card_index = getIndexOfArrayItemByKey(hand_copy, card.key)
+    hand_copy = hand_copy.slice(0, card_index).concat(hand_copy.slice(card_index + 1, hand_copy.length))
+    graveyard_copy.push(card)
+  }
   return {
-    hand: new_hand,
+    hand: hand_copy,
     graveyard: graveyard_copy
   }
 }
@@ -291,7 +293,7 @@ const playCard = (card, game_state, [target_keys], hand, graveyard) => {
   if(!has_gems){
     return {error: "You do not have enough gems to complete this action."}
   }
-  const card_sources = sendCardToGraveYard(hand, card, graveyard)
+  const card_sources = sendCardsToGraveYard(hand, [card], graveyard)
   return {
     game_state:
       processAction(game_state, game_state.character, [target_keys],
@@ -324,5 +326,6 @@ export {
   shuffleKeyedArray,
   startTurnDraw,
   playCard,
-  doesCardRequireGem
+  doesCardRequireGem,
+  sendCardsToGraveYard
 }
