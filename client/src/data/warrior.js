@@ -13,8 +13,9 @@ export default {
     blue: 1
   },
   starting_deck: [
-    "Attack", "Attack", "Attack",
-    "Defend", "Defend", "Defend",
-    "Overhead Slice", "Shield Brace"
+    "Sweeping Blade",
+    "Sweeping Blade",
+    "Overhead Slice",
+    "Overhead Slice"
   ]
 }

@@ -41,7 +41,8 @@ export default [
         number: 1,
         effect: true,
         effect_name: "increase_base",
-        value: 3
+        value: 3,
+        effect_description: `Increase base damage by 3`
       }
     },
     accuracy: 95

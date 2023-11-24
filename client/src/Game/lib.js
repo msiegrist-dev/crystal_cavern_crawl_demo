@@ -310,6 +310,41 @@ const playCard = (card, game_state, [target_keys], hand, graveyard) => {
   }
 }
 
+const addGemToCard = (gem, card, game_state, hand, setGameState, setHand) => {
+  if(!game_state.character.gems[gem] || game_state.character.gems[gem] < 1){
+    return
+  }
+  let game_state_copy = copyState(game_state)
+  let hand_copy = copyState(hand)
+  const card_index = getIndexOfArrayItemByKey(hand, card.key)
+  if(!hand_copy[card_index]["has_gems"]){
+    hand_copy[card_index]["has_gems"] = {}
+  }
+  if(!hand_copy[card_index]["has_gems"][gem]){
+    hand_copy[card_index]["has_gems"][gem] = 0
+  }
+  hand_copy[card_index]["has_gems"][gem] += 1
+  game_state_copy["character"]["gems"][gem] -= 1
+  setHand(hand_copy)
+  setGameState(game_state_copy)
+}
+
+const returnCardGemToCharacter = (gem, card, game_state, hand, setGameState, setHand) => {
+  let game_state_copy = copyState(game_state)
+  let hand_copy = copyState(hand)
+  const card_index = getIndexOfArrayItemByKey(hand, card.key)
+  if(!hand_copy[card_index]["has_gems"]){
+    hand_copy[card_index]["has_gems"] = {}
+  }
+  if(!hand_copy[card_index]["has_gems"][gem]){
+    hand_copy[card_index]["has_gems"][gem] = 0
+  }
+  hand_copy[card_index]["has_gems"][gem] -= 1
+  game_state_copy["character"]["gems"][gem] += 1
+  setHand(hand_copy)
+  setGameState(game_state_copy)
+}
+
 export {
   getRandomNumber100,
   copyState,
@@ -327,5 +362,7 @@ export {
   startTurnDraw,
   playCard,
   doesCardRequireGem,
-  sendCardsToGraveYard
+  sendCardsToGraveYard,
+  addGemToCard,
+  returnCardGemToCharacter
 }
