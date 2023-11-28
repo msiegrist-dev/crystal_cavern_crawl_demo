@@ -1,16 +1,17 @@
 import {useState, useEffect} from 'react'
+import {getIndexOfArrayItemByKey} from "./lib"
 import default_game_state from "../data/default_game_state"
 import Card from "./Card"
 import Enemy from "./Enemy"
 import Modal from "../Modal"
-import {getTurnOrder, getEnemyAction, processAction, displayArmorAsPct, shuffleKeyedArray, startTurnDraw, playCard, copyState, goNextLevel, sendCardsToGraveYard} from "./lib"
-export default ({game_state, setGameState, toggleDeckModal}) => {
+import {getTurnOrder, getEnemyAction, processAction, shuffleKeyedArray, startTurnDraw, playCard, copyState, goNextLevel, sendCardsToGraveYard} from "./lib"
+const Combat = ({game_state, setGameState, toggleDeckModal}) => {
 
   const {enemies} = game_state.level
   const {character} = game_state
-  const [message, setMessage] = useState("")
+  const turn_order = getTurnOrder(game_state)
 
-  const [turn_order, setTurnOrder] = useState(getTurnOrder(game_state))
+  const [message, setMessage] = useState("")
   const [turn, setTurn] = useState(turn_order[0])
   const [draw_pile, setDrawPile] = useState(shuffleKeyedArray(character.deck))
   const [hand, setHand] = useState([])
@@ -26,53 +27,16 @@ export default ({game_state, setGameState, toggleDeckModal}) => {
       return
     }
     if(player_turn){
-      let game_state_copy = copyState(game_state)
-      const new_hands = sendCardsToGraveYard(hand, hand, graveyard)
+      const new_hands = sendCardsToGraveYard(hand, hand, graveyard, game_state)
       setHand(new_hands.hand)
       setGraveyard(new_hands.graveyard)
+      setGameState(new_hands.game_state)
     }
-    const current_index = turn_order.indexOf(turn)
+    const current_index = getIndexOfArrayItemByKey(turn_order, turn.key)
     if(current_index + 1 >= turn_order.length){
       return setTurn(turn_order[0])
     }
     return setTurn(turn_order[current_index + 1])
-  }
-
-  const playerTurn = () => {
-    if(combat_ended){
-      return
-    }
-    console.log("IT IS PLAYER TURN")
-    const draw = startTurnDraw(draw_pile, graveyard, hand)
-    setGraveyard(draw.graveyard)
-    setDrawPile(draw.draw_pile)
-    setHand(draw.hand)
-  }
-
-  const enemyTurn = () => {
-    if(combat_ended){
-      return
-    }
-    console.log("IT IS ENEMIES TURN")
-    const enemy = enemies.find((ene) => ene.key === turn.key)
-    const action = getEnemyAction(enemy)
-    setGameState(
-      processAction(game_state, enemy, ["player"], action)
-    )
-    goNextTurn()
-  }
-
-  const defeat = () => {
-    const game_state_copy = copyState(game_state)
-    game_state_copy.defeat = true
-    setGameState(game_state_copy)
-    console.log("state set to defeat")
-  }
-
-  const combatVictory = () => {
-    const game_state_copy = copyState(game_state)
-    game_state_copy.level.combat_victory = true
-    setGameState(game_state_copy)
   }
 
   const targettingHandler = target_key => {
@@ -90,20 +54,60 @@ export default ({game_state, setGameState, toggleDeckModal}) => {
     setSelectedCard(null)
   }
 
+
+
   useEffect(() => {
+
+    const playerTurn = () => {
+      if(combat_ended){
+        return
+      }
+      console.log("IT IS PLAYER TURN")
+      const draw = startTurnDraw(draw_pile, graveyard, hand)
+      setGraveyard(draw.graveyard)
+      setDrawPile(draw.draw_pile)
+      setHand(draw.hand)
+    }
+
+    const enemyTurn = () => {
+      if(combat_ended){
+        return
+      }
+      console.log("IT IS ENEMIES TURN")
+      const enemy = enemies.find((ene) => ene.key === turn.key)
+      const action = getEnemyAction(enemy)
+      setGameState(
+        processAction(game_state, enemy, ["player"], action)
+      )
+      goNextTurn()
+    }
+
     if(combat_ended){
       return
     }
     if(turn.key === "player"){
-      playerTurn(turn)
+      return playerTurn(turn)
     }
     if(turn.key !== "player"){
-      enemyTurn(turn)
+      return enemyTurn(turn)
     }
-  }, [turn])
+  }, [turn, combat_ended])
+
 
   useEffect(() => {
-    if(combat_ended){
+    const combatVictory = () => {
+      const game_state_copy = copyState(game_state)
+      game_state_copy.level.combat_victory = true
+      setGameState(game_state_copy)
+    }
+    const defeat = () => {
+      const game_state_copy = copyState(game_state)
+      game_state_copy.defeat = true
+      setGameState(game_state_copy)
+      console.log("state set to defeat")
+    }
+
+    if(combat_ended || game_state.defeat){
       return
     }
     if(game_state.character.hp <= 0){
@@ -115,7 +119,8 @@ export default ({game_state, setGameState, toggleDeckModal}) => {
       setCombatEnded(true)
       return combatVictory()
     }
-  }, [game_state])
+  }, [game_state, combat_ended, setGameState])
+
 
   return (
     <div onClick={(e) => {
@@ -190,7 +195,7 @@ export default ({game_state, setGameState, toggleDeckModal}) => {
       </div>
       <div className="grid" style={{gridTemplateColumns: "35% 65%", height: "450px", alignItems: "end"}}>
         <div>
-          <img src="warrior-idle.gif" style={{height: "350px"}}/>
+          <img alt="player character" src="warrior-idle.gif" style={{height: "350px"}}/>
           <table className="w-60 m-4 p-4">
             <tbody>
               <tr>
@@ -221,7 +226,7 @@ export default ({game_state, setGameState, toggleDeckModal}) => {
         </div>
         <div className="grid eq_four_col">
           {hand.map((card) => <Card key={card.key} card={card}
-            playable={!game_state.defeat} key={card.key} game_state={game_state} setGameState={setGameState}
+            playable={!game_state.defeat} game_state={game_state} setGameState={setGameState}
             setTargetting={setTargetting} setSelectedCard={setSelectedCard} hand={hand}
             graveyard={graveyard} setHand={setHand} setGraveyard={setGraveyard} setMessage={setMessage}
           />)}
@@ -231,3 +236,5 @@ export default ({game_state, setGameState, toggleDeckModal}) => {
     </div>
   )
 }
+
+export default Combat

@@ -1,6 +1,6 @@
-import {playCard, doesCardRequireGem, addGemToCard, returnCardGemToCharacter, capitalizeFirst, formatKeyword} from "./lib"
+import {playCard, addGemToCard, returnCardGemToCharacter, capitalizeFirst, formatKeyword} from "./lib"
 
-export default (
+const Card = (
   {card, playable, game_state, setTargetting, setGameState, setSelectedCard, hand, graveyard, setHand, setGraveyard, setMessage, setCard}
 ) => {
   const type = capitalizeFirst(card.type)
@@ -38,11 +38,12 @@ export default (
               return `rgba(245, 58, 39, 0.4)`
             }
           }
+          const alt = `${gem_name} gem`
           return <div className="w-100" style={{backgroundColor: color(gem_name)}}>
             <div className="flex center_all_items gap-4" style={{alignItems: "start", height: "35px"}}
               onClick={(e) => addGemToCard(gem_name, card, game_state, hand, setGameState, setHand)}
             >
-              <img key={gem_name} src={img} style={{height: "25px", width: "25px"}} className="block" />
+              <img alt={alt} key={gem_name} src={img} style={{height: "25px", width: "25px"}} className="block" />
               {gem_data.number && <h4>x{gem_data.number}</h4>}
               {gem_data.required && <h4>Required.</h4>}
             </div>
@@ -59,8 +60,9 @@ export default (
             const gem_number = card.gem_inventory[gem_name]
             const img = `gem_${gem_name}.png`
             const list = []
+            const alt = `one ${gem_name} gem`
             for(let i = 0; i < gem_number; i++){
-              list.push(<img key={i} src={img} style={{height: "25px", width: "25px"}} onClick={(e) => returnCardGemToCharacter(gem_name, card, game_state, hand, setGameState, setHand)}/>)
+              list.push(<img alt={alt} key={i} src={img} style={{height: "25px", width: "25px"}} onClick={(e) => returnCardGemToCharacter(gem_name, card, game_state, hand, setGameState, setHand)}/>)
             }
             return list
           })}
@@ -86,3 +88,5 @@ export default (
     </div>
   )
 }
+
+export default Card

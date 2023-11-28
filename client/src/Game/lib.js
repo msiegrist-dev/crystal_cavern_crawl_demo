@@ -2,9 +2,7 @@ import environment from "../data/environment"
 import basic_mob from "../data/basic_mob"
 
 
-const getRandomNumber100 = () => {
-  return Math.floor(Math.random() * 100) + 1
-}
+const getRandomNumber100 = () => Math.floor(Math.random() * 100) + 1
 
 const getRandomNumber = limit => Math.floor(Math.random() * limit)
 
@@ -13,8 +11,8 @@ const copyState = state => JSON.parse(JSON.stringify(state))
 const getRandomValueFromList = list => {
   const number_of_gems = list.length
   const random = getRandomNumber100()
-  //50
   const rand_width = Math.ceil(100 / number_of_gems)
+
   for(let i = 0; i < list.length; i++){
     const getBottom = () => {
       return i === 0 ? 0 : i * rand_width
@@ -29,9 +27,8 @@ const getRandomValueFromList = list => {
 }
 
 const getRandomGemName = () => getRandomValueFromList(environment.ALL_GEMS)
-const giveCharacterGems = (state, gem_name, amount) => {
-  state.character.gems[gem_name] += amount
-}
+const giveCharacterGems = (state, gem_name, amount) => state.character.gems[gem_name] += amount
+const giveCharacterStats = (state, stat_name, amount) => state.character[stat_name] += amount
 
 const getRandomStatName = () => getRandomValueFromList(environment.ALL_STATS)
 const getRandomStatValue = stat_name => {
@@ -46,9 +43,6 @@ const getRandomStatValue = stat_name => {
   }
 }
 
-const giveCharacterStats = (state, stat_name, amount) => {
-  state.character[stat_name] += amount
-}
 
 const generateCombatLevel = number => {
   if(number >= 1 && number <= 10){
@@ -189,9 +183,9 @@ const getIndexOfArrayItemByKey = (array, key) => {
 }
 
 const processAction = (game_state, doer, target_keys, action, consume_gems) => {
-
   const game_state_copy = copyState(game_state)
   const player_action = doer.key === "player"
+
   if(consume_gems){
     for(let gem_name of Object.keys(consume_gems)){
       game_state_copy.character.gems[gem_name] -= consume_gems[gem_name].number
@@ -257,17 +251,27 @@ const startTurnDraw = (draw_pile, graveyard, hand) => {
   }
 }
 
-const sendCardsToGraveYard = (hand, cards, graveyard) => {
+const sendCardsToGraveYard = (hand, cards, graveyard, game_state) => {
   let graveyard_copy = copyState(graveyard)
   let hand_copy = copyState(hand)
+  let game_state_copy = copyState(game_state)
   for(let card of cards){
+    if(card.gem_inventory){
+      for(let gem_name of Object.keys(card.gem_inventory)){
+        if(card.gem_inventory[gem_name] && card.gem_inventory[gem_name] > 0){
+          game_state_copy.character.gems[gem_name] += card.gem_inventory[gem_name]
+          card.gem_inventory[gem_name] = 0
+        }
+      }
+    }
     const card_index = getIndexOfArrayItemByKey(hand_copy, card.key)
     hand_copy = hand_copy.slice(0, card_index).concat(hand_copy.slice(card_index + 1, hand_copy.length))
     graveyard_copy.push(card)
   }
   return {
     hand: hand_copy,
-    graveyard: graveyard_copy
+    graveyard: graveyard_copy,
+    game_state: game_state_copy
   }
 }
 
@@ -315,19 +319,25 @@ const isCardUsingAugmentGem = card => {
 
 const processGemAugment = card => {
   let card_copy = copyState(card)
+
   for(let gem_name of Object.keys(card.gem_augments)){
     const augment = card.gem_augments[gem_name]
-    if(augment.effect){
-
-      if(augment.effect_name === "increase_card_value"){
-        card_copy.value += augment.value
-      }
-      if(augment.effect_name === "increase_effect_value"){
-        console.log('increase effeft val')
-        card_copy.effect_value += augment.value
-      }
+    if(!augment.number === card_copy.gem_inventory[gem_name]){
+      continue
     }
+    if(!augment.effect){
+      continue
+    }
+    if(augment.effect_name === "increase_card_value"){
+      card_copy.value += augment.value
+    }
+    if(augment.effect_name === "increase_effect_value"){
+      console.log('increase effeft val')
+      card_copy.effect_value += augment.value
+    }
+    card_copy.gem_inventory[gem_name] = 0
   }
+
   return card_copy
 }
 
@@ -341,10 +351,10 @@ const playCard = (card, game_state, target_keys, hand, graveyard) => {
     console.log("USING GEM AUGMENT")
     card = processGemAugment(card)
   }
-  const card_sources = sendCardsToGraveYard(hand, [card], graveyard)
+  const card_sources = sendCardsToGraveYard(hand, [card], graveyard, game_state)
   return {
     game_state: processAction(
-      game_state, game_state.character, target_keys,
+      card_sources.game_state, game_state.character, target_keys,
       {...card}, card.gem_inventory
     ),
     hand: card_sources.hand,
@@ -417,5 +427,6 @@ export {
   addGemToCard,
   returnCardGemToCharacter,
   capitalizeFirst,
-  formatKeyword
+  formatKeyword,
+  getIndexOfArrayItemByKey
 }
