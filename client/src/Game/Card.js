@@ -1,27 +1,34 @@
-import {playCard, doesCardRequireGem, addGemToCard, returnCardGemToCharacter} from "./lib"
+import {playCard, doesCardRequireGem, addGemToCard, returnCardGemToCharacter, capitalizeFirst, formatKeyword} from "./lib"
 
 export default (
   {card, playable, game_state, setTargetting, setGameState, setSelectedCard, hand, graveyard, setHand, setGraveyard, setMessage, setCard}
 ) => {
+  const type = capitalizeFirst(card.type)
   return (
     <div style={{
         width: "90%",
         border: "2px solid black",
         borderRadius: "12px"
       }} className="m-4 p-4 grid center_all_items">
-      <h4 style={{margin: "0"}}>{card.name}</h4>
-      <p style={{margin: "0"}}>{card.type} - {card.attack_effect}</p>
-      <p style={{margin: "0"}}>Value : {card.value}</p>
+      <h4 className="m-0-all">{card.name}</h4>
+      <p className="m-0-all"><b>{type}</b> : {formatKeyword(card.attack_effect)}</p>
+      <p className="m-0-all">{type} Value : {card.value}</p>
       {card.hits &&
-        <p style={{margin: "0"}}>Hits : {card.hits}</p>
+        <p className="m-0-all">{type} Hits : {card.hits}</p>
       }
       {card.accuracy &&
-        <p style={{margin: "0"}}>Accuracy: {card.accuracy}</p>
+        <p className="m-0-all">{type} Accuracy: {card.accuracy}%</p>
       }
-      {card.gems &&
+      {card.attack_effect &&
         <>
-        {Object.keys(card.gems).map((gem_name) => {
-          const gem_data = card.gems[gem_name]
+        <p className="m-0-all">Effect Name : {formatKeyword(card.attack_effect)}</p>
+        <p className="m-0-all">Effect Value : {card.effect_value}</p>
+        </>
+      }
+      {card.gem_augments &&
+        <>
+        {Object.keys(card.gem_augments).map((gem_name) => {
+          const gem_data = card.gem_augments[gem_name]
           const img = `gem_${gem_name}.png`
           const color = gem => {
             if(gem === "blue"){
@@ -46,14 +53,14 @@ export default (
         })}
         </>
       }
-      {playable && card.has_gems &&
+      {playable && card.gem_inventory &&
         <div>
-          {Object.keys(card.has_gems).filter((gem_name) => card.has_gems[gem_name] > 0).map((gem_name) => {
-            const gem_number = card.has_gems[gem_name]
+          {Object.keys(card.gem_inventory).filter((gem_name) => card.gem_inventory[gem_name] > 0).map((gem_name) => {
+            const gem_number = card.gem_inventory[gem_name]
             const img = `gem_${gem_name}.png`
             const list = []
             for(let i = 0; i < gem_number; i++){
-              list.push(<img src={img} style={{height: "25px", width: "25px"}} onClick={(e) => returnCardGemToCharacter(gem_name, card, game_state, hand, setGameState, setHand)}/>)
+              list.push(<img key={i} src={img} style={{height: "25px", width: "25px"}} onClick={(e) => returnCardGemToCharacter(gem_name, card, game_state, hand, setGameState, setHand)}/>)
             }
             return list
           })}

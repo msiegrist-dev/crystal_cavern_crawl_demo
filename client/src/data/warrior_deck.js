@@ -17,7 +17,7 @@ export default [
     type: "attack",
     value: 10,
     hits: 1,
-    gems: {
+    gem_augments: {
       red: {number: 1, effect: false, required: true}
     },
     accuracy: 98,
@@ -27,7 +27,7 @@ export default [
     name: "Shield Brace",
     type: "defend",
     value: 10,
-    gems: {
+    gem_augments: {
       blue: {number: 1, effect: false, required: true}
     }
   },
@@ -36,13 +36,31 @@ export default [
     type: "attack",
     attack_effect: "aoe",
     value: 4,
-    gems: {
+    gem_augments: {
       red: {
         number: 1,
         effect: true,
-        effect_name: "increase_base",
+        effect_name: "increase_card_value",
         value: 3,
         effect_description: `Increase base damage by 3`
+      }
+    },
+    accuracy: 95
+  },
+  {
+    name: "Warrior's Resolve",
+    type: "attack",
+    target_required: true,
+    attack_effect: "give_block",
+    value: 2,
+    effect_value: 3,
+    gem_augments: {
+      blue: {
+        number: 1,
+        effect: true,
+        effect_name: "increase_effect_value",
+        value: 3,
+        effect_description: `Increase give block value by 3`
       }
     },
     accuracy: 95

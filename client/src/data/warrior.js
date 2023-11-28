@@ -9,13 +9,13 @@ export default {
   block: 0,
   inventory: [],
   gems: {
-    red: 1,
-    blue: 1
+    red: 3,
+    blue: 3
   },
   starting_deck: [
-    "Sweeping Blade",
-    "Sweeping Blade",
-    "Overhead Slice",
-    "Overhead Slice"
+    "Warrior's Resolve",
+    "Warrior's Resolve",
+    "Warrior's Resolve",
+    "Warrior's Resolve"
   ]
 }

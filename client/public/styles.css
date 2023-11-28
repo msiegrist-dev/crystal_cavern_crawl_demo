@@ -286,3 +286,7 @@ p {
 .eq_four_col {
   grid-template-columns: repeat(4, 1fr)
 }
+
+.m-0-all {
+  margin: 0;
+}

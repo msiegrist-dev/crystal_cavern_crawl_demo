@@ -118,7 +118,17 @@ export default ({game_state, setGameState, toggleDeckModal}) => {
   }, [game_state])
 
   return (
-    <div>
+    <div onClick={(e) => {
+        if(!targetting){
+          return
+        }
+        if(targetting){
+          if(!e.target.className.includes("enemy_img")){
+            setTargetting(false)
+            return
+          }
+        }
+      }}>
       {game_state.level.combat_victory &&
         <Modal show_modal={game_state.level.combat_victory} permanent={true}>
           <h2 className="center_text">Combat Victory</h2>

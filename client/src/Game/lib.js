@@ -143,7 +143,11 @@ const getAttackValue = (doer, action) => {
 const getDamageBlocked = (target, damage) => {
   const flat = target.block - damage
   const armor_reduced = flat * target.armor
-  const total = flat - armor_reduced
+  const total = Number((flat - armor_reduced).toFixed(2))
+  const hundredths = Number(total.toString().split(".")[1])
+  if(hundredths > 50){
+    return Math.floor(total)
+  }
   return Math.ceil(total)
 }
 
@@ -151,7 +155,13 @@ const processAttack = (doer, target, action) => {
   if(action.accuracy){
     if(Number(action.accuracy) < getRandomNumber100()){
       console.log("MISS")
-      return target
+      return {doer, target}
+    }
+  }
+  if(action.attack_effect){
+    if(action.attack_effect === "give_block"){
+      console.log('giving block')
+      doer.block += action.effect_value
     }
   }
   const damage_value = getAttackValue(doer, action)
@@ -159,10 +169,10 @@ const processAttack = (doer, target, action) => {
   if(damage_blocked <= 0){
     target.block = 0
     target.hp -= (damage_blocked * -1)
-    return target
+    return {doer, target}
   }
   target.block -= damage_blocked
-  return target
+  return {doer, target}
 }
 
 const getBlockValue = (doer, action) => {
@@ -187,9 +197,8 @@ const processAction = (game_state, doer, target_keys, action, consume_gems) => {
       game_state_copy.character.gems[gem_name] -= consume_gems[gem_name].number
     }
   }
-  console.log("TARG KEYS", target_keys)
+
   for(let target_key of target_keys){
-    console.log("TARG KEY ", target_key)
     const doer_key = player_action ? "player" : doer.key
     const target_enemy_index = target_key !== "player" ? getIndexOfArrayItemByKey(game_state.level.enemies, target_key) : null
     const doer_enemy_index = doer_key !== "player" ? getIndexOfArrayItemByKey(game_state.level.enemies, doer_key) : null
@@ -206,11 +215,14 @@ const processAction = (game_state, doer, target_keys, action, consume_gems) => {
 
     if(action.type === "attack"){
       if(player_action){
-        game_state_copy.level.enemies[target_enemy_index] = processAttack(doer, target, action)
+        const parties = processAttack(doer, target, action)
+        game_state_copy.level.enemies[target_enemy_index] = parties.target
+        game_state_copy.character = doer
       }
       if(!player_action){
-        console.log('doer target action', doer, target, action)
-        game_state_copy.character = processAttack(doer, target, action)
+        const parties = processAttack(doer, target, action)
+        game_state_copy.character = parties.target
+        game_state_copy.level.enemies[doer_enemy_index] = parties.doer
       }
     }
 
@@ -260,11 +272,11 @@ const sendCardsToGraveYard = (hand, cards, graveyard) => {
 }
 
 const doesCardRequireGem = card => {
-  if(!card.gems){
+  if(!card.gem_augments){
     return false
   }
-  for(let gem_name of Object.keys(card.gems)){
-    if(card.gems[gem_name].required){
+  for(let gem_name of Object.keys(card.gem_augments)){
+    if(card.gem_augments[gem_name].required){
       return true
     }
   }
@@ -276,8 +288,8 @@ const doesCharacterHaveGems = (game_state, card) => {
   if(!character_gems){
     return false
   }
-  for(let gem_name of Object.keys(card.gems)){
-    const gem_obj = card.gems[gem_name]
+  for(let gem_name of Object.keys(card.gem_augments)){
+    const gem_obj = card.gem_augments[gem_name]
     if(!gem_obj.required){
       continue
     }
@@ -288,23 +300,53 @@ const doesCharacterHaveGems = (game_state, card) => {
   return true
 }
 
-const playCard = (card, game_state, [target_keys], hand, graveyard) => {
-  const has_gems = doesCardRequireGem(card) ? doesCharacterHaveGems(game_state, card) : true
-  if(!has_gems){
+const isCardUsingAugmentGem = card => {
+  if(!card.gem_augments || !card.gem_inventory){
+    return false
+  }
+  for(let gem_name of Object.keys(card.gem_augments)){
+    const gem = card.gem_augments[gem_name]
+    if(!gem.required && card.gem_inventory[gem_name] === gem.number){
+      return true
+    }
+  }
+  return false
+}
+
+const processGemAugment = card => {
+  let card_copy = copyState(card)
+  for(let gem_name of Object.keys(card.gem_augments)){
+    const augment = card.gem_augments[gem_name]
+    if(augment.effect){
+
+      if(augment.effect_name === "increase_card_value"){
+        card_copy.value += augment.value
+      }
+      if(augment.effect_name === "increase_effect_value"){
+        console.log('increase effeft val')
+        card_copy.effect_value += augment.value
+      }
+    }
+  }
+  return card_copy
+}
+
+const playCard = (card, game_state, target_keys, hand, graveyard) => {
+  console.log('playCard card', card)
+  const has_required_gems = doesCardRequireGem(card) ? doesCharacterHaveGems(game_state, card) : true
+  if(!has_required_gems){
     return {error: "You do not have enough gems to complete this action."}
+  }
+  if(isCardUsingAugmentGem(card)){
+    console.log("USING GEM AUGMENT")
+    card = processGemAugment(card)
   }
   const card_sources = sendCardsToGraveYard(hand, [card], graveyard)
   return {
-    game_state:
-      processAction(game_state, game_state.character, [target_keys],
-        {
-          type: card.type,
-          value: card.value,
-          hits: card.hits,
-          accuracy: card.accuracy
-        },
-        card.gems
-      ),
+    game_state: processAction(
+      game_state, game_state.character, target_keys,
+      {...card}, card.gem_inventory
+    ),
     hand: card_sources.hand,
     graveyard: card_sources.graveyard
   }
@@ -317,13 +359,13 @@ const addGemToCard = (gem, card, game_state, hand, setGameState, setHand) => {
   let game_state_copy = copyState(game_state)
   let hand_copy = copyState(hand)
   const card_index = getIndexOfArrayItemByKey(hand, card.key)
-  if(!hand_copy[card_index]["has_gems"]){
-    hand_copy[card_index]["has_gems"] = {}
+  if(!hand_copy[card_index]["gem_inventory"]){
+    hand_copy[card_index]["gem_inventory"] = {}
   }
-  if(!hand_copy[card_index]["has_gems"][gem]){
-    hand_copy[card_index]["has_gems"][gem] = 0
+  if(!hand_copy[card_index]["gem_inventory"][gem]){
+    hand_copy[card_index]["gem_inventory"][gem] = 0
   }
-  hand_copy[card_index]["has_gems"][gem] += 1
+  hand_copy[card_index]["gem_inventory"][gem] += 1
   game_state_copy["character"]["gems"][gem] -= 1
   setHand(hand_copy)
   setGameState(game_state_copy)
@@ -333,16 +375,25 @@ const returnCardGemToCharacter = (gem, card, game_state, hand, setGameState, set
   let game_state_copy = copyState(game_state)
   let hand_copy = copyState(hand)
   const card_index = getIndexOfArrayItemByKey(hand, card.key)
-  if(!hand_copy[card_index]["has_gems"]){
-    hand_copy[card_index]["has_gems"] = {}
+  if(!hand_copy[card_index]["gem_inventory"]){
+    hand_copy[card_index]["gem_inventory"] = {}
   }
-  if(!hand_copy[card_index]["has_gems"][gem]){
-    hand_copy[card_index]["has_gems"][gem] = 0
+  if(!hand_copy[card_index]["gem_inventory"][gem]){
+    hand_copy[card_index]["gem_inventory"][gem] = 0
   }
-  hand_copy[card_index]["has_gems"][gem] -= 1
+  hand_copy[card_index]["gem_inventory"][gem] -= 1
   game_state_copy["character"]["gems"][gem] += 1
   setHand(hand_copy)
   setGameState(game_state_copy)
+}
+
+const capitalizeFirst = str => str[0].toUpperCase() + str.substr(1, str.length)
+const formatKeyword = str => {
+  let res = ``
+  for(let word of str.split("_")){
+    res += `${capitalizeFirst(word)} `
+  }
+  return res
 }
 
 export {
@@ -364,5 +415,7 @@ export {
   doesCardRequireGem,
   sendCardsToGraveYard,
   addGemToCard,
-  returnCardGemToCharacter
+  returnCardGemToCharacter,
+  capitalizeFirst,
+  formatKeyword
 }
