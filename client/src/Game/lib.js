@@ -134,15 +134,25 @@ const getAttackValue = (doer, action) => {
   return doer.attack + action.value
 }
 
-const getDamageBlocked = (target, damage) => {
-  const flat = target.block - damage
-  const armor_reduced = flat * target.armor
-  const total = Number((flat - armor_reduced).toFixed(2))
-  const hundredths = Number(total.toString().split(".")[1])
-  if(hundredths > 50){
-    return Math.floor(total)
+const roundToNearestInt = (number, reverse) => {
+  if(Number.isInteger(number)){
+    return number
   }
-  return Math.ceil(total)
+  const round_number = Number(number.toFixed(2))
+  let hundredths = Number(round_number.toString().split(".")[1])
+  if(hundredths.toString().length === 1){
+    hundredths = Number(hundredths.toString() + "0")
+  }
+  if(hundredths >= 50){
+    return Math.ceil(number)
+  }
+  return Math.floor(number)
+}
+
+const getRemainingBlock = (target, damage) => {
+  const armor_multiplier = 1 - target.armor
+  const armor_reduced_damage = roundToNearestInt(damage * armor_multiplier)
+  return target.block - armor_reduced_damage
 }
 
 const actionMissed = action => {
@@ -158,34 +168,42 @@ const processAttack = (doer, target, action) => {
   }
   if(action.attack_effect){
     if(action.attack_effect === "give_block"){
-      console.log('giving block')
       doer.block += action.effect_value
     }
   }
   const damage_value = getAttackValue(doer, action)
-  const damage_blocked = getDamageBlocked(target, damage_value)
-  if(damage_blocked <= 0){
+  const remaining_block = getRemainingBlock(target, damage_value)
+  console.log('BLOCK REMAINING', remaining_block)
+  if(remaining_block <= 0){
     target.block = 0
-    target.hp -= (damage_blocked * -1)
+    target.hp -= (remaining_block * -1)
     return {doer, target}
   }
-  target.block -= damage_blocked
+  target.block -= remaining_block
   return {doer, target}
 }
 
+const applyBuff = (target, buff_name, buff_value) => {
+  if(!target.buffs){
+    target.buffs = {}
+  }
+  if(!target.buffs[buff_name]){
+    target.buffs[buff_name] = 0
+  }
+  target.buffs[buff_name] += buff_value
+  return target
+}
+
 const processEffect = (doer, target, action) => {
-  console.log('process effect', action)
-  console.log('targ', target)
-  console.log('action', action)
   if(actionMissed(action)){
     return {doer, target}
   }
   const {effect_name, effect_value, buff_name} = action
   if(effect_name === "buff"){
-    if(!target.buffs[buff_name]){
-      target.buffs[buff_name] = 0
+    target = applyBuff(target, buff_name, effect_value)
+    if(doer.key === target.key){
+      doer = applyBuff(doer, buff_name, effect_value)
     }
-    target.buffs[buff_name] += effect_value
     return {doer, target}
   }
 }
@@ -228,36 +246,18 @@ const processAction = (game_state, doer, target_keys, action, consume_gems) => {
       }
     }
 
-    if(action.type === "attack"){
-      if(player_action){
-        const parties = processAttack(doer, target, action)
+    if(action.type === "attack" || action.type === "effect"){
+      const processor = action.type === "attack" ? processAttack : processEffect
+      const parties = processor(doer, target, action)
+      game_state_copy.character = player_action ? parties.doer : parties.target
+      if(target_enemy_index){
         game_state_copy.level.enemies[target_enemy_index] = parties.target
-        game_state_copy.character = doer
       }
-      if(!player_action){
-        const parties = processAttack(doer, target, action)
-        game_state_copy.character = parties.target
+      if(doer_enemy_index){
         game_state_copy.level.enemies[doer_enemy_index] = parties.doer
       }
     }
-
-    if(action.type === "effect"){
-      if(player_action){
-        const parties = processEffect(doer, target, action)
-        if(target_enemy_index){
-          game_state_copy.level.enemies[target_enemy_index] = parties.target
-        }
-        game_state_copy.level.character = parties.doer
-      }
-      if(!player_action){
-        const parties = processEffect(doer, target, action)
-        game_state_copy.level.character = parties.target
-        game_state_copy.level.enemies[doer_enemy_index] = parties.doer
-      }
-    }
-
   }
-
   return game_state_copy
 }
 
@@ -368,7 +368,6 @@ const processGemAugment = card => {
       card_copy.value += augment.value
     }
     if(augment.effect_name === "increase_effect_value"){
-      console.log('increase effeft val')
       card_copy.effect_value += augment.value
     }
     card_copy.gem_inventory[gem_name] = 0
@@ -378,14 +377,11 @@ const processGemAugment = card => {
 }
 
 const playCard = (card, game_state, target_keys, hand, graveyard) => {
-  console.log('playCard card', card)
-  console.log('playCard target keys', target_keys)
   const has_required_gems = doesCardRequireGem(card) ? doesCharacterHaveGems(game_state, card) : true
   if(!has_required_gems){
     return {error: "You do not have enough gems to complete this action."}
   }
   if(isCardUsingAugmentGem(card)){
-    console.log("USING GEM AUGMENT")
     card = processGemAugment(card)
   }
   const card_sources = sendCardsToGraveYard(hand, [card], graveyard, game_state)

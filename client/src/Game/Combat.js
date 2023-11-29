@@ -26,12 +26,6 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
     if(combat_ended){
       return
     }
-    if(player_turn){
-      const new_hands = sendCardsToGraveYard(hand, hand, graveyard, game_state)
-      setHand(new_hands.hand)
-      setGraveyard(new_hands.graveyard)
-      setGameState(new_hands.game_state)
-    }
     const current_index = getIndexOfArrayItemByKey(turn_order, turn.key)
     if(current_index + 1 >= turn_order.length){
       return setTurn(turn_order[0])
@@ -58,11 +52,18 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
 
   useEffect(() => {
 
-    const playerTurn = () => {
+    const initPlayerTurn = () => {
       if(combat_ended){
         return
       }
       console.log("IT IS PLAYER TURN")
+      let game_state_copy = copyState(game_state)
+      if(game_state_copy.character.buffs){
+        for(let buff_name of Object.keys(game_state_copy.character.buffs)){
+          game_state_copy.character.buffs[buff_name] -= 1
+        }
+      }
+      setGameState(game_state_copy)
       const draw = startTurnDraw(draw_pile, graveyard, hand)
       setGraveyard(draw.graveyard)
       setDrawPile(draw.draw_pile)
@@ -86,7 +87,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
       return
     }
     if(turn.key === "player"){
-      return playerTurn(turn)
+      return initPlayerTurn(turn)
     }
     if(turn.key !== "player"){
       return enemyTurn(turn)
@@ -208,10 +209,10 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
               </tr>
               {Object.keys(character.buffs).length > 0 &&
                 <>
-                <tr colSpan="2"><td class="center_text"><b>Buffs</b></td></tr>
+                <tr colSpan="2"><td className="center_text"><b>Buffs</b></td></tr>
                 {Object.keys(character.buffs).map((buff_name) => {
                   return (
-                    <tr>
+                    <tr key={buff_name}>
                       <td><b>{buff_name}</b></td>
                       <td>{character.buffs[buff_name]}</td>
                     </tr>
