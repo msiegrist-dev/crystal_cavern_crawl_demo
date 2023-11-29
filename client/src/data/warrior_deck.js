@@ -64,5 +64,24 @@ export default [
       }
     },
     accuracy: 95
+  },
+  {
+    name: "Steel Yourself",
+    type: "effect",
+    effect_name: "buff",
+    effect_value: 2,
+    target_required: true,
+    can_target: ["player"],
+    buff_name: "fortify",
+    gem_augments: {
+      blue: {
+        number: 1,
+        effect: true,
+        effect_name: "increase_effect_value",
+        value: 1,
+        effect_description: `Grants an additional fortify buff`
+      }
+    },
+    accuracy: 100
   }
 ]

@@ -1,9 +1,10 @@
 import {playCard, addGemToCard, returnCardGemToCharacter, capitalizeFirst, formatKeyword} from "./lib"
-
+import buff_descriptions from "../data/buff_descriptions"
 const Card = (
   {card, playable, game_state, setTargetting, setGameState, setSelectedCard, hand, graveyard, setHand, setGraveyard, setMessage, setCard}
 ) => {
   const type = capitalizeFirst(card.type)
+  const card_base_value = card.type === "effect" ? card.effect_value : card.value
   return (
     <div style={{
         width: "90%",
@@ -11,8 +12,8 @@ const Card = (
         borderRadius: "12px"
       }} className="m-4 p-4 grid center_all_items">
       <h4 className="m-0-all">{card.name}</h4>
-      <p className="m-0-all"><b>{type}</b> : {formatKeyword(card.attack_effect)}</p>
-      <p className="m-0-all">{type} Value : {card.value}</p>
+      <p className="m-0-all"><b>Type</b> : {formatKeyword(card.type)}</p>
+      <p className="m-0-all">{type} Value : {card_base_value}</p>
       {card.hits &&
         <p className="m-0-all">{type} Hits : {card.hits}</p>
       }
@@ -21,8 +22,19 @@ const Card = (
       }
       {card.attack_effect &&
         <>
-        <p className="m-0-all">Effect Name : {formatKeyword(card.attack_effect)}</p>
-        <p className="m-0-all">Effect Value : {card.effect_value}</p>
+        <p className="m-0-all">Attack Effect Name : {formatKeyword(card.attack_effect)}</p>
+        <p className="m-0-all">Attack Effect Value : {card.effect_value}</p>
+        </>
+      }
+      {card.type === "effect" &&
+        <>
+          {card.buff_name &&
+            <>
+              <p className="m-0-all">Buff : <b>{card.buff_name}</b></p>
+              <p className="m-0-all">Can Target : {card.can_target.map((targ) => targ)}</p>
+              <p className="m-0-all">{buff_descriptions[card.buff_name]}</p>
+            </>
+          }
         </>
       }
       {card.gem_augments &&
@@ -70,12 +82,27 @@ const Card = (
       }
       {playable &&
         <button onClick={(e) => {
-            if(card.target_required){
+            const requiresTargetting = card => {
+              if(!card.target_required && !card.can_target){
+                return false
+              }
+              if(card.target_required){
+                if(card.can_target){
+                  if(card.can_target.length === 1 && card.can_target[0] === "player"){
+                    return false
+                  }
+                }
+                return true
+              }
+            }
+            if(requiresTargetting(card)){
               setSelectedCard(card)
               setTargetting(true)
               return
             }
-            const targets = card.type === "defend" ? "player" : game_state.level.enemies.map((en) => en.key)
+
+            const targets = card.type === "defend" || card.type === "effect" ? ["player"] : game_state.level.enemies.map((en) => en.key)
+            console.log("targets", targets)
             const new_game_state = playCard(card, game_state, targets, hand, graveyard)
             if(new_game_state.error){
               return setMessage(new_game_state.error)

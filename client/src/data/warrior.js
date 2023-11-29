@@ -12,10 +12,11 @@ export default {
     red: 3,
     blue: 3
   },
+  buffs: {},
   starting_deck: [
     "Warrior's Resolve",
     "Warrior's Resolve",
-    "Warrior's Resolve",
-    "Warrior's Resolve"
+    "Steel Yourself",
+    "Steel Yourself"
   ]
 }

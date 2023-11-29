@@ -206,6 +206,19 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
                 <td><b>Block</b></td>
                 <td>{character.block}</td>
               </tr>
+              {Object.keys(character.buffs).length > 0 &&
+                <>
+                <tr colSpan="2"><td class="center_text"><b>Buffs</b></td></tr>
+                {Object.keys(character.buffs).map((buff_name) => {
+                  return (
+                    <tr>
+                      <td><b>{buff_name}</b></td>
+                      <td>{character.buffs[buff_name]}</td>
+                    </tr>
+                  )
+                })}
+                </>
+              }
             </tbody>
           </table>
         </div>

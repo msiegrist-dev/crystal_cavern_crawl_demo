@@ -145,12 +145,16 @@ const getDamageBlocked = (target, damage) => {
   return Math.ceil(total)
 }
 
+const actionMissed = action => {
+  if(!action.accuracy){
+    return false
+  }
+  return Number(action.accuracy) < getRandomNumber100()
+}
+
 const processAttack = (doer, target, action) => {
-  if(action.accuracy){
-    if(Number(action.accuracy) < getRandomNumber100()){
-      console.log("MISS")
-      return {doer, target}
-    }
+  if(actionMissed(action)){
+    return {doer, target}
   }
   if(action.attack_effect){
     if(action.attack_effect === "give_block"){
@@ -167,6 +171,23 @@ const processAttack = (doer, target, action) => {
   }
   target.block -= damage_blocked
   return {doer, target}
+}
+
+const processEffect = (doer, target, action) => {
+  console.log('process effect', action)
+  console.log('targ', target)
+  console.log('action', action)
+  if(actionMissed(action)){
+    return {doer, target}
+  }
+  const {effect_name, effect_value, buff_name} = action
+  if(effect_name === "buff"){
+    if(!target.buffs[buff_name]){
+      target.buffs[buff_name] = 0
+    }
+    target.buffs[buff_name] += effect_value
+    return {doer, target}
+  }
 }
 
 const getBlockValue = (doer, action) => {
@@ -216,6 +237,21 @@ const processAction = (game_state, doer, target_keys, action, consume_gems) => {
       if(!player_action){
         const parties = processAttack(doer, target, action)
         game_state_copy.character = parties.target
+        game_state_copy.level.enemies[doer_enemy_index] = parties.doer
+      }
+    }
+
+    if(action.type === "effect"){
+      if(player_action){
+        const parties = processEffect(doer, target, action)
+        if(target_enemy_index){
+          game_state_copy.level.enemies[target_enemy_index] = parties.target
+        }
+        game_state_copy.level.character = parties.doer
+      }
+      if(!player_action){
+        const parties = processEffect(doer, target, action)
+        game_state_copy.level.character = parties.target
         game_state_copy.level.enemies[doer_enemy_index] = parties.doer
       }
     }
@@ -343,6 +379,7 @@ const processGemAugment = card => {
 
 const playCard = (card, game_state, target_keys, hand, graveyard) => {
   console.log('playCard card', card)
+  console.log('playCard target keys', target_keys)
   const has_required_gems = doesCardRequireGem(card) ? doesCharacterHaveGems(game_state, card) : true
   if(!has_required_gems){
     return {error: "You do not have enough gems to complete this action."}
