@@ -1,4 +1,5 @@
-import {playCard, addGemToCard, returnCardGemToCharacter, capitalizeFirst, formatKeyword} from "./lib"
+import {playCard, addGemToCard, returnCardGemToCharacter} from "./lib"
+import {capitalizeFirst, formatKeyword} from "./helper_lib"
 import buff_descriptions from "../data/buff_descriptions"
 const Card = (
   {card, playable, game_state, setTargetting, setGameState, setSelectedCard, hand, graveyard, setHand, setGraveyard, setMessage, setCard}
@@ -102,7 +103,6 @@ const Card = (
             }
 
             const targets = card.type === "defend" || card.type === "effect" ? ["player"] : game_state.level.enemies.map((en) => en.key)
-            console.log("targets", targets)
             const new_game_state = playCard(card, game_state, targets, hand, graveyard)
             if(new_game_state.error){
               return setMessage(new_game_state.error)

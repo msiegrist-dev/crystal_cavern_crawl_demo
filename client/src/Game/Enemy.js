@@ -1,4 +1,4 @@
-import {displayArmorAsPct} from "./lib"
+import {displayArmorAsPct} from "./helper_lib"
 
 export default ({enemy, targettingHandler}) => {
 

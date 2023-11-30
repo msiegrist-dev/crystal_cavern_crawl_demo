@@ -2,7 +2,7 @@ import {useState} from 'react'
 import Combat from "./Combat"
 import Modal from "../Modal"
 import Card from "./Card"
-import {displayArmorAsPct} from "./lib"
+import {displayArmorAsPct} from "./helper_lib"
 
 export default ({game_state, setGameState, setMessage}) => {
 

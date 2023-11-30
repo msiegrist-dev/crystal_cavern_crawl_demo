@@ -1,10 +1,10 @@
 import {useState, useEffect} from 'react'
-import {getIndexOfArrayItemByKey} from "./lib"
+import {getIndexOfArrayItemByKey, copyState, shuffleKeyedArray} from "./helper_lib"
+import {getTurnOrder, getEnemyAction, processAction, startTurnDraw, playCard, goNextLevel, sendCardsToGraveYard} from "./lib"
 import default_game_state from "../data/default_game_state"
 import Card from "./Card"
 import Enemy from "./Enemy"
 import Modal from "../Modal"
-import {getTurnOrder, getEnemyAction, processAction, shuffleKeyedArray, startTurnDraw, playCard, copyState, goNextLevel, sendCardsToGraveYard} from "./lib"
 const Combat = ({game_state, setGameState, toggleDeckModal}) => {
 
   const {enemies} = game_state.level
@@ -105,7 +105,6 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
       const game_state_copy = copyState(game_state)
       game_state_copy.defeat = true
       setGameState(game_state_copy)
-      console.log("state set to defeat")
     }
 
     if(combat_ended || game_state.defeat){
@@ -201,7 +200,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
             <tbody>
               <tr>
                 <td><b>HP</b></td>
-                <td>{character.hp}</td>
+                <td>{character.hp} / {character.max_hp}</td>
               </tr>
               <tr>
                 <td><b>Block</b></td>

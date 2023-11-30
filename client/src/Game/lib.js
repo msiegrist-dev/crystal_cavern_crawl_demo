@@ -1,30 +1,7 @@
 import environment from "../data/environment"
 import basic_mob from "../data/basic_mob"
+import {getRandomValueFromList, getRandomNumber100, getRandomNumber, copyState, shuffleKeyedArray, getIndexOfArrayItemByKey, roundToNearestInt} from "./helper_lib"
 
-
-const getRandomNumber100 = () => Math.floor(Math.random() * 100) + 1
-
-const getRandomNumber = limit => Math.floor(Math.random() * limit)
-
-const copyState = state => JSON.parse(JSON.stringify(state))
-
-const getRandomValueFromList = list => {
-  const number_of_gems = list.length
-  const random = getRandomNumber100()
-  const rand_width = Math.ceil(100 / number_of_gems)
-
-  for(let i = 0; i < list.length; i++){
-    const getBottom = () => {
-      return i === 0 ? 0 : i * rand_width
-    }
-    const getTop = () => {
-      return i === 0 ? rand_width : (i + 1) * rand_width
-    }
-    if(random > getBottom() && random <= getTop()){
-      return list[i]
-    }
-  }
-}
 
 const getRandomGemName = () => getRandomValueFromList(environment.ALL_GEMS)
 const giveCharacterGems = (state, gem_name, amount) => state.character.gems[gem_name] += amount
@@ -42,7 +19,6 @@ const getRandomStatValue = stat_name => {
     return Number(Math.floor(getRandomNumber100() / 25) / 100)
   }
 }
-
 
 const generateCombatLevel = number => {
   if(number >= 1 && number <= 10){
@@ -68,19 +44,6 @@ const goNextLevel = game_state => {
   const next_level = game_state.level.number + 1
   game_state.level = getRandomLevel(next_level)
   return game_state
-}
-
-const shuffleKeyedArray = array => {
-  let shuffled = []
-  while(shuffled.length < array.length){
-    const pushed_keys = shuffled.map((item) => item.key)
-    const random = array[getRandomNumber(array.length)]
-    if(!pushed_keys.includes(random.key)){
-      shuffled.push(random)
-      pushed_keys.push(random.key)
-    }
-  }
-  return shuffled
 }
 
 const getTurnOrder = game_state => {
@@ -130,24 +93,7 @@ const getEnemyAction = enemy => {
   }
 }
 
-const getAttackValue = (doer, action) => {
-  return doer.attack + action.value
-}
-
-const roundToNearestInt = (number, reverse) => {
-  if(Number.isInteger(number)){
-    return number
-  }
-  const round_number = Number(number.toFixed(2))
-  let hundredths = Number(round_number.toString().split(".")[1])
-  if(hundredths.toString().length === 1){
-    hundredths = Number(hundredths.toString() + "0")
-  }
-  if(hundredths >= 50){
-    return Math.ceil(number)
-  }
-  return Math.floor(number)
-}
+const getAttackValue = (doer, action) => doer.attack + action.value
 
 const getRemainingBlock = (target, damage) => {
   const armor_multiplier = 1 - target.armor
@@ -173,7 +119,6 @@ const processAttack = (doer, target, action) => {
   }
   const damage_value = getAttackValue(doer, action)
   const remaining_block = getRemainingBlock(target, damage_value)
-  console.log('BLOCK REMAINING', remaining_block)
   if(remaining_block <= 0){
     target.block = 0
     target.hp -= (remaining_block * -1)
@@ -209,16 +154,11 @@ const processEffect = (doer, target, action) => {
 }
 
 const getBlockValue = (doer, action) => {
-  return doer.defense + action.value
-}
-
-const getIndexOfArrayItemByKey = (array, key) => {
-  for(let i = 0; i < array.length; i++){
-    if(array[i].key === key){
-      return i
-    }
+  const block_value = doer.defense + action.value
+  if(doer.buffs && doer.buffs["fortify"] > 0){
+    return roundToNearestInt(block_value + (block_value * .33))
   }
-  return null
+  return block_value
 }
 
 const processAction = (game_state, doer, target_keys, action, consume_gems) => {
@@ -261,7 +201,6 @@ const processAction = (game_state, doer, target_keys, action, consume_gems) => {
   return game_state_copy
 }
 
-const displayArmorAsPct = entity => Number(entity.armor * 100) + "%"
 
 const startTurnDraw = (draw_pile, graveyard, hand) => {
   let draw = copyState(draw_pile)
@@ -440,8 +379,6 @@ const formatKeyword = str => {
 }
 
 export {
-  getRandomNumber100,
-  copyState,
   getRandomGemName,
   giveCharacterGems,
   giveCharacterStats,
@@ -451,15 +388,10 @@ export {
   getTurnOrder,
   getEnemyAction,
   processAction,
-  displayArmorAsPct,
-  shuffleKeyedArray,
   startTurnDraw,
   playCard,
   doesCardRequireGem,
   sendCardsToGraveYard,
   addGemToCard,
   returnCardGemToCharacter,
-  capitalizeFirst,
-  formatKeyword,
-  getIndexOfArrayItemByKey
 }

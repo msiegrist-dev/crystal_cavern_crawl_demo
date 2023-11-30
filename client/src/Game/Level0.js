@@ -1,8 +1,5 @@
-import {
-  copyState, getRandomGemName, giveCharacterGems,
-  getRandomStatName, getRandomStatValue, giveCharacterStats,
-  goNextLevel
-} from "./lib"
+import {getRandomGemName, giveCharacterGems, getRandomStatName, getRandomStatValue, giveCharacterStats, goNextLevel} from "./lib"
+import {copyState} from "./helper_lib"
 
 export default ({game_state, setGameState}) => {
 
