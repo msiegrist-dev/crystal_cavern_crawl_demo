@@ -114,7 +114,7 @@ const processAttack = (doer, target, action) => {
   }
   if(action.attack_effect){
     if(action.attack_effect === "give_block"){
-      doer.block += action.effect_value
+      doer.block += getBlockValue(doer, {value: action.effect_value})
     }
   }
   const damage_value = getAttackValue(doer, action)
@@ -316,18 +316,19 @@ const processGemAugment = card => {
 }
 
 const playCard = (card, game_state, target_keys, hand, graveyard) => {
-  const has_required_gems = doesCardRequireGem(card) ? doesCharacterHaveGems(game_state, card) : true
+  let card_copy = copyState(card)
+  const has_required_gems = doesCardRequireGem(card_copy) ? doesCharacterHaveGems(game_state, card_copy) : true
   if(!has_required_gems){
     return {error: "You do not have enough gems to complete this action."}
   }
-  if(isCardUsingAugmentGem(card)){
-    card = processGemAugment(card)
+  if(isCardUsingAugmentGem(card_copy)){
+    card_copy = processGemAugment(card_copy)
   }
   const card_sources = sendCardsToGraveYard(hand, [card], graveyard, game_state)
   return {
     game_state: processAction(
       card_sources.game_state, game_state.character, target_keys,
-      {...card}, card.gem_inventory
+      {...card_copy}, card_copy.gem_inventory
     ),
     hand: card_sources.hand,
     graveyard: card_sources.graveyard

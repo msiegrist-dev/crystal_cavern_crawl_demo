@@ -78,8 +78,8 @@ export default [
         number: 1,
         effect: true,
         effect_name: "increase_effect_value",
-        value: 1,
-        effect_description: `Grants an additional fortify buff`
+        value: 2,
+        effect_description: `Grants two additional fortify buffs`
       }
     },
     accuracy: 100

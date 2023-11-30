@@ -1,10 +1,12 @@
 import {useState, useEffect} from 'react'
-import {getIndexOfArrayItemByKey, copyState, shuffleKeyedArray} from "./helper_lib"
+import {getIndexOfArrayItemByKey, copyState, shuffleKeyedArray, getRandomValueFromList} from "./helper_lib"
 import {getTurnOrder, getEnemyAction, processAction, startTurnDraw, playCard, goNextLevel, sendCardsToGraveYard} from "./lib"
 import default_game_state from "../data/default_game_state"
+import victory_options from "../data/victory_options"
 import Card from "./Card"
 import Enemy from "./Enemy"
 import Modal from "../Modal"
+import Victory from "./Victory"
 const Combat = ({game_state, setGameState, toggleDeckModal}) => {
 
   const {enemies} = game_state.level
@@ -19,6 +21,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
   const [targetting, setTargetting] = useState(false)
   const [selected_card, setSelectedCard] = useState(null)
   const [combat_ended, setCombatEnded] = useState(false)
+  const [victory_reward, setVictoryReward] = useState("")
 
   const player_turn = turn.key === "player"
 
@@ -99,6 +102,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
     const combatVictory = () => {
       const game_state_copy = copyState(game_state)
       game_state_copy.level.combat_victory = true
+      setVictoryReward(getRandomValueFromList(victory_options))
       setGameState(game_state_copy)
     }
     const defeat = () => {
@@ -136,37 +140,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
       }}>
       {game_state.level.combat_victory &&
         <Modal show_modal={game_state.level.combat_victory} permanent={true}>
-          <h2 className="center_text">Combat Victory</h2>
-          <table>
-            <tbody>
-              <tr>
-                <td><b>Damage Taken</b></td>
-                <td><b>Damage Done</b></td>
-                <td><b>Enemies Slain</b></td>
-              </tr>
-            </tbody>
-          </table>
-          <h2 className='center_text'>Select a Reward</h2>
-          <div className="grid three_col_equal">
-            <div>
-              <h3 className="center_text">Gem</h3>
-              <p>randomly generate random gem or +x of gem y</p>
-            </div>
-            <div>
-              <h3 className="center_text">Card</h3>
-              <p>select from [2, 3, 4]</p>
-              <p>get random card</p>
-              <p>remove card, trade cards</p>
-            </div>
-            <div>
-              <h3 className="center_text">Stat</h3>
-              <p>get random stat, choose from [2, 3, 4] random stats, </p>
-              <p>stat for card/gem</p>
-            </div>
-          </div>
-          <button onClick={(e) => setGameState(goNextLevel(copyState(game_state)))}>
-            Continue
-          </button>
+          <Victory game_state={game_state} setGameState={setGameState} reward={victory_reward}/>
         </Modal>
       }
       {game_state.defeat &&
