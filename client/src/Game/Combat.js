@@ -140,7 +140,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
       }}>
       {game_state.level.combat_victory &&
         <Modal show_modal={game_state.level.combat_victory} permanent={true}>
-          <Victory game_state={game_state} setGameState={setGameState} reward={victory_reward}/>
+          <Victory game_state={game_state} setGameState={setGameState} reward="random_card"/>
         </Modal>
       }
       {game_state.defeat &&

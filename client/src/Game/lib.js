@@ -1,5 +1,6 @@
 import environment from "../data/environment"
 import basic_mob from "../data/basic_mob"
+import warrior_deck from "../data/warrior_deck"
 import {getRandomValueFromList, getRandomNumber100, getRandomNumber, copyState, shuffleKeyedArray, getIndexOfArrayItemByKey, roundToNearestInt} from "./helper_lib"
 
 
@@ -379,6 +380,24 @@ const formatKeyword = str => {
   return res
 }
 
+const getRandomCards = (number, character_name) => {
+  let source
+  if(character_name === "warrior"){
+    source = warrior_deck
+  }
+  let cards = []
+  for(let i = 0; i < number; i++){
+    cards.push(getRandomValueFromList(warrior_deck))
+  }
+  return cards
+}
+
+const addCardToDeck = (card, game_state) => {
+  const game_state_copy = copyState(game_state)
+  game_state_copy.character.deck.push(card)
+  return game_state_copy
+}
+
 export {
   getRandomGemName,
   giveCharacterGems,
@@ -395,4 +414,6 @@ export {
   sendCardsToGraveYard,
   addGemToCard,
   returnCardGemToCharacter,
+  addCardToDeck,
+  getRandomCards
 }

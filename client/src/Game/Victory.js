@@ -1,7 +1,28 @@
+import {useState, useEffect} from 'react'
 import {copyState} from "./helper_lib"
-import {goNextLevel} from "./lib"
-const Victory = ({game_state, setGameState, reward}) => {
+import {goNextLevel, getRandomCards, addCardToDeck} from "./lib"
+import Card from "./Card"
+const Victory = ({game_state, setGameState, reward
+}) => {
+
+
+  const [selection_made, setSelectionMade] = useState(false)
+  const [selections, setSelections] = useState([])
   console.log("REWARD", reward)
+  const [type, entity] = reward.split("_")
+  console.log(type, entity)
+  console.log('sels', selections)
+
+  useEffect(() => {
+    const getRewardChoices = (type, entity) => {
+      if(type === "random" && entity === "card"){
+        return getRandomCards(3, game_state.character.name.toLowerCase())
+      }
+    }
+    setSelections(getRewardChoices(type, entity))
+  }, [reward, type, entity])
+
+
   return (
     <>
     <h2 className="center_text">Combat Victory</h2>
@@ -14,24 +35,29 @@ const Victory = ({game_state, setGameState, reward}) => {
         </tr>
       </tbody>
     </table>
-    <h2 className='center_text'>Select a Reward</h2>
-    <div className="grid three_col_equal">
-      <div>
-        <h3 className="center_text">Gem</h3>
-        <p>randomly generate random gem or +x of gem y</p>
+    {!selection_made &&
+      <>
+      <h2 className='center_text'>Select a Reward</h2>
+      <div className="grid three_col_equal">
+        {selections.map((select_entity) => {
+          const giveCharacterEntity = new_entity => {
+            setSelectionMade(true)
+            if(entity === "card"){
+              console.log("add card", new_entity)
+              return setGameState(addCardToDeck(new_entity, game_state))
+            }
+          }
+          return (
+            <div onClick={(e) => giveCharacterEntity(select_entity)}>
+              {entity === "card" &&
+                <Card card={select_entity} playable={false} game_state={game_state} />
+              }
+            </div>
+          )
+        })}
       </div>
-      <div>
-        <h3 className="center_text">Card</h3>
-        <p>select from [2, 3, 4]</p>
-        <p>get random card</p>
-        <p>remove card, trade cards</p>
-      </div>
-      <div>
-        <h3 className="center_text">Stat</h3>
-        <p>get random stat, choose from [2, 3, 4] random stats, </p>
-        <p>stat for card/gem</p>
-      </div>
-    </div>
+      </>
+    }
     <button onClick={(e) => setGameState(goNextLevel(copyState(game_state)))}>
       Continue
     </button>
