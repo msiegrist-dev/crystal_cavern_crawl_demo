@@ -4,3 +4,4 @@ client/node_modules
 client/public/*.png
 client/public/*.gif
 todo
+test.js

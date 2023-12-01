@@ -4,25 +4,7 @@ const getRandomNumber = limit => Math.floor(Math.random() * limit)
 
 const copyState = state => JSON.parse(JSON.stringify(state))
 
-const getRandomValueFromList = list => {
-  if(!list || !list.length){
-    return null
-  }
-  const random = getRandomNumber100()
-  const rand_width = Math.ceil(100 / list.length)
-
-  for(let i = 0; i < list.length; i++){
-    const getBottom = () => {
-      return i === 0 ? 0 : i * rand_width
-    }
-    const getTop = () => {
-      return i === 0 ? rand_width : (i + 1) * rand_width
-    }
-    if(random > getBottom() && random <= getTop()){
-      return list[i]
-    }
-  }
-}
+const getRandomValueFromList = list => list[getRandomNumber(list.length)]
 
 const shuffleKeyedArray = array => {
   let shuffled = []
