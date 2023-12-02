@@ -1,7 +1,7 @@
 import environment from "../data/environment"
 import basic_mob from "../data/basic_mob"
 import warrior_deck from "../data/warrior_deck"
-import {getRandomValueFromList, getRandomNumber100, getRandomNumber, copyState, shuffleKeyedArray, getIndexOfArrayItemByKey, roundToNearestInt} from "./helper_lib"
+import {removeItemFromArrayByKey, getRandomValueFromList, getRandomNumber100, getRandomNumber, copyState, shuffleKeyedArray, getIndexOfArrayItemByKey, roundToNearestInt} from "./helper_lib"
 
 
 const getRandomGemName = () => getRandomValueFromList(environment.ALL_GEMS)
@@ -206,13 +206,13 @@ const processAction = (game_state, doer, target_keys, action, consume_gems) => {
 const startTurnDraw = (draw_pile, graveyard, hand) => {
   let draw = copyState(draw_pile)
   let grave = copyState(graveyard)
-  const hand_copy = copyState(hand)
+  let hand_copy = []
 
   const available_cards = draw.length + grave.length
   const to_draw = available_cards >= 4 ? 4 : available_cards
   let drawn = 0
   while(drawn < to_draw){
-    if(draw.length){
+    if(draw.length > 0){
       hand_copy.push(draw.shift())
       drawn += 1
     } else {
@@ -392,9 +392,20 @@ const getRandomCards = (number, character_name) => {
   return cards
 }
 
+const assignRandomKey = (entity, inventory) => {
+  let entity_copy = copyState(entity)
+  const keys = inventory.map((ent) => ent.key)
+  let random_value = getRandomNumber100()
+  while(keys.includes(random_value)){
+    random_value = getRandomNumber100()
+  }
+  entity_copy.key = random_value
+  return entity_copy
+}
+
 const addCardToDeck = (card, game_state) => {
   const game_state_copy = copyState(game_state)
-  game_state_copy.character.deck.push(card)
+  game_state_copy.character.deck.push(assignRandomKey(card, game_state_copy.character.deck))
   return game_state_copy
 }
 
@@ -415,5 +426,5 @@ export {
   addGemToCard,
   returnCardGemToCharacter,
   addCardToDeck,
-  getRandomCards
+  getRandomCards,
 }

@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react'
 import {getIndexOfArrayItemByKey, copyState, shuffleKeyedArray, getRandomValueFromList} from "./helper_lib"
-import {getTurnOrder, getEnemyAction, processAction, startTurnDraw, playCard, goNextLevel, sendCardsToGraveYard} from "./lib"
+import {getTurnOrder, getEnemyAction, processAction, startTurnDraw, playCard, goNextLevel, sendCardsToGraveYard, getRandomCards} from "./lib"
 import default_game_state from "../data/default_game_state"
 import victory_options from "../data/victory_options"
 import Card from "./Card"
@@ -11,9 +11,9 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
 
   const {enemies} = game_state.level
   const {character} = game_state
-  const turn_order = getTurnOrder(game_state)
 
   const [message, setMessage] = useState("")
+  const [turn_order, setTurnOrder] = useState(getTurnOrder(game_state))
   const [turn, setTurn] = useState(turn_order[0])
   const [draw_pile, setDrawPile] = useState(shuffleKeyedArray(character.deck))
   const [hand, setHand] = useState([])
@@ -22,12 +22,31 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
   const [selected_card, setSelectedCard] = useState(null)
   const [combat_ended, setCombatEnded] = useState(false)
   const [victory_reward, setVictoryReward] = useState("")
+  const [victory_selections, setVictorySelections] = useState([])
+
+  const resetCombat = game_state => {
+    setHand([])
+    setDrawPile(shuffleKeyedArray(game_state.character.deck))
+    setGraveyard([])
+    const next_level = goNextLevel(copyState(game_state))
+    const turn_order = getTurnOrder(next_level)
+    setTurnOrder(turn_order)
+    setTurn(turn_order[0])
+    setGameState(next_level)
+    setCombatEnded(false)
+  }
 
   const player_turn = turn.key === "player"
 
   const goNextTurn = () => {
     if(combat_ended){
       return
+    }
+    if(player_turn){
+      const state = sendCardsToGraveYard(hand, hand, graveyard, game_state)
+      setHand(state.hand)
+      setGraveyard(state.graveyard)
+      setGameState(state.game_state)
     }
     const current_index = getIndexOfArrayItemByKey(turn_order, turn.key)
     if(current_index + 1 >= turn_order.length){
@@ -50,8 +69,6 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
     setTargetting(false)
     setSelectedCard(null)
   }
-
-
 
   useEffect(() => {
 
@@ -95,15 +112,26 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
     if(turn.key !== "player"){
       return enemyTurn(turn)
     }
-  }, [turn, combat_ended])
+  }, [turn, combat_ended, turn_order])
 
 
   useEffect(() => {
     const combatVictory = () => {
+      const getRewardChoices = (type, entity) => {
+        if(type === "random" && entity === "card"){
+          return getRandomCards(3, game_state.character.name.toLowerCase())
+        }
+      }
       const game_state_copy = copyState(game_state)
       game_state_copy.level.combat_victory = true
-      setVictoryReward(getRandomValueFromList(victory_options))
+      const reward_text = "random_card"
+      const [type, entity] = reward_text.split("_")
+      setVictoryReward(reward_text)
+      setVictorySelections(getRewardChoices(type, entity))
       setGameState(game_state_copy)
+      setHand([])
+      setGraveyard([])
+      setDrawPile(shuffleKeyedArray(game_state.character.deck))
     }
     const defeat = () => {
       const game_state_copy = copyState(game_state)
@@ -114,6 +142,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
     if(combat_ended || game_state.defeat){
       return
     }
+
     if(game_state.character.hp <= 0){
       setCombatEnded(true)
       return defeat()
@@ -140,7 +169,9 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
       }}>
       {game_state.level.combat_victory &&
         <Modal show_modal={game_state.level.combat_victory} permanent={true}>
-          <Victory game_state={game_state} setGameState={setGameState} reward="random_card"/>
+          <Victory game_state={game_state} setGameState={setGameState} reward="random_card"
+            resetCombat={resetCombat} selections={victory_selections} setSelections={setVictorySelections}
+          />
         </Modal>
       }
       {game_state.defeat &&

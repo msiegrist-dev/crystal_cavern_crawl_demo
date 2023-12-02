@@ -16,8 +16,9 @@ export default {
   buffs: {},
   starting_deck: [
     "Attack",
+    "Attack",
     "Defend",
-    "Warrior's Resolve",
+    "Defend",
     "Steel Yourself",
   ]
 }

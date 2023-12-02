@@ -54,7 +54,13 @@ const Card = (
           const alt = `${gem_name} gem`
           return <div className="w-100" style={{backgroundColor: color(gem_name)}}>
             <div className="flex center_all_items gap-4 hov_pointer" style={{alignItems: "start", height: "35px"}}
-              onClick={(e) => addGemToCard(gem_name, card, game_state, hand, setGameState, setHand)}
+              key={gem_name}
+              onClick={(e) => {
+                if(!playable){
+                  return
+                }
+                addGemToCard(gem_name, card, game_state, hand, setGameState, setHand)
+              }}
             >
               <img alt={alt} key={gem_name} src={img} style={{height: "25px", width: "25px"}} className="block" />
               {gem_data.number && <h4>x{gem_data.number}</h4>}

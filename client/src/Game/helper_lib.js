@@ -54,6 +54,16 @@ const formatKeyword = str => {
 
 const displayArmorAsPct = entity => Number(entity.armor * 100) + "%"
 
+const removeItemFromArrayByKey = (array, key) => {
+  let index
+  for(let i = 0; i < array.length; i++){
+    if(array[i].key === key){
+      index = i
+    }
+  }
+  return array.slice(0, index).concat(array.slice(index + 1, array.length))
+}
+
 export {
   getRandomNumber100,
   getRandomNumber,
@@ -64,5 +74,6 @@ export {
   capitalizeFirst,
   formatKeyword,
   copyState,
-  displayArmorAsPct
+  displayArmorAsPct,
+  removeItemFromArrayByKey
 }

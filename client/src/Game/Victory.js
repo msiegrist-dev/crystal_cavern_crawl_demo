@@ -1,27 +1,13 @@
 import {useState, useEffect} from 'react'
 import {copyState} from "./helper_lib"
-import {goNextLevel, getRandomCards, addCardToDeck} from "./lib"
+import {goNextLevel, getRandomCards, addCardToDeck, getTurnOrder} from "./lib"
+import {shuffleKeyedArray} from "./helper_lib"
 import Card from "./Card"
-const Victory = ({game_state, setGameState, reward
+const Victory = ({game_state, setGameState, reward, resetCombat, selections, setSelections
 }) => {
 
-
   const [selection_made, setSelectionMade] = useState(false)
-  const [selections, setSelections] = useState([])
-  console.log("REWARD", reward)
   const [type, entity] = reward.split("_")
-  console.log(type, entity)
-  console.log('sels', selections)
-
-  useEffect(() => {
-    const getRewardChoices = (type, entity) => {
-      if(type === "random" && entity === "card"){
-        return getRandomCards(3, game_state.character.name.toLowerCase())
-      }
-    }
-    setSelections(getRewardChoices(type, entity))
-  }, [reward, type, entity])
-
 
   return (
     <>
@@ -35,20 +21,30 @@ const Victory = ({game_state, setGameState, reward
         </tr>
       </tbody>
     </table>
-    {!selection_made &&
+    {selections.length > 0 &&
       <>
-      <h2 className='center_text'>Select a Reward</h2>
+      <h2 className='center_text'>Select a {type} {entity}</h2>
       <div className="grid three_col_equal">
-        {selections.map((select_entity) => {
+        {selections.map((select_entity, i) => {
           const giveCharacterEntity = new_entity => {
+            if(selection_made){
+              return
+            }
+            let selections_copy = copyState(selections)
+            selections_copy[i].selected = true
+            setSelections(selections_copy)
             setSelectionMade(true)
             if(entity === "card"){
-              console.log("add card", new_entity)
-              return setGameState(addCardToDeck(new_entity, game_state))
+              const new_state = addCardToDeck(new_entity, game_state)
+              setGameState(new_state)
             }
           }
+          const style = {}
+          if(selection_made && !select_entity.selected){
+            style.backgroundColor = "gray"
+          }
           return (
-            <div onClick={(e) => giveCharacterEntity(select_entity)}>
+            <div key={i} className="hov_pointer" onClick={(e) => giveCharacterEntity(select_entity)} style={style}>
               {entity === "card" &&
                 <Card card={select_entity} playable={false} game_state={game_state} />
               }
@@ -58,7 +54,11 @@ const Victory = ({game_state, setGameState, reward
       </div>
       </>
     }
-    <button onClick={(e) => setGameState(goNextLevel(copyState(game_state)))}>
+    <button onClick={(e) => {
+        setSelections([])
+        setSelectionMade(false)
+        resetCombat(game_state)
+      }}>
       Continue
     </button>
     </>
