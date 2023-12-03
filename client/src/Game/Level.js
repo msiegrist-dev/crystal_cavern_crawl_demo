@@ -21,12 +21,35 @@ export default ({game_state, setGameState, setMessage}) => {
     setModalDeck(deck)
     setShowModal(true)
   }
+
+  const toggleItemModal = () => {
+    if(show_modal){
+      setShowModal(false)
+      return
+    }
+    setModalMode("items")
+    setShowModal(true)
+  }
+
   return (
     <div>
       <Modal show_modal={show_modal} setShowModal={setShowModal}>
         {modal_mode === "deck" &&
           <div className="grid eq_four_col">
             {modal_deck.map((card) => <Card key={card.key} card={card} />)}
+          </div>
+        }
+        {modal_mode === "items" &&
+          <div className="grid eq_four_col">
+            {character.inventory.map((item) => {
+              return (
+                <div className="grid center_all_items">
+                  <h3>{item.name} - {item.rarity}</h3>
+                  <h4>{item.effect}</h4>
+                  <p>{item.stat_name} - {item.value}</p>
+                </div>
+              )
+            })}
           </div>
         }
       </Modal>
@@ -66,6 +89,7 @@ export default ({game_state, setGameState, setMessage}) => {
           <p>x{character.gems.blue}</p>
         </div>
         <button onClick={(e) => toggleDeckModal(character.deck)}>Open Deck</button>
+        <button onClick={(e) => toggleItemModal()}>Open Items</button>
       </div>
       <h3 className="center_text m-0">level {level.number}</h3>
 

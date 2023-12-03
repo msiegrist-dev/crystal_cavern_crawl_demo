@@ -1,8 +1,8 @@
 import {useState, useEffect} from 'react'
 import {getIndexOfArrayItemByKey, copyState, shuffleKeyedArray, getRandomValueFromList} from "./helper_lib"
-import {getTurnOrder, getEnemyAction, processAction, startTurnDraw, playCard, goNextLevel, sendCardsToGraveYard, getRandomCards} from "./lib"
+import {getTurnOrder, getEnemyAction, processAction, startTurnDraw, playCard, goNextLevel, sendCardsToGraveYard, getRandomCards, getRandomItems} from "./lib"
 import default_game_state from "../data/default_game_state"
-import victory_options from "../data/victory_options"
+import victory_reward_options from "../data/victory_reward_options"
 import Card from "./Card"
 import Enemy from "./Enemy"
 import Modal from "../Modal"
@@ -116,15 +116,24 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
 
 
   useEffect(() => {
+
     const combatVictory = () => {
+
       const getRewardChoices = (type, entity) => {
-        if(type === "random" && entity === "card"){
-          return getRandomCards(3, game_state.character.name.toLowerCase())
+        if(type === "random"){
+          if(entity === "card"){
+            return getRandomCards(3, game_state.character.name.toLowerCase())
+          }
+          if(entity === "item"){
+            return getRandomItems(3)
+          }
         }
       }
+
       const game_state_copy = copyState(game_state)
       game_state_copy.level.combat_victory = true
-      const reward_text = "random_card"
+      //const reward_text = getRandomValueFromList(victory_reward_options)
+      const reward_text = "random_item"
       const [type, entity] = reward_text.split("_")
       setVictoryReward(reward_text)
       setVictorySelections(getRewardChoices(type, entity))
@@ -133,6 +142,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
       setGraveyard([])
       setDrawPile(shuffleKeyedArray(game_state.character.deck))
     }
+
     const defeat = () => {
       const game_state_copy = copyState(game_state)
       game_state_copy.defeat = true
@@ -169,7 +179,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
       }}>
       {game_state.level.combat_victory &&
         <Modal show_modal={game_state.level.combat_victory} permanent={true}>
-          <Victory game_state={game_state} setGameState={setGameState} reward="random_card"
+          <Victory game_state={game_state} setGameState={setGameState} reward={victory_reward}
             resetCombat={resetCombat} selections={victory_selections} setSelections={setVictorySelections}
           />
         </Modal>

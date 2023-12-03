@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react'
 import {copyState} from "./helper_lib"
-import {goNextLevel, getRandomCards, addCardToDeck, getTurnOrder} from "./lib"
+import {goNextLevel, getRandomCards, addCardToDeck, getTurnOrder, giveCharacterItem} from "./lib"
 import {shuffleKeyedArray} from "./helper_lib"
 import Card from "./Card"
 const Victory = ({game_state, setGameState, reward, resetCombat, selections, setSelections
@@ -9,7 +9,6 @@ const Victory = ({game_state, setGameState, reward, resetCombat, selections, set
   const [selection_made, setSelectionMade] = useState(false)
   const [type, entity] = reward.split("_")
 
-  return (
     <>
     <h2 className="center_text">Combat Victory</h2>
     <table>
@@ -35,7 +34,11 @@ const Victory = ({game_state, setGameState, reward, resetCombat, selections, set
             setSelections(selections_copy)
             setSelectionMade(true)
             if(entity === "card"){
-              const new_state = addCardToDeck(new_entity, game_state)
+              const new_state = addCardToDeck(game_state, new_entity)
+              setGameState(new_state)
+            }
+            if(entity === "item"){
+              const new_state = giveCharacterItem(game_state, new_entity)
               setGameState(new_state)
             }
           }
@@ -47,6 +50,14 @@ const Victory = ({game_state, setGameState, reward, resetCombat, selections, set
             <div key={i} className="hov_pointer" onClick={(e) => giveCharacterEntity(select_entity)} style={style}>
               {entity === "card" &&
                 <Card card={select_entity} playable={false} game_state={game_state} />
+              }
+              {entity === "item" &&
+                <div className="hov_pointer" onClick={(e) => giveCharacterEntity(select_entity)}>
+                  <p>hello</p>
+                  <h3>{select_entity.name}</h3>
+                  <h4>{select_entity.rarity}</h4>
+                  <p>{select_entity.effect} - {select_entity.stat_name} - {select_entity.value}</p>
+                </div>
               }
             </div>
           )

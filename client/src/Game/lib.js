@@ -1,12 +1,24 @@
 import environment from "../data/environment"
 import basic_mob from "../data/basic_mob"
 import warrior_deck from "../data/warrior_deck"
+import items from "../data/items"
 import {removeItemFromArrayByKey, getRandomValueFromList, getRandomNumber100, getRandomNumber, copyState, shuffleKeyedArray, getIndexOfArrayItemByKey, roundToNearestInt} from "./helper_lib"
 
-
 const getRandomGemName = () => getRandomValueFromList(environment.ALL_GEMS)
-const giveCharacterGems = (state, gem_name, amount) => state.character.gems[gem_name] += amount
-const giveCharacterStats = (state, stat_name, amount) => state.character[stat_name] += amount
+const giveCharacterGems = (state, gem_name, amount) => {
+  const state_copy = copyState(state)
+  state_copy.character.gems[gem_name] += amount
+  return state_copy
+}
+
+const giveCharacterStats = (character, stat_name, amount) => {
+  const state_copy = copyState(character)
+  state_copy[stat_name] += amount
+  if(stat_name === "max_hp"){
+    state_copy.hp += amount
+  }
+  return state_copy
+}
 
 const getRandomStatName = () => getRandomValueFromList(environment.ALL_STATS)
 const getRandomStatValue = stat_name => {
@@ -19,6 +31,31 @@ const getRandomStatValue = stat_name => {
   if(stat_name === "armor"){
     return Number(Math.floor(getRandomNumber100() / 25) / 100)
   }
+}
+
+const getRandomItems = quantity => {
+  const random_items = []
+  for(let i = 0; i < quantity; i++){
+    random_items.push(getRandomValueFromList(items))
+  }
+  return random_items
+}
+
+const processItemEffect = (character, item) => {
+  const character_copy = copyState(character)
+  const {effect, stat_name, value} = item
+  let updated_character
+  if(effect === "increase_stat_flat"){
+    updated_character = giveCharacterStats(character_copy, stat_name, value)
+  }
+  return updated_character
+}
+
+const giveCharacterItem = (game_state, item) => {
+  const state_copy = copyState(game_state)
+  state_copy.character = processItemEffect(game_state.character, item)
+  state_copy.character.inventory.push(item)
+  return state_copy
 }
 
 const generateCombatLevel = number => {
@@ -403,7 +440,7 @@ const assignRandomKey = (entity, inventory) => {
   return entity_copy
 }
 
-const addCardToDeck = (card, game_state) => {
+const addCardToDeck = (game_state, card) => {
   const game_state_copy = copyState(game_state)
   game_state_copy.character.deck.push(assignRandomKey(card, game_state_copy.character.deck))
   return game_state_copy
@@ -427,4 +464,6 @@ export {
   returnCardGemToCharacter,
   addCardToDeck,
   getRandomCards,
+  getRandomItems,
+  giveCharacterItem
 }
