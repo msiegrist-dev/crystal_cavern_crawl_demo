@@ -8,7 +8,7 @@ const Victory = ({game_state, setGameState, reward, resetCombat, selections, set
 
   const [selection_made, setSelectionMade] = useState(false)
   const [type, entity] = reward.split("_")
-
+  return (
     <>
     <h2 className="center_text">Combat Victory</h2>
     <table>
