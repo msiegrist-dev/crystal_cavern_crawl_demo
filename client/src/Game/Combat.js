@@ -3,7 +3,7 @@ import {getIndexOfArrayItemByKey, copyState, shuffleKeyedArray, getRandomNumber}
 import {
   getTurnOrder, getEnemyAction, processAction, startTurnDraw, playCard, goNextLevel,
   sendCardsToGraveYard, getRandomCards, getRandomItems, getRandomStatName,
-  getRandomStatValue
+  getRandomStatValue, getTradeSelections
 } from "./lib"
 import default_game_state from "../data/default_game_state"
 import victory_reward_options from "../data/victory_reward_options"
@@ -29,6 +29,8 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
   const [victory_reward, setVictoryReward] = useState("")
   const [victory_selections, setVictorySelections] = useState([])
 
+  const player_turn = turn.key === "player"
+
   const resetCombat = game_state => {
     setHand([])
     setDrawPile(shuffleKeyedArray(game_state.character.deck))
@@ -40,8 +42,6 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
     setGameState(next_level)
     setCombatEnded(false)
   }
-
-  const player_turn = turn.key === "player"
 
   const goNextTurn = () => {
     if(combat_ended){
@@ -75,6 +75,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
     setSelectedCard(null)
   }
 
+  //handles enemy turn and inits player turn when turn is changed
   useEffect(() => {
 
     const initPlayerTurn = () => {
@@ -122,7 +123,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
     }
   }, [turn, combat_ended, turn_order])
 
-
+  //observes game state for death of player or all enemies and handles defeat or victory
   useEffect(() => {
 
     const combatVictory = () => {
@@ -179,12 +180,15 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
             return stat_choices
           }
         }
+        if(type === "trade"){
+          return getTradeSelections(2, "random", entity, game_state.character)
+        }
       }
 
       const game_state_copy = copyState(game_state)
       game_state_copy.level.combat_victory = true
       //const reward_text = getRandomValueFromList(victory_reward_options)
-      const reward_text = "choice_stat"
+      const reward_text = "trade_card"
       const [type, entity] = reward_text.split("_")
       setVictoryReward(reward_text)
       setVictorySelections(getRewardChoices(type, entity))

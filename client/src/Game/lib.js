@@ -441,6 +441,47 @@ const addCardToDeck = (game_state, card) => {
   return game_state_copy
 }
 
+const getRandomCharacterEntity = (character, entity_name) => {
+  if(entity_name === "card"){
+    return getRandomValueFromList(character.deck)
+  }
+  if(entity_name === "item"){
+    return getRandomValueFromList(character.items)
+  }
+  if(entity_name === "gem"){
+    const gem_name = getRandomGemName()
+    return {name: gem_name, value: getRandomNumber(3) || 1}
+  }
+}
+
+const getTradeSelections = (quantity, trade_for, trade_in, character) => {
+  const selections = []
+  for(let i = 0; i < quantity; i++){
+    const trade_for_entity_name = trade_for === "random" ?
+      getRandomValueFromList(environment.TRADABLE_ENTITIES) : trade_for
+
+    let trade_for_entity
+    const trade_in_entity = getRandomCharacterEntity(character, trade_in)
+    if(trade_for_entity_name === "card"){
+      trade_for_entity = getRandomCards(1, "warrior")[0]
+    }
+    if(trade_for_entity_name === "gem"){
+      trade_for_entity = {name: getRandomGemName(), value: getRandomNumber(3) || 1}
+    }
+    if(trade_for_entity_name === "item"){
+      trade_for_entity = getRandomItems(1)[0]
+    }
+    selections.push({
+      type: "trade",
+      trade_for: trade_for_entity_name,
+      trade_for_entity,
+      trade_in,
+      trade_in_entity
+    })
+  }
+  return selections
+}
+
 export {
   getRandomGemName,
   giveCharacterGems,
@@ -460,5 +501,6 @@ export {
   addCardToDeck,
   getRandomCards,
   getRandomItems,
-  giveCharacterItem
+  giveCharacterItem,
+  getTradeSelections
 }

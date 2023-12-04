@@ -9,6 +9,7 @@ const rewards = [
   "choice_card",
   "trade_gem",
   "trade_card",
+  "trade_item",
   "remove_card",
 ]
-export default rewards 
+export default rewards
