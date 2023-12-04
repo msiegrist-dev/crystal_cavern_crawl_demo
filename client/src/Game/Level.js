@@ -4,7 +4,7 @@ import Modal from "../Modal"
 import Card from "./Card"
 import {displayArmorAsPct} from "./helper_lib"
 
-export default ({game_state, setGameState, setMessage}) => {
+const Level = ({game_state, setGameState, setMessage}) => {
 
   const [show_modal, setShowModal] = useState("")
   const [modal_mode, setModalMode] = useState("")
@@ -81,11 +81,11 @@ export default ({game_state, setGameState, setMessage}) => {
           </tbody>
         </table>
         <div className="grid two_col_60_40">
-          <img src="gem_red.png" style={{width: "35px", height: "35px"}} className="m-4 block" />
+          <img alt="red gems" src="gem_red.png" style={{width: "35px", height: "35px"}} className="m-4 block" />
           <p>x{character.gems.red}</p>
         </div>
         <div className="grid two_col_60_40">
-          <img src="gem_blue.png" style={{width: "35px", height: "35px"}} className="m-4 block" />
+          <img alt="blue gems" src="gem_blue.png" style={{width: "35px", height: "35px"}} className="m-4 block" />
           <p>x{character.gems.blue}</p>
         </div>
         <button onClick={(e) => toggleDeckModal(character.deck)}>Open Deck</button>
@@ -99,3 +99,5 @@ export default ({game_state, setGameState, setMessage}) => {
     </div>
   )
 }
+
+export default Level

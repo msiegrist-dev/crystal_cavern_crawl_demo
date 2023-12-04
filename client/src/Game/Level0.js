@@ -4,9 +4,8 @@ import {
 } from "./lib"
 
 import {copyState} from "./helper_lib"
-import items from "../data/items"
 
-export default ({game_state, setGameState}) => {
+const Level0 = ({game_state, setGameState}) => {
 
 
   const randomGem = () => {
@@ -46,3 +45,5 @@ export default ({game_state, setGameState}) => {
     </>
   )
 }
+
+export default Level0

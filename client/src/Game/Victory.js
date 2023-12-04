@@ -1,7 +1,6 @@
-import {useState, useEffect} from 'react'
+import {useState} from 'react'
 import {copyState} from "./helper_lib"
-import {goNextLevel, getRandomCards, addCardToDeck, getTurnOrder, giveCharacterItem, giveCharacterGems, giveCharacterStats} from "./lib"
-import {shuffleKeyedArray} from "./helper_lib"
+import {addCardToDeck, giveCharacterItem, giveCharacterGems, giveCharacterStats} from "./lib"
 import Card from "./Card"
 const Victory = ({game_state, setGameState, reward, resetCombat, selections, setSelections
 }) => {
@@ -57,6 +56,7 @@ const Victory = ({game_state, setGameState, reward, resetCombat, selections, set
             style.backgroundColor = "gray"
           }
           const gem_img = `gem_${select_entity.name}.png`
+          const alt = `${select_entity.name} gem`
           return (
             <div key={i} className="hov_pointer" onClick={(e) => giveCharacterEntity(select_entity)} style={style}>
               {entity === "card" &&
@@ -72,7 +72,7 @@ const Victory = ({game_state, setGameState, reward, resetCombat, selections, set
               }
               {entity === "gem" &&
                 <div>
-                  <img src={gem_img} style={{width: "35px", height: "35px"}} className="m-4 block" />
+                  <img alt={alt} src={gem_img} style={{width: "35px", height: "35px"}} className="m-4 block" />
                   <h4>Gems to receive : x{select_entity.value}</h4>
                 </div>
               }

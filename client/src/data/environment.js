@@ -1,7 +1,9 @@
-export default {
+const environment = {
   ALL_GEMS: ["red", "blue"],
   ALL_STATS: [
     "max_hp", "attack", "defense", "speed", "armor"
   ],
   LEVEL_TYPES : ["combat"]
 }
+
+export default environment

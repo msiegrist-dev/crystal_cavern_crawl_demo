@@ -3,7 +3,7 @@ import warrior_deck from "../data/warrior_deck"
 import Level0 from "./Level0"
 import Level from "./Level"
 import {copyState} from "./helper_lib"
-export default ({setPage, setGameState, game_state}) => {
+const Game = ({setPage, setGameState, game_state}) => {
 
   console.log('in game game_state', game_state)
 
@@ -61,3 +61,5 @@ export default ({setPage, setGameState, game_state}) => {
     </>
   )
 }
+
+export default Game

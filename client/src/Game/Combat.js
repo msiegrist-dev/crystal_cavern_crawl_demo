@@ -1,5 +1,5 @@
 import {useState, useEffect} from 'react'
-import {getIndexOfArrayItemByKey, copyState, shuffleKeyedArray, getRandomValueFromList, getRandomNumber} from "./helper_lib"
+import {getIndexOfArrayItemByKey, copyState, shuffleKeyedArray, getRandomNumber} from "./helper_lib"
 import {
   getTurnOrder, getEnemyAction, processAction, startTurnDraw, playCard, goNextLevel,
   sendCardsToGraveYard, getRandomCards, getRandomItems, getRandomStatName,

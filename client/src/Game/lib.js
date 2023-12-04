@@ -2,7 +2,7 @@ import environment from "../data/environment"
 import basic_mob from "../data/basic_mob"
 import warrior_deck from "../data/warrior_deck"
 import items from "../data/items"
-import {removeItemFromArrayByKey, getRandomValueFromList, getRandomNumber100, getRandomNumber, copyState, shuffleKeyedArray, getIndexOfArrayItemByKey, roundToNearestInt} from "./helper_lib"
+import {getRandomValueFromList, getRandomNumber100, getRandomNumber, copyState, shuffleKeyedArray, getIndexOfArrayItemByKey, roundToNearestInt} from "./helper_lib"
 
 const getRandomGemName = () => getRandomValueFromList(environment.ALL_GEMS)
 const giveCharacterGems = (state, gem_name, amount) => {
@@ -412,15 +412,6 @@ const returnCardGemToCharacter = (gem, card, game_state, hand, setGameState, set
   setGameState(game_state_copy)
 }
 
-const capitalizeFirst = str => str[0].toUpperCase() + str.substr(1, str.length)
-const formatKeyword = str => {
-  let res = ``
-  for(let word of str.split("_")){
-    res += `${capitalizeFirst(word)} `
-  }
-  return res
-}
-
 const getRandomCards = (number, character_name) => {
   let source
   if(character_name === "warrior"){
@@ -428,7 +419,7 @@ const getRandomCards = (number, character_name) => {
   }
   let cards = []
   for(let i = 0; i < number; i++){
-    cards.push(getRandomValueFromList(warrior_deck))
+    cards.push(getRandomValueFromList(source))
   }
   return cards
 }

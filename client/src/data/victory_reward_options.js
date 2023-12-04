@@ -1,4 +1,4 @@
-export default [
+const rewards = [
   "random_gem",
   "random_item",
   "random_card",
@@ -11,3 +11,4 @@ export default [
   "trade_card",
   "remove_card",
 ]
+export default rewards 
