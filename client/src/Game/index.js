@@ -17,7 +17,23 @@ export default ({setPage, setGameState, game_state}) => {
           key: i
         }
       }),
-      key: "player"
+      key: "player",
+      base_stats: {
+        speed: 4,
+        attack: 2,
+        defense: 2,
+        max_hp: 120,
+        hp: 120,
+        armor: .15
+      },
+      flat_stat_increases: {
+        speed: 0,
+        attack: 0,
+        defense: 0,
+        max_hp: 0,
+        hp: 0,
+        armor: 0
+      }
     }
   }
 

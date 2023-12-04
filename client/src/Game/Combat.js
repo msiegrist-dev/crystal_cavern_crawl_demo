@@ -1,8 +1,13 @@
 import {useState, useEffect} from 'react'
-import {getIndexOfArrayItemByKey, copyState, shuffleKeyedArray, getRandomValueFromList} from "./helper_lib"
-import {getTurnOrder, getEnemyAction, processAction, startTurnDraw, playCard, goNextLevel, sendCardsToGraveYard, getRandomCards, getRandomItems} from "./lib"
+import {getIndexOfArrayItemByKey, copyState, shuffleKeyedArray, getRandomValueFromList, getRandomNumber} from "./helper_lib"
+import {
+  getTurnOrder, getEnemyAction, processAction, startTurnDraw, playCard, goNextLevel,
+  sendCardsToGraveYard, getRandomCards, getRandomItems, getRandomStatName,
+  getRandomStatValue
+} from "./lib"
 import default_game_state from "../data/default_game_state"
 import victory_reward_options from "../data/victory_reward_options"
+import environment from "../data/environment"
 import Card from "./Card"
 import Enemy from "./Enemy"
 import Modal from "../Modal"
@@ -80,6 +85,9 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
       let game_state_copy = copyState(game_state)
       if(game_state_copy.character.buffs){
         for(let buff_name of Object.keys(game_state_copy.character.buffs)){
+          if(game_state_copy.character.buffs[buff_name] < 1){
+            continue
+          }
           game_state_copy.character.buffs[buff_name] -= 1
         }
       }
@@ -120,12 +128,55 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
     const combatVictory = () => {
 
       const getRewardChoices = (type, entity) => {
-        if(type === "random"){
+        if(type === "choice"){
           if(entity === "card"){
             return getRandomCards(3, game_state.character.name.toLowerCase())
           }
           if(entity === "item"){
             return getRandomItems(3)
+          }
+          if(entity === "gem"){
+            return [
+              {name: "red", value: getRandomNumber(3)},
+              {name: "blue", value: getRandomNumber(3)}
+            ]
+          }
+          if(entity === "stat"){
+            const stat_choices = []
+            for(let i = 0; i < 4; i++){
+              const stat_name = getRandomStatName()
+              const stat_value = getRandomStatValue(stat_name)
+              stat_choices.push({
+                name: stat_name,
+                value: stat_value
+              })
+            }
+            return stat_choices
+          }
+        }
+        if(type === "random"){
+          if(entity === "card"){
+            return getRandomCards(1, game_state.character.name.toLowerCase())
+          }
+          if(entity === "item"){
+            return getRandomItems(1)
+          }
+          if(entity === "gem"){
+            const gem_color = environment.ALL_GEMS[getRandomNumber(2)]
+            const gem_amount = getRandomNumber(3)
+            return [{name: gem_color, value: gem_amount}]
+          }
+          if(entity === "stat"){
+            const stat_choices = []
+            for(let i = 0; i < 1; i++){
+              const stat_name = getRandomStatName()
+              const stat_value = getRandomStatValue(stat_name)
+              stat_choices.push({
+                name: stat_name,
+                value: stat_value
+              })
+            }
+            return stat_choices
           }
         }
       }
@@ -133,7 +184,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
       const game_state_copy = copyState(game_state)
       game_state_copy.level.combat_victory = true
       //const reward_text = getRandomValueFromList(victory_reward_options)
-      const reward_text = "random_item"
+      const reward_text = "choice_stat"
       const [type, entity] = reward_text.split("_")
       setVictoryReward(reward_text)
       setVictorySelections(getRewardChoices(type, entity))
