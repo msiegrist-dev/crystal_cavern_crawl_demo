@@ -1,5 +1,5 @@
 import {useState, useEffect} from 'react'
-import {getIndexOfArrayItemByKey, copyState, shuffleKeyedArray, getRandomNumber} from "./helper_lib"
+import {getIndexOfArrayItemByKey, copyState, shuffleKeyedArray, getRandomNumber, getRandomValueFromList} from "./helper_lib"
 import {
   getTurnOrder, getEnemyAction, processAction, startTurnDraw, playCard, goNextLevel,
   sendCardsToGraveYard, getRandomCards, getRandomItems, getRandomStatName,
@@ -33,7 +33,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
 
   const resetCombat = game_state => {
     setHand([])
-    setDrawPile(shuffleKeyedArray(game_state.character.deck))
+    setDrawPile(shuffleKeyedArray(character.deck))
     setGraveyard([])
     const next_level = goNextLevel(copyState(game_state))
     const turn_order = getTurnOrder(next_level)
@@ -129,9 +129,12 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
     const combatVictory = () => {
 
       const getRewardChoices = (type, entity) => {
+        if(type === "remove" && entity === "card"){
+          return character.deck
+        }
         if(type === "choice"){
           if(entity === "card"){
-            return getRandomCards(3, game_state.character.name.toLowerCase())
+            return getRandomCards(3, character.name.toLowerCase())
           }
           if(entity === "item"){
             return getRandomItems(3)
@@ -157,7 +160,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
         }
         if(type === "random"){
           if(entity === "card"){
-            return getRandomCards(1, game_state.character.name.toLowerCase())
+            return getRandomCards(1, character.name.toLowerCase())
           }
           if(entity === "item"){
             return getRandomItems(1)
@@ -181,21 +184,21 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
           }
         }
         if(type === "trade"){
-          return getTradeSelections(2, "random", entity, game_state.character)
+          return getTradeSelections(2, "random", entity, character)
         }
       }
 
       const game_state_copy = copyState(game_state)
       game_state_copy.level.combat_victory = true
       //const reward_text = getRandomValueFromList(victory_reward_options)
-      const reward_text = "trade_card"
+      const reward_text = "random_stat"
       const [type, entity] = reward_text.split("_")
       setVictoryReward(reward_text)
       setVictorySelections(getRewardChoices(type, entity))
       setGameState(game_state_copy)
       setHand([])
       setGraveyard([])
-      setDrawPile(shuffleKeyedArray(game_state.character.deck))
+      setDrawPile(shuffleKeyedArray(character.deck))
     }
 
     const defeat = () => {

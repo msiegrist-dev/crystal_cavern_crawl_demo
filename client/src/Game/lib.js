@@ -1,8 +1,11 @@
 import environment from "../data/environment"
-import basic_mob from "../data/basic_mob"
+import grublin from "../data/mobs/grublin"
 import warrior_deck from "../data/warrior_deck"
 import items from "../data/items"
-import {getRandomValueFromList, getRandomNumber100, getRandomNumber, copyState, shuffleKeyedArray, getIndexOfArrayItemByKey, roundToNearestInt} from "./helper_lib"
+import {
+  getRandomValueFromList, getRandomNumber100, getRandomNumber, copyState, shuffleKeyedArray,
+  getIndexOfArrayItemByKey, roundToNearestInt, removeItemFromArrayByKey
+} from "./helper_lib"
 
 const getRandomGemName = () => getRandomValueFromList(environment.ALL_GEMS)
 const giveCharacterGems = (state, gem_name, amount) => {
@@ -65,8 +68,8 @@ const giveCharacterItem = (game_state, item) => {
 const generateCombatLevel = number => {
   if(number >= 1 && number <= 10){
     return [
-      {...basic_mob, key: 1},
-      {...basic_mob, key: 2},
+      {...grublin, key: 1},
+      {...grublin, key: 2},
     ]
   }
 }
@@ -441,6 +444,13 @@ const addCardToDeck = (game_state, card) => {
   return game_state_copy
 }
 
+const removeCardFromDeck = (game_state, card) => {
+  const game_state_copy = copyState(game_state)
+  console.log('gs COPY', game_state_copy)
+  game_state_copy.character.deck = removeItemFromArrayByKey(game_state_copy.character.deck, card.key)
+  return game_state_copy
+}
+
 const getRandomCharacterEntity = (character, entity_name) => {
   if(entity_name === "card"){
     return getRandomValueFromList(character.deck)
@@ -502,5 +512,6 @@ export {
   getRandomCards,
   getRandomItems,
   giveCharacterItem,
-  getTradeSelections
+  getTradeSelections,
+  removeCardFromDeck
 }

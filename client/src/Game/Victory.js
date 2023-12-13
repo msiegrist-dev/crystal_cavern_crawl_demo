@@ -1,16 +1,23 @@
 import {useState} from 'react'
 import {copyState, removeItemFromArrayByKey} from "./helper_lib"
-import {addCardToDeck, giveCharacterItem, giveCharacterGems, giveCharacterStats} from "./lib"
+import {addCardToDeck, giveCharacterItem, giveCharacterGems, giveCharacterStats, removeCardFromDeck} from "./lib"
 import Card from "./Card"
 const Victory = ({game_state, setGameState, reward, resetCombat, selections, setSelections
 }) => {
 
-  console.log('selections', selections)
   const [selection_made, setSelectionMade] = useState(false)
   const [type, entity] = reward.split("_")
   const is_trade = type === "trade"
 
+  const markSelection = index => {
+    let selections_copy = copyState(selections)
+    selections_copy[index].selected = true
+    setSelections(selections_copy)
+    setSelectionMade(true)
+  }
+
   return (
+
     <>
     <h2 className="center_text">Combat Victory</h2>
     <table>
@@ -23,17 +30,21 @@ const Victory = ({game_state, setGameState, reward, resetCombat, selections, set
       </tbody>
     </table>
     <div className="grid three_col_equal">
+
+
     {!is_trade && selections.length > 0 &&
       <>
-      <h2 className='center_text span_three_col'>Select a {type} {entity}</h2>
+      <h2 className='center_text span_three_col'>Select a {type} {entity} {type === "remove" && " from your deck"}</h2>
+
         {selections.map((select_entity, i) => {
+
+          const gem_img = `gem_${select_entity.name}.png`
+          const alt = `${select_entity.name} gem`
           const giveCharacterEntity = new_entity => {
             if(selection_made){
               return
             }
-            let selections_copy = copyState(selections)
-            selections_copy[i].selected = true
-            setSelections(selections_copy)
+            markSelection(i)
             setSelectionMade(true)
             if(entity === "card"){
               const new_state = addCardToDeck(game_state, new_entity)
@@ -54,14 +65,25 @@ const Victory = ({game_state, setGameState, reward, resetCombat, selections, set
               setGameState(state_copy)
             }
           }
-          const style = {}
-          if(selection_made && !select_entity.selected){
-            style.backgroundColor = "gray"
+
+          const removeCharacterEntity = select_entity => {
+            if(selection_made){
+              return
+            }
+            markSelection(i)
+            if(entity === "card"){
+              setGameState(removeCardFromDeck(game_state, select_entity))
+            }
           }
-          const gem_img = `gem_${select_entity.name}.png`
-          const alt = `${select_entity.name} gem`
+
+          const style = {}
+          if(selection_made){
+            style.backgroundColor = select_entity.selected ? "yellow" : "gray"
+          }
+
+          const onClickFunc = type === "remove" ? removeCharacterEntity : giveCharacterEntity
           return (
-            <div key={i} className="hov_pointer" onClick={(e) => giveCharacterEntity(select_entity)} style={style}>
+            <div key={i} className="hov_pointer" onClick={(e) => onClickFunc(select_entity)} style={style}>
               {entity === "card" &&
                 <Card card={select_entity} playable={false} game_state={game_state} />
               }
@@ -88,94 +110,92 @@ const Victory = ({game_state, setGameState, reward, resetCombat, selections, set
           )
         })}
       </>
-      }
-      {is_trade &&
-        <>
-          <h2 className="span_three_col">Trade in a {entity} for a reward</h2>
-            {selections.map((trade, i) => {
-              const commitTrade = trade => {
-                const {trade_in, trade_for, trade_in_entity, trade_for_entity} = trade
-                const game_copy = copyState(game_state)
-                if(trade_in === "card"){
-                  game_copy.character.deck = removeItemFromArrayByKey(game_copy.character.deck, trade_in_entity.key)
-                }
-                if(trade_in === "item"){
-                  game_copy.character.inventory = removeItemFromArrayByKey(game_copy.character.inventory, trade_in_entity.key)
-                }
-                if(trade_in === "gem"){
-                  game_copy.character.gems[trade_in_entity.name] -= trade_in_entity.value
-                }
-                if(trade_for === "card"){
-                  return addCardToDeck(game_copy, trade_for_entity)
-                }
-                if(trade_for === "item"){
-                  return giveCharacterItem(game_copy, trade_for_entity)
-                }
-                if(trade_for === "gem"){
-                  game_copy.character.gems[trade_for_entity.name] += trade_for_entity.value
-                  return game_copy
-                }
+    }
+
+    {is_trade &&
+      <>
+      <h2 className="span_three_col">Trade in a {entity} for a reward</h2>
+        {selections.map((trade, i) => {
+          const commitTrade = trade => {
+            const {trade_in, trade_for, trade_in_entity, trade_for_entity} = trade
+            const game_copy = copyState(game_state)
+            if(trade_in === "card"){
+              game_copy.character.deck = removeItemFromArrayByKey(game_copy.character.deck, trade_in_entity.key)
+            }
+            if(trade_in === "item"){
+              game_copy.character.inventory = removeItemFromArrayByKey(game_copy.character.inventory, trade_in_entity.key)
+            }
+            if(trade_in === "gem"){
+              game_copy.character.gems[trade_in_entity.name] -= trade_in_entity.value
+            }
+            if(trade_for === "card"){
+              return addCardToDeck(game_copy, trade_for_entity)
+            }
+            if(trade_for === "item"){
+              return giveCharacterItem(game_copy, trade_for_entity)
+            }
+            if(trade_for === "gem"){
+              game_copy.character.gems[trade_for_entity.name] += trade_for_entity.value
+              return game_copy
+            }
+          }
+          const style = {}
+          if(selection_made && !trade.selected){
+            style.backgroundColor = "gray"
+          }
+          const {trade_for, trade_for_entity, trade_in, trade_in_entity} = trade
+          const trade_in_gem_img = `gem_${trade_in_entity.name}.png`
+          const trade_in_gem_img_alt = `${trade_in_entity.name} gem`
+          const trade_for_gem_img = `gem_${trade_for_entity.name}.png`
+          const trade_for_gem_img_alt = `${trade_for_entity.name} gem`
+          return (
+            <div style={style} className="hov pointer" onClick={(e) => {
+              if(selection_made){
+                return
               }
-              const style = {}
-              if(selection_made && !trade.selected){
-                style.backgroundColor = "gray"
+              markSelection(i)
+              const new_state = commitTrade(trade)
+              setGameState(new_state)
+            }}>
+              <h3>Trade In {trade_in}</h3>
+              {trade_in === "card" &&
+                <Card card={trade_in_entity} playable={false} game_state={game_state} />
               }
-              const {trade_for, trade_for_entity, trade_in, trade_in_entity} = trade
-              const trade_in_gem_img = `gem_${trade_in_entity.name}.png`
-              const trade_in_gem_img_alt = `${trade_in_entity.name} gem`
-              const trade_for_gem_img = `gem_${trade_for_entity.name}.png`
-              const trade_for_gem_img_alt = `${trade_for_entity.name} gem`
-              return (
-                <div style={style} className="hov pointer" onClick={(e) => {
-                  if(selection_made){
-                    return
-                  }
-                  let selections_copy = copyState(selections)
-                  selections_copy[i].selected = true
-                  setSelections(selections_copy)
-                  setSelectionMade(true)
-                  const new_state = commitTrade(trade)
-                  setGameState(new_state)
-                }}>
-                  <h3>Trade In {trade_in}</h3>
-                  {trade_in === "card" &&
-                    <Card card={trade_in_entity} playable={false} game_state={game_state} />
-                  }
-                  {trade_in === "gem" &&
-                    <div>
-                      <img alt={trade_in_gem_img_alt} src={trade_in_gem_img} style={{width: "35px", height: "35px"}} className="m-4 block" />
-                      <h4>Gems to receive : x{trade_in_entity.value}</h4>
-                    </div>
-                  }
-                  {trade_in === "item" &&
-                    <div>
-                      <h3>{trade_in_entity.name}</h3>
-                      <h4>{trade_in_entity.rarity}</h4>
-                      <p>{trade_in_entity.effect} - {trade_in_entity.stat_name} - {trade_in_entity.value}</p>
-                    </div>
-                  }
-                  <h3>Trade For {trade_for}</h3>
-                    {trade_for === "card" &&
-                      <Card card={trade_for_entity} playable={false} game_state={game_state} />
-                    }
-                    {trade_for === "gem" &&
-                      <div>
-                        <img alt={trade_for_gem_img_alt} src={trade_for_gem_img} style={{width: "35px", height: "35px"}} className="m-4 block" />
-                        <h4>Gems to receive : x{trade_for_entity.value}</h4>
-                      </div>
-                    }
-                    {trade_for === "item" &&
-                      <div>
-                        <h3>{trade_for_entity.name}</h3>
-                        <h4>{trade_for_entity.rarity}</h4>
-                        <p>{trade_for_entity.effect} - {trade_for_entity.stat_name} - {trade_for_entity.value}</p>
-                      </div>
-                    }
+              {trade_in === "gem" &&
+                <div>
+                  <img alt={trade_in_gem_img_alt} src={trade_in_gem_img} style={{width: "35px", height: "35px"}} className="m-4 block" />
+                  <h4>Gems to receive : x{trade_in_entity.value}</h4>
                 </div>
-              )
-            })}
-        </>
-      }
+              }
+              {trade_in === "item" &&
+                <div>
+                  <h3>{trade_in_entity.name}</h3>
+                  <h4>{trade_in_entity.rarity}</h4>
+                  <p>{trade_in_entity.effect} - {trade_in_entity.stat_name} - {trade_in_entity.value}</p>
+                </div>
+              }
+              <h3>Trade For {trade_for}</h3>
+              {trade_for === "card" &&
+                <Card card={trade_for_entity} playable={false} game_state={game_state} />
+              }
+              {trade_for === "gem" &&
+                <div>
+                  <img alt={trade_for_gem_img_alt} src={trade_for_gem_img} style={{width: "35px", height: "35px"}} className="m-4 block" />
+                  <h4>Gems to receive : x{trade_for_entity.value}</h4>
+                </div>
+              }
+              {trade_for === "item" &&
+                <div>
+                  <h3>{trade_for_entity.name}</h3>
+                  <h4>{trade_for_entity.rarity}</h4>
+                  <p>{trade_for_entity.effect} - {trade_for_entity.stat_name} - {trade_for_entity.value}</p>
+                </div>
+              }
+            </div>
+          )
+        })}
+      </>
+    }
     </div>
     <button onClick={(e) => {
         setSelections([])
