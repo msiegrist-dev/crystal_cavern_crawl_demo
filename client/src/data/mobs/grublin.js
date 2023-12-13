@@ -1,6 +1,7 @@
 export default {
   name: "Grublin",
   splash_text: "Tweedley Doofus. Grubby Grublus.",
+  image_url: "goblin_idle_left.gif",
   speed: 5,
   attack: 5,
   defense: 1,

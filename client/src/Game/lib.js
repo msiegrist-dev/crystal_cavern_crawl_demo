@@ -1,4 +1,5 @@
 import environment from "../data/environment"
+import first_stage from "../data/stage_encounters/first_stage"
 import grublin from "../data/mobs/grublin"
 import warrior_deck from "../data/warrior_deck"
 import items from "../data/items"
@@ -66,11 +67,9 @@ const giveCharacterItem = (game_state, item) => {
 }
 
 const generateCombatLevel = number => {
-  if(number >= 1 && number <= 10){
-    return [
-      {...grublin, key: 1},
-      {...grublin, key: 2},
-    ]
+  //get first stage possible enemies
+  if(number >= 1 && number < 10){
+    return getRandomValueFromList(first_stage).map((en, i) => {return {...en, key: i}})
   }
 }
 

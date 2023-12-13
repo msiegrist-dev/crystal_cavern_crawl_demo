@@ -4,7 +4,7 @@ export default ({enemy, targettingHandler}) => {
 
   return (
     <div className="grid" style={{alignItems: "end", gridAutoRows: "min-content", marginTop: "auto"}} key={enemy.key}>
-      <img src="goblin_idle_left.gif" className="hov_pointer enemy_img" style={{height: "120px", width: "auto"}}
+      <img src={enemy.image_url} className="hov_pointer enemy_img" style={{height: "120px", width: "auto"}}
         onClick={(e) => targettingHandler(enemy.key)}
       />
       <table className="w-60">
