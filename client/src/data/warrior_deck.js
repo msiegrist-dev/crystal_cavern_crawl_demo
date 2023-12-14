@@ -1,4 +1,4 @@
-export default [
+const warrior_deck = [
   {
     name: "Attack",
     type: "attack",
@@ -83,5 +83,24 @@ export default [
       }
     },
     accuracy: 100
-  }
+  },
+  {
+    name: "Combo Slice",
+    type: "attack",
+    target_required: true,
+    value: 4,
+    hits: 2,
+    accuracy: 98
+  },
+  {
+    name: "Piercing Thrust",
+    type: "attack",
+    target_required: true,
+    value: 6,
+    hits: 1,
+    accuracy: 98,
+    attack_effect: "armor_piercing"
+  },
 ]
+
+export default warrior_deck

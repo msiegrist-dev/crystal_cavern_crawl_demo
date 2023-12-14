@@ -1,4 +1,4 @@
-export default {
+const warrior = {
   name: "Warrior",
   sub_name: "Il'Manesh the Unsatiated",
   speed: 4,
@@ -19,6 +19,7 @@ export default {
     "Attack",
     "Defend",
     "Defend",
-    "Steel Yourself",
   ]
 }
+
+export default warrior

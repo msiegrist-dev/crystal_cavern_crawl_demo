@@ -1,6 +1,5 @@
 import environment from "../data/environment"
 import first_stage from "../data/stage_encounters/first_stage"
-import grublin from "../data/mobs/grublin"
 import warrior_deck from "../data/warrior_deck"
 import items from "../data/items"
 import {
@@ -139,8 +138,8 @@ const getEnemyAction = enemy => {
 
 const getAttackValue = (doer, action) => doer.attack + action.value
 
-const getRemainingBlock = (target, damage) => {
-  const armor_multiplier = 1 - target.armor
+const getRemainingBlock = (target, damage, pierce_armor) => {
+  const armor_multiplier = pierce_armor ? 1 : 1 - target.armor
   const armor_reduced_damage = roundToNearestInt(damage * armor_multiplier)
   return target.block - armor_reduced_damage
 }
@@ -153,23 +152,31 @@ const actionMissed = action => {
 }
 
 const processAttack = (doer, target, action) => {
-  if(actionMissed(action)){
-    return {doer, target}
-  }
-  if(action.attack_effect){
-    if(action.attack_effect === "give_block"){
-      doer.block += getBlockValue(doer, {value: action.effect_value})
+  const doer_copy = copyState(doer)
+  const target_copy = copyState(target)
+  for(let i = 0; i < action.hits; i++){
+    if(actionMissed(action)){
+      console.log("YER MISSED")
+      continue
     }
+    if(action.attack_effect){
+      if(action.attack_effect === "give_block"){
+        doer_copy.block += getBlockValue(doer_copy, {value: action.effect_value})
+      }
+    }
+    const damage_value = getAttackValue(doer_copy, action)
+    const remaining_block = getRemainingBlock(target_copy, damage_value, action.attack_effect === "armor_piercing")
+    if(remaining_block <= 0){
+      target_copy.block = 0
+      target_copy.hp -= (remaining_block * -1)
+      continue
+    }
+    target_copy.block -= remaining_block
   }
-  const damage_value = getAttackValue(doer, action)
-  const remaining_block = getRemainingBlock(target, damage_value)
-  if(remaining_block <= 0){
-    target.block = 0
-    target.hp -= (remaining_block * -1)
-    return {doer, target}
+  return {
+    doer: doer_copy,
+    target: target_copy
   }
-  target.block -= remaining_block
-  return {doer, target}
 }
 
 const applyBuff = (target, buff_name, buff_value) => {
@@ -234,10 +241,10 @@ const processAction = (game_state, doer, target_keys, action, consume_gems) => {
       const processor = action.type === "attack" ? processAttack : processEffect
       const parties = processor(doer, target, action)
       game_state_copy.character = player_action ? parties.doer : parties.target
-      if(target_enemy_index){
+      if(target_enemy_index >= 0){
         game_state_copy.level.enemies[target_enemy_index] = parties.target
       }
-      if(doer_enemy_index){
+      if(doer_enemy_index >= 0){
         game_state_copy.level.enemies[doer_enemy_index] = parties.doer
       }
     }
@@ -445,7 +452,6 @@ const addCardToDeck = (game_state, card) => {
 
 const removeCardFromDeck = (game_state, card) => {
   const game_state_copy = copyState(game_state)
-  console.log('gs COPY', game_state_copy)
   game_state_copy.character.deck = removeItemFromArrayByKey(game_state_copy.character.deck, card.key)
   return game_state_copy
 }

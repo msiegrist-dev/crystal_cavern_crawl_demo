@@ -22,10 +22,10 @@ const Card = (
         <p className="m-0-all">{type} Accuracy: {card.accuracy}%</p>
       }
       {card.attack_effect &&
-        <>
         <p className="m-0-all">Attack Effect Name : {formatKeyword(card.attack_effect)}</p>
+      }
+      {card.effect_value &&
         <p className="m-0-all">Attack Effect Value : {card.effect_value}</p>
-        </>
       }
       {card.type === "effect" &&
         <>
