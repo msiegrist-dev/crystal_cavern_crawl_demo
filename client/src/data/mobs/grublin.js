@@ -5,7 +5,7 @@ export default {
   speed: 5,
   attack: 5,
   defense: 1,
-  hp: 10,
+  max_hp: 10,
   armor: .02,
   block: 0,
   options: {

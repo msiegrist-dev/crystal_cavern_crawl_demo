@@ -1,3 +1,4 @@
+import Healthbar from "./Healthbar"
 import {displayArmorAsPct} from "./helper_lib"
 
 export default ({enemy, targettingHandler}) => {
@@ -10,8 +11,9 @@ export default ({enemy, targettingHandler}) => {
       <table className="w-60">
         <tbody>
           <tr>
-            <td><b>HP</b></td>
-            <td>{enemy.hp}</td>
+            <td colSpan="2">
+              <Healthbar max_hp={enemy.max_hp} current_hp={enemy.hp} />
+            </td>
           </tr>
           <tr>
             <td><b>Block</b></td>

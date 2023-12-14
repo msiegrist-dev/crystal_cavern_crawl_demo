@@ -12,6 +12,8 @@ import Card from "./Card"
 import Enemy from "./Enemy"
 import Modal from "../Modal"
 import Victory from "./Victory"
+import Healthbar from "./Healthbar"
+
 const Combat = ({game_state, setGameState, toggleDeckModal}) => {
 
   const {enemies} = game_state.level
@@ -272,8 +274,9 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
           <table className="w-60 m-4 p-4">
             <tbody>
               <tr>
-                <td><b>HP</b></td>
-                <td>{character.hp} / {character.max_hp}</td>
+                <td colSpan="2">
+                  <Healthbar max_hp={character.max_hp} current_hp={character.hp} />
+                </td>
               </tr>
               <tr>
                 <td><b>Block</b></td>

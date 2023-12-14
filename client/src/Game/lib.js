@@ -68,7 +68,14 @@ const giveCharacterItem = (game_state, item) => {
 const generateCombatLevel = number => {
   //get first stage possible enemies
   if(number >= 1 && number < 10){
-    return getRandomValueFromList(first_stage).map((en, i) => {return {...en, key: i}})
+    return getRandomValueFromList(first_stage)
+      .map((en, i) => {
+        return {
+          ...en,
+          key: i,
+          hp: en.max_hp
+        }
+      })
   }
 }
 
