@@ -3,5 +3,6 @@ docs/
 client/node_modules
 client/public/*.png
 client/public/*.gif
+client/public/*.jpg
 todo
 test.js

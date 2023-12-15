@@ -90,8 +90,8 @@ const Level = ({game_state, setGameState, setMessage}) => {
         </div>
         <button onClick={(e) => toggleDeckModal(character.deck)}>Open Deck</button>
         <button onClick={(e) => toggleItemModal()}>Open Items</button>
+        <h3 className="center_text m-0">level {level.number}</h3>
       </div>
-      <h3 className="center_text m-0">level {level.number}</h3>
 
       {level.type === "combat" &&
         <Combat game_state={game_state} setGameState={setGameState} toggleDeckModal={toggleDeckModal} setMessage={setMessage}/>

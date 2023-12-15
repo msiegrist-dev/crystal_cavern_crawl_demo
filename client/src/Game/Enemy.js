@@ -8,19 +8,7 @@ export default ({enemy, targettingHandler}) => {
       <img src={enemy.image_url} className="hov_pointer enemy_img" style={{height: "120px", width: "auto"}}
         onClick={(e) => targettingHandler(enemy.key)}
       />
-      <table className="w-60">
-        <tbody>
-          <tr>
-            <td colSpan="2">
-              <Healthbar max_hp={enemy.max_hp} current_hp={enemy.hp} />
-            </td>
-          </tr>
-          <tr>
-            <td><b>Block</b></td>
-            <td>{enemy.block}</td>
-          </tr>
-        </tbody>
-      </table>
+      <Healthbar max_hp={enemy.max_hp} current_hp={enemy.hp} block={enemy.block}/>
       <h3 style={{margin: "0"}}>{enemy.name}</h3>
       <p style={{margin: "0"}}>{enemy.splash_text}</p>
       <p style={{margin: "0"}}>POSITION KEY : {enemy.key}</p>

@@ -17,12 +17,11 @@ import Healthbar from "./Healthbar"
 const Combat = ({game_state, setGameState, toggleDeckModal}) => {
 
   const {enemies} = game_state.level
-  const {character} = game_state
 
   const [message, setMessage] = useState("")
   const [turn_order, setTurnOrder] = useState(getTurnOrder(game_state))
   const [turn, setTurn] = useState(turn_order[0])
-  const [draw_pile, setDrawPile] = useState(shuffleKeyedArray(character.deck))
+  const [draw_pile, setDrawPile] = useState(shuffleKeyedArray(game_state.character.deck))
   const [hand, setHand] = useState([])
   const [graveyard, setGraveyard] = useState([])
   const [targetting, setTargetting] = useState(false)
@@ -35,7 +34,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
 
   const resetCombat = game_state => {
     setHand([])
-    setDrawPile(shuffleKeyedArray(character.deck))
+    setDrawPile(shuffleKeyedArray(game_state.character.deck))
     setGraveyard([])
     const next_level = goNextLevel(copyState(game_state))
     const turn_order = getTurnOrder(next_level)
@@ -132,11 +131,11 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
 
       const getRewardChoices = (type, entity) => {
         if(type === "remove" && entity === "card"){
-          return character.deck
+          return game_state.character.deck
         }
         if(type === "choice"){
           if(entity === "card"){
-            return getRandomCards(3, character.name.toLowerCase())
+            return getRandomCards(3, game_state.character.name.toLowerCase())
           }
           if(entity === "item"){
             return getRandomItems(3)
@@ -162,7 +161,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
         }
         if(type === "random"){
           if(entity === "card"){
-            return getRandomCards(1, character.name.toLowerCase())
+            return getRandomCards(1, game_state.character.name.toLowerCase())
           }
           if(entity === "item"){
             return getRandomItems(1)
@@ -186,7 +185,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
           }
         }
         if(type === "trade"){
-          return getTradeSelections(2, "random", entity, character)
+          return getTradeSelections(2, "random", entity, game_state.character)
         }
       }
 
@@ -200,7 +199,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
       setGameState(game_state_copy)
       setHand([])
       setGraveyard([])
-      setDrawPile(shuffleKeyedArray(character.deck))
+      setDrawPile(shuffleKeyedArray(game_state.character.deck))
     }
 
     const defeat = () => {
@@ -262,47 +261,28 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
         </Modal>
       }
       <div>
-        <h2 className="center_text m-0">{message}</h2>
-        <h3 className="center_text m-0">{turn.key === "player" ? "Player Turn" : "Enemy Turn"}</h3>
+        <h4 className="center_text m-0">It is {turn.key === "player" ? "Player Turn" : "Enemy Turn"}. {message}</h4>
         {targetting && selected_card &&
-          <h3 className="center_text">Please select a target for {selected_card.name}</h3>
+          <h4 className="center_text">Please select a target for {selected_card.name}</h4>
         }
       </div>
       <div className="grid" style={{gridTemplateColumns: "35% 65%", height: "450px", alignItems: "end"}}>
-        <div>
-          <img alt="player character" src="warrior-idle.gif" style={{height: "350px"}}/>
-          <table className="w-60 m-4 p-4">
-            <tbody>
-              <tr>
-                <td colSpan="2">
-                  <Healthbar max_hp={character.max_hp} current_hp={character.hp} />
-                </td>
-              </tr>
-              <tr>
-                <td><b>Block</b></td>
-                <td>{character.block}</td>
-              </tr>
-              {Object.keys(character.buffs).length > 0 &&
-                <>
-                <tr colSpan="2"><td className="center_text"><b>Buffs</b></td></tr>
-                {Object.keys(character.buffs).map((buff_name) => {
-                  return (
-                    <tr key={buff_name}>
-                      <td><b>{buff_name}</b></td>
-                      <td>{character.buffs[buff_name]}</td>
-                    </tr>
-                  )
-                })}
-                </>
-              }
-            </tbody>
-          </table>
+        <div className="grid center_all_items">
+          <img alt="player character" src="warrior-idle.gif" style={{height: "325px"}}/>
+          <div className="grid two_col_equal w-80 m-4 p-4" style={{height: "125px", border: "2px solid black"}}>
+            <div className="span_two_col" style={{height: "125px"}}>
+              <Healthbar max_hp={game_state.character.max_hp} current_hp={game_state.character.hp} block={game_state.character.block}/>
+              {Object.keys(game_state.character.buffs).map((buff_name) => {
+                return <p key={buff_name}><b>{buff_name}</b> : {game_state.character.buffs[buff_name]}</p>
+              })}
+            </div>
+          </div>
         </div>
         <div style={{display: "flex", justifyContent: "end"}}>
           {enemies.filter((en) => en.hp > 0).map((enemy) => <Enemy key={enemy.key} enemy={enemy} targettingHandler={targettingHandler} />)}
         </div>
       </div>
-      <div className="grid" style={{gridTemplateColumns: "200px 1fr"}}>
+      <div className="grid" style={{gridTemplateColumns: "200px 1fr", margin: "2.5em auto"}}>
         <div className="grid three_col_equal w-200px" style={{marginRight: "auto", height: "80px"}}>
           <h3>Draw Pile ({draw_pile.length})</h3>
           <h3>Graveyard ({graveyard.length})</h3>
