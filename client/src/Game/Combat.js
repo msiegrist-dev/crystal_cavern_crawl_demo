@@ -1,10 +1,12 @@
 import {useState, useEffect} from 'react'
-import {getIndexOfArrayItemByKey, copyState, shuffleKeyedArray, getRandomNumber, getRandomValueFromList} from "./helper_lib"
+import {getIndexOfArrayItemByKey, copyState, shuffleKeyedArray, getRandomNumber, getRandomValueFromList} from "./lib/helper_lib"
 import {
   getTurnOrder, getEnemyAction, processAction, startTurnDraw, playCard, goNextLevel,
-  sendCardsToGraveYard, getRandomCards, getRandomItems, getRandomStatName,
-  getRandomStatValue, getTradeSelections
-} from "./lib"
+  sendCardsToGraveYard, getTradeSelections
+} from "./lib/game"
+import {getRandomCards} from "./lib/cards"
+import {getRandomItems} from "./lib/items"
+import {getRandomStatName, getRandomStatValue} from "./lib/stats"
 import default_game_state from "../data/default_game_state"
 import victory_reward_options from "../data/victory_reward_options"
 import environment from "../data/environment"

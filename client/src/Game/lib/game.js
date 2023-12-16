@@ -1,69 +1,14 @@
-import environment from "../data/environment"
-import first_stage from "../data/stage_encounters/first_stage"
-import warrior_deck from "../data/warrior_deck"
-import items from "../data/items"
+import environment from "../../data/environment"
+import first_stage from "../../data/stage_encounters/first_stage"
+import warrior_deck from "../../data/warrior_deck"
+import items from "../../data/items"
 import {
   getRandomValueFromList, getRandomNumber100, getRandomNumber, copyState, shuffleKeyedArray,
-  getIndexOfArrayItemByKey, roundToNearestInt, removeItemFromArrayByKey
+  getIndexOfArrayItemByKey, roundToNearestInt, removeItemFromArrayByKey, assignRandomKey
 } from "./helper_lib"
-
-const getRandomGemName = () => getRandomValueFromList(environment.ALL_GEMS)
-const giveCharacterGems = (state, gem_name, amount) => {
-  const state_copy = copyState(state)
-  state_copy.character.gems[gem_name] += amount
-  return state_copy
-}
-
-const giveCharacterStats = (character, stat_name, amount) => {
-  const state_copy = copyState(character)
-  state_copy[stat_name] += amount
-  if(stat_name === "max_hp"){
-    state_copy.hp += amount
-  }
-  if(!state_copy["flat_stat_increases"][stat_name]){
-    state_copy["flat_stat_increases"][stat_name] = 0
-  }
-  state_copy["flat_stat_increases"][stat_name] += amount
-  return state_copy
-}
-
-const getRandomStatName = () => getRandomValueFromList(environment.ALL_STATS)
-const getRandomStatValue = stat_name => {
-  if(stat_name === "max_hp"){
-    return Math.ceil(getRandomNumber100() / 10)
-  }
-  if(stat_name === "attack" || stat_name === "defense" || stat_name === "speed"){
-    return Math.ceil(getRandomNumber100() / 20)
-  }
-  if(stat_name === "armor"){
-    return Number(Math.ceil(getRandomNumber100() / 25) / 100)
-  }
-}
-
-const getRandomItems = quantity => {
-  const random_items = []
-  for(let i = 0; i < quantity; i++){
-    random_items.push(getRandomValueFromList(items))
-  }
-  return random_items
-}
-
-const processItemEffect = (character, item) => {
-  const character_copy = copyState(character)
-  const {effect, stat_name, value} = item
-  let updated_character
-  if(effect === "increase_stat_flat"){
-    updated_character = giveCharacterStats(character_copy, stat_name, value)
-  }
-  return updated_character
-}
-
-const giveCharacterItem = (game_state, item) => {
-  const state_copy = copyState(game_state)
-  state_copy.character = processItemEffect(game_state.character, item)
-  state_copy.character.inventory.push(item)
-  return state_copy
-}
+import {doesCharacterHaveGems, getRandomGemName} from "./gems"
+import {getRandomItems} from "./items"
+import {getRandomCards, doesCardRequireGem, isCardUsingAugmentGem, processGemAugment} from "./cards"
 
 const generateCombatLevel = number => {
   //get first stage possible enemies
@@ -308,70 +253,7 @@ const sendCardsToGraveYard = (hand, cards, graveyard, game_state) => {
   }
 }
 
-const doesCardRequireGem = card => {
-  if(!card.gem_augments){
-    return false
-  }
-  for(let gem_name of Object.keys(card.gem_augments)){
-    if(card.gem_augments[gem_name].required){
-      return true
-    }
-  }
-  return false
-}
 
-const doesCharacterHaveGems = (game_state, card) => {
-  const character_gems = game_state.character.gems
-  if(!character_gems){
-    return false
-  }
-  for(let gem_name of Object.keys(card.gem_augments)){
-    const gem_obj = card.gem_augments[gem_name]
-    if(!gem_obj.required){
-      continue
-    }
-    if(gem_obj.number > character_gems[gem_name]){
-      return false
-    }
-  }
-  return true
-}
-
-const isCardUsingAugmentGem = card => {
-  if(!card.gem_augments || !card.gem_inventory){
-    return false
-  }
-  for(let gem_name of Object.keys(card.gem_augments)){
-    const gem = card.gem_augments[gem_name]
-    if(!gem.required && card.gem_inventory[gem_name] === gem.number){
-      return true
-    }
-  }
-  return false
-}
-
-const processGemAugment = card => {
-  let card_copy = copyState(card)
-
-  for(let gem_name of Object.keys(card.gem_augments)){
-    const augment = card.gem_augments[gem_name]
-    if(!augment.number === card_copy.gem_inventory[gem_name]){
-      continue
-    }
-    if(!augment.effect){
-      continue
-    }
-    if(augment.effect_name === "increase_card_value"){
-      card_copy.value += augment.value
-    }
-    if(augment.effect_name === "increase_effect_value"){
-      card_copy.effect_value += augment.value
-    }
-    card_copy.gem_inventory[gem_name] = 0
-  }
-
-  return card_copy
-}
 
 const playCard = (card, game_state, target_keys, hand, graveyard) => {
   let card_copy = copyState(card)
@@ -428,40 +310,6 @@ const returnCardGemToCharacter = (gem, card, game_state, hand, setGameState, set
   setGameState(game_state_copy)
 }
 
-const getRandomCards = (number, character_name) => {
-  let source
-  if(character_name === "warrior"){
-    source = warrior_deck
-  }
-  let cards = []
-  for(let i = 0; i < number; i++){
-    cards.push(getRandomValueFromList(source))
-  }
-  return cards
-}
-
-const assignRandomKey = (entity, inventory) => {
-  let entity_copy = copyState(entity)
-  const keys = inventory.map((ent) => ent.key)
-  let random_value = getRandomNumber100()
-  while(keys.includes(random_value)){
-    random_value = getRandomNumber100()
-  }
-  entity_copy.key = random_value
-  return entity_copy
-}
-
-const addCardToDeck = (game_state, card) => {
-  const game_state_copy = copyState(game_state)
-  game_state_copy.character.deck.push(assignRandomKey(card, game_state_copy.character.deck))
-  return game_state_copy
-}
-
-const removeCardFromDeck = (game_state, card) => {
-  const game_state_copy = copyState(game_state)
-  game_state_copy.character.deck = removeItemFromArrayByKey(game_state_copy.character.deck, card.key)
-  return game_state_copy
-}
 
 const getRandomCharacterEntity = (character, entity_name) => {
   if(entity_name === "card"){
@@ -505,25 +353,14 @@ const getTradeSelections = (quantity, trade_for, trade_in, character) => {
 }
 
 export {
-  getRandomGemName,
-  giveCharacterGems,
-  giveCharacterStats,
-  getRandomStatValue,
-  getRandomStatName,
   goNextLevel,
   getTurnOrder,
   getEnemyAction,
   processAction,
   startTurnDraw,
   playCard,
-  doesCardRequireGem,
   sendCardsToGraveYard,
   addGemToCard,
   returnCardGemToCharacter,
-  addCardToDeck,
-  getRandomCards,
-  getRandomItems,
-  giveCharacterItem,
   getTradeSelections,
-  removeCardFromDeck
 }

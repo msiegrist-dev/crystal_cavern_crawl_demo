@@ -64,6 +64,17 @@ const removeItemFromArrayByKey = (array, key) => {
   return array.slice(0, index).concat(array.slice(index + 1, array.length))
 }
 
+const assignRandomKey = (entity, inventory) => {
+  let entity_copy = copyState(entity)
+  const keys = inventory.map((ent) => ent.key)
+  let random_value = getRandomNumber100()
+  while(keys.includes(random_value)){
+    random_value = getRandomNumber100()
+  }
+  entity_copy.key = random_value
+  return entity_copy
+}
+
 export {
   getRandomNumber100,
   getRandomNumber,
@@ -75,5 +86,6 @@ export {
   formatKeyword,
   copyState,
   displayArmorAsPct,
-  removeItemFromArrayByKey
+  removeItemFromArrayByKey,
+  assignRandomKey
 }

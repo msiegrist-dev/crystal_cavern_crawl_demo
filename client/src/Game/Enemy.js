@@ -1,5 +1,5 @@
 import Healthbar from "./Healthbar"
-import {displayArmorAsPct} from "./helper_lib"
+import {displayArmorAsPct} from "./lib/helper_lib"
 
 export default ({enemy, targettingHandler}) => {
 

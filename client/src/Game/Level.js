@@ -2,7 +2,7 @@ import {useState} from 'react'
 import Combat from "./Combat"
 import Modal from "../Modal"
 import Card from "./Card"
-import {displayArmorAsPct} from "./helper_lib"
+import {displayArmorAsPct} from "./lib/helper_lib"
 
 const Level = ({game_state, setGameState, setMessage}) => {
 

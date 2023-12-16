@@ -2,7 +2,7 @@ import warrior from "../data/warrior.js"
 import warrior_deck from "../data/warrior_deck"
 import Level0 from "./Level0"
 import Level from "./Level"
-import {copyState} from "./helper_lib"
+import {copyState} from "./lib/helper_lib"
 const Game = ({setPage, setGameState, game_state}) => {
 
   console.log('in game game_state', game_state)

@@ -1,5 +1,5 @@
-import {playCard, addGemToCard, returnCardGemToCharacter} from "./lib"
-import {capitalizeFirst, formatKeyword} from "./helper_lib"
+import {playCard, addGemToCard, returnCardGemToCharacter} from "./lib/game"
+import {capitalizeFirst, formatKeyword} from "./lib/helper_lib"
 import buff_descriptions from "../data/buff_descriptions"
 const Card = (
   {card, playable, game_state, setTargetting, setGameState, setSelectedCard, hand, graveyard, setHand, setGraveyard, setMessage, setCard}

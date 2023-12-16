@@ -101,6 +101,16 @@ const warrior_deck = [
     accuracy: 98,
     attack_effect: "armor_piercing"
   },
+  {
+    name: "Forearm Smash",
+    type: "attack",
+    target_required: true,
+    value: 5,
+    hits: 1,
+    accuracy: 98,
+    attack_effect: "armor_as_attack",
+    effect_value: .20
+  },
 ]
 
 export default warrior_deck

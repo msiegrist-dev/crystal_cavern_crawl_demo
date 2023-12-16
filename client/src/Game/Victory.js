@@ -1,6 +1,9 @@
 import {useState} from 'react'
-import {copyState, removeItemFromArrayByKey} from "./helper_lib"
-import {addCardToDeck, giveCharacterItem, giveCharacterGems, giveCharacterStats, removeCardFromDeck} from "./lib"
+import {copyState, removeItemFromArrayByKey} from "./lib/helper_lib"
+import {addCardToDeck, removeCardFromDeck} from "./lib/cards"
+import {giveCharacterItem} from "./lib/items"
+import {giveCharacterStats} from "./lib/stats"
+import {giveCharacterGems} from "./lib/gems"
 import Card from "./Card"
 const Victory = ({game_state, setGameState, reward, resetCombat, selections, setSelections
 }) => {

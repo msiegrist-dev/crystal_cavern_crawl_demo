@@ -1,9 +1,9 @@
-import {
-  getRandomGemName, giveCharacterGems, getRandomStatName, getRandomStatValue,
-  giveCharacterStats, goNextLevel, getRandomItems, giveCharacterItem
-} from "./lib"
+import {goNextLevel} from "./lib/game"
+import {getRandomGemName, giveCharacterGems} from "./lib/gems"
+import {getRandomStatName, getRandomStatValue, giveCharacterStats} from "./lib/stats"
+import {getRandomItems, giveCharacterItem} from "./lib/items"
 
-import {copyState} from "./helper_lib"
+import {copyState} from "./lib/helper_lib"
 
 const Level0 = ({game_state, setGameState}) => {
 
