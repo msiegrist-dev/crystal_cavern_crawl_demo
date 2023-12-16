@@ -31,7 +31,7 @@ export default [
     name: "Leather Tunic",
     effect: "increase_stat_flat",
     stat_name: "armor",
-    value: .01,
+    value: .02,
     rarity: "common"
   }
 ]

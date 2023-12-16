@@ -5,8 +5,6 @@ import Level from "./Level"
 import {copyState} from "./lib/helper_lib"
 const Game = ({setPage, setGameState, game_state}) => {
 
-  console.log('in game game_state', game_state)
-
   const starting_char_map = {
     "warrior": {
       ...warrior,

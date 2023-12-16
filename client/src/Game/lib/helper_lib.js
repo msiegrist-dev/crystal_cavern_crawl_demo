@@ -19,7 +19,7 @@ const shuffleKeyedArray = array => {
   return shuffled
 }
 
-const roundToNearestInt = (number, reverse) => {
+const roundToNearestInt = (number) => {
   if(Number.isInteger(number)){
     return number
   }

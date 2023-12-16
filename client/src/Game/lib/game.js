@@ -1,14 +1,12 @@
 import environment from "../../data/environment"
 import first_stage from "../../data/stage_encounters/first_stage"
-import warrior_deck from "../../data/warrior_deck"
-import items from "../../data/items"
 import {
   getRandomValueFromList, getRandomNumber100, getRandomNumber, copyState, shuffleKeyedArray,
-  getIndexOfArrayItemByKey, roundToNearestInt, removeItemFromArrayByKey, assignRandomKey
+  getIndexOfArrayItemByKey, roundToNearestInt
 } from "./helper_lib"
 import {doesCharacterHaveGems, getRandomGemName} from "./gems"
 import {getRandomItems} from "./items"
-import {getRandomCards, doesCardRequireGem, isCardUsingAugmentGem, processGemAugment} from "./cards"
+import {getRandomCards, doesCardRequireGem, isCardUsingAugmentGem, processGemAugment, cardHasAttackEffect} from "./cards"
 
 const generateCombatLevel = number => {
   //get first stage possible enemies
@@ -88,7 +86,19 @@ const getEnemyAction = enemy => {
   }
 }
 
-const getAttackValue = (doer, action) => doer.attack + action.value
+const getAttackValue = (doer, action) => {
+  let value = action.value
+
+  const block_as_bonus_attack = cardHasAttackEffect(action, "block_as_bonus_attack")
+  if(block_as_bonus_attack){
+    value += roundToNearestInt(doer.block * block_as_bonus_attack.value)
+  }
+  const block_as_attack = cardHasAttackEffect(action, "block_as_attack")
+  if(block_as_attack){
+    value = roundToNearestInt(doer.block * block_as_attack.value)
+  }
+  return doer.attack + value
+}
 
 const getRemainingBlock = (target, damage, pierce_armor) => {
   const armor_multiplier = pierce_armor ? 1 : 1 - target.armor
@@ -111,13 +121,13 @@ const processAttack = (doer, target, action) => {
       console.log("YER MISSED")
       continue
     }
-    if(action.attack_effect){
-      if(action.attack_effect === "give_block"){
-        doer_copy.block += getBlockValue(doer_copy, {value: action.effect_value})
-      }
+    const give_block_effect = cardHasAttackEffect(action, "give_block")
+    if(give_block_effect){
+      doer_copy.block += getBlockValue(doer_copy, {value: give_block_effect.value})
     }
     const damage_value = getAttackValue(doer_copy, action)
-    const remaining_block = getRemainingBlock(target_copy, damage_value, action.attack_effect === "armor_piercing")
+    const armor_piercing_effect = cardHasAttackEffect(action, "armor_piercing")
+    const remaining_block = getRemainingBlock(target_copy, damage_value, armor_piercing_effect)
     if(remaining_block <= 0){
       target_copy.block = 0
       target_copy.hp -= (remaining_block * -1)
@@ -175,6 +185,7 @@ const processAction = (game_state, doer, target_keys, action, consume_gems) => {
   }
 
   for(let target_key of target_keys){
+    console.log("TARGE KEY", target_key)
     const doer_key = player_action ? "player" : doer.key
     const target_enemy_index = target_key !== "player" ? getIndexOfArrayItemByKey(game_state.level.enemies, target_key) : null
     const doer_enemy_index = doer_key !== "player" ? getIndexOfArrayItemByKey(game_state.level.enemies, doer_key) : null

@@ -21,8 +21,12 @@ const Card = (
       {card.accuracy &&
         <p className="m-0-all">{type} Accuracy: {card.accuracy}%</p>
       }
-      {card.attack_effect &&
-        <p className="m-0-all">Attack Effect Name : {formatKeyword(card.attack_effect)}</p>
+      {card.attack_effects && card.attack_effects.length > 0 &&
+        <>
+          {card.attack_effects.map((fect) => {
+            return <p key={fect.name}><b>{fect.name}</b> : {fect.value}</p>
+          })}
+        </>
       }
       {card.effect_value &&
         <p className="m-0-all">Attack Effect Value : {card.effect_value}</p>

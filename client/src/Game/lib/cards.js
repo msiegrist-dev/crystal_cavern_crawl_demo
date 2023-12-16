@@ -39,7 +39,7 @@ const processGemAugment = card => {
     if(augment.effect_name === "increase_card_value"){
       card_copy.value += augment.value
     }
-    if(augment.effect_name === "increase_effect_value"){
+    if(augment.effect_name === "increase_card_effect_value"){
       card_copy.effect_value += augment.value
     }
     card_copy.gem_inventory[gem_name] = 0
@@ -72,11 +72,19 @@ const getRandomCards = (number, character_name) => {
   return cards
 }
 
+const cardHasAttackEffect = (card, name) => {
+  if(!card.attack_effects || !card.attack_effects.length){
+    return false
+  }
+  return card.attack_effects.find((fect) => fect.name === name)
+}
+
 export {
   addCardToDeck,
   removeCardFromDeck,
   processGemAugment,
   isCardUsingAugmentGem,
   doesCardRequireGem,
-  getRandomCards
+  getRandomCards,
+  cardHasAttackEffect
 }

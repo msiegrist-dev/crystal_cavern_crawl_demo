@@ -18,7 +18,7 @@ const warrior = {
     "Attack",
     "Attack",
     "Defend",
-    "Defend",
+    "Defend"
   ]
 }
 

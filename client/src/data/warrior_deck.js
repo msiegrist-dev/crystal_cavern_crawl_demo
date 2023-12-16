@@ -34,8 +34,11 @@ const warrior_deck = [
   {
     name: "Sweeping Blade",
     type: "attack",
-    attack_effect: "aoe",
+    attack_effects: [
+      {name: "aoe"}
+    ],
     value: 4,
+    hits: 1,
     gem_augments: {
       red: {
         number: 1,
@@ -50,15 +53,20 @@ const warrior_deck = [
   {
     name: "Warrior's Resolve",
     type: "attack",
+    value: 4,
     target_required: true,
-    attack_effect: "give_block",
-    value: 2,
-    effect_value: 3,
+    attack_effects: [
+      {
+        name: "give_block",
+        value: 3
+      }
+    ],
     gem_augments: {
       blue: {
         number: 1,
         effect: true,
-        effect_name: "increase_effect_value",
+        effect_name: "increase_attack_effect_value",
+        attack_effect_name: "give_block",
         value: 3,
         effect_description: `Increase give block value by 3`
       }
@@ -77,7 +85,7 @@ const warrior_deck = [
       blue: {
         number: 1,
         effect: true,
-        effect_name: "increase_effect_value",
+        effect_name: "increase_card_effect_value",
         value: 2,
         effect_description: `Grants two additional fortify buffs`
       }
@@ -99,7 +107,9 @@ const warrior_deck = [
     value: 6,
     hits: 1,
     accuracy: 98,
-    attack_effect: "armor_piercing"
+    attack_effects: [
+      {name: "armor_piercing"}
+    ]
   },
   {
     name: "Forearm Smash",
@@ -108,9 +118,30 @@ const warrior_deck = [
     value: 5,
     hits: 1,
     accuracy: 98,
-    attack_effect: "armor_as_attack",
-    effect_value: .20
+    attack_effects: [
+      {
+        name: "block_as_bonus_attack",
+        value: .2
+      }
+    ]
   },
+  {
+    name: "Shield Crash",
+    type: "attack",
+    hits: 1,
+    value: 0,
+    target_required: true,
+    attack_effects: [
+      {
+        name: "give_block",
+        value: 3
+      },
+      {
+        name: "block_as_attack",
+        value: .75
+      }
+    ]
+  }
 ]
 
 export default warrior_deck
