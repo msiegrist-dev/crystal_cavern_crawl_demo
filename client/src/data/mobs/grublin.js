@@ -6,18 +6,21 @@ export default {
   attack: 5,
   defense: 1,
   max_hp: 10,
-  armor: .02,
+  armor: .05,
   block: 0,
   options: {
     attack: [
       {
-        type: "basic",
-        value: 4
+        type: "attack",
+        value: 4,
+        hits: 1
       }
     ],
-    defend: [{
-      type: "basic",
-      value: 4
-    }]
+    defend: [
+      {
+        type: "defend",
+        value: 4
+      }
+    ]
   }
 }

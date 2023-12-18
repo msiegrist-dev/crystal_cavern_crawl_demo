@@ -8,17 +8,28 @@ import {doesCharacterHaveGems, getRandomGemName} from "./gems"
 import {getRandomItems} from "./items"
 import {getRandomCards, doesCardRequireGem, isCardUsingAugmentGem, processGemAugment, cardHasAttackEffect} from "./cards"
 
+const mapEnemiesForCombat = (new_enemies, game_state) => {
+  let start = 0
+  if(game_state){
+    const keys = game_state.level.enemies.map((en => Number(en.key))).sort()
+    start = keys[keys.length - 1] + 1
+  }
+  return new_enemies.map((en, i) => {
+    return {
+      ...en,
+      key: i + start,
+      hp: en.max_hp
+    }
+  })
+}
+
 const generateCombatLevel = number => {
-  //get first stage possible enemies
-  if(number >= 1 && number < 10){
-    return getRandomValueFromList(first_stage)
-      .map((en, i) => {
-        return {
-          ...en,
-          key: i,
-          hp: en.max_hp
-        }
-      })
+  //bosses can be faced every 5 levels
+  if(number % 5 === 0){
+      return mapEnemiesForCombat(getRandomValueFromList(first_stage.bosses))
+  }
+  if(number >= 1 && number <= 10){
+    return mapEnemiesForCombat(getRandomValueFromList(first_stage.mob_sets))
   }
 }
 
@@ -73,17 +84,19 @@ const getTurnOrder = game_state => {
   return shuffled
 }
 
-const getEnemyAction = enemy => {
+const getEnemyAction = (game_state, enemy) => {
+  if(enemy.name === "Grublin King"){
+    const grublins = game_state.level.enemies.filter((en) => en.name === "Grublin")
+    if(grublins.length < 2){
+      return enemy.options.effect.find((fect) => fect.effect_name === "summon")
+    }
+  }
   const rand = getRandomNumber(2)
   const {options} = enemy
   const type = rand === 0 ? "attack" : "defend"
   const list = rand === 0 ? options.attack : options.defend
   const move = getRandomValueFromList(list)
-  return {
-    type,
-    sub_type: move.type,
-    value: move.value
-  }
+  return move
 }
 
 const getAttackValue = (doer, action) => {
@@ -133,7 +146,7 @@ const processAttack = (doer, target, action) => {
       target_copy.hp -= (remaining_block * -1)
       continue
     }
-    target_copy.block -= remaining_block
+    target_copy.block = remaining_block
   }
   return {
     doer: doer_copy,
@@ -184,8 +197,12 @@ const processAction = (game_state, doer, target_keys, action, consume_gems) => {
     }
   }
 
+  if(action.type === "effect" && action.effect_name === "summon"){
+    game_state_copy.level.enemies = game_state_copy.level.enemies.concat(mapEnemiesForCombat(action.value, game_state_copy))
+    return game_state_copy
+  }
+
   for(let target_key of target_keys){
-    console.log("TARGE KEY", target_key)
     const doer_key = player_action ? "player" : doer.key
     const target_enemy_index = target_key !== "player" ? getIndexOfArrayItemByKey(game_state.level.enemies, target_key) : null
     const doer_enemy_index = doer_key !== "player" ? getIndexOfArrayItemByKey(game_state.level.enemies, doer_key) : null

@@ -108,7 +108,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
       }
       console.log("IT IS ENEMIES TURN")
       const enemy = enemies.find((ene) => ene.key === turn.key)
-      const action = getEnemyAction(enemy)
+      const action = getEnemyAction(game_state, enemy)
       setGameState(
         processAction(game_state, enemy, ["player"], action)
       )
@@ -193,8 +193,8 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
 
       const game_state_copy = copyState(game_state)
       game_state_copy.level.combat_victory = true
-      //const reward_text = getRandomValueFromList(victory_reward_options)
-      const reward_text = "random_stat"
+      game_state_copy.character.block = 0
+      const reward_text = getRandomValueFromList(victory_reward_options)
       const [type, entity] = reward_text.split("_")
       setVictoryReward(reward_text)
       setVictorySelections(getRewardChoices(type, entity))

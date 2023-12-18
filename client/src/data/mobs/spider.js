@@ -11,13 +11,16 @@ export default {
   options: {
     attack: [
       {
-        type: "basic",
-        value: 5
+        type: "attack",
+        value: 5,
+        hits: 1
       }
     ],
-    defend: [{
-      type: "basic",
-      value: 8
-    }]
+    defend: [
+      {
+        type: "defend",
+        value: 8
+      }
+    ]
   }
 }

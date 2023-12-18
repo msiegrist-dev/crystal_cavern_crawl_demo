@@ -2,10 +2,13 @@ import {useState} from 'react'
 import default_game_state from "./data/default_game_state"
 import Game from "./Game"
 
+import state from "./test_states/grublin_king"
+
 const App = () => {
 
   const [page, setPage] = useState("main_menu")
-  const [game_state, setGameState] = useState(default_game_state)
+  const [game_state, setGameState] = useState(state)
+  console.log('game_state', game_state)
 
   return (
     <div>
