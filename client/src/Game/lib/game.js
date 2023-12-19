@@ -129,6 +129,7 @@ const actionMissed = action => {
 const processAttack = (doer, target, action) => {
   const doer_copy = copyState(doer)
   const target_copy = copyState(target)
+  let total_damage_value = 0
   for(let i = 0; i < action.hits; i++){
     if(actionMissed(action)){
       console.log("YER MISSED")
@@ -139,6 +140,7 @@ const processAttack = (doer, target, action) => {
       doer_copy.block += getBlockValue(doer_copy, {value: give_block_effect.value})
     }
     const damage_value = getAttackValue(doer_copy, action)
+    total_damage_value += damage_value
     const armor_piercing_effect = cardHasAttackEffect(action, "armor_piercing")
     const remaining_block = getRemainingBlock(target_copy, damage_value, armor_piercing_effect)
     if(remaining_block <= 0){
@@ -150,7 +152,8 @@ const processAttack = (doer, target, action) => {
   }
   return {
     doer: doer_copy,
-    target: target_copy
+    target: target_copy,
+    total_damage: total_damage_value
   }
 }
 
@@ -187,7 +190,7 @@ const getBlockValue = (doer, action) => {
   return block_value
 }
 
-const processAction = (game_state, doer, target_keys, action, consume_gems) => {
+const processAction = (game_state, doer, target_keys, action, consume_gems, combat_log, setCombatLog) => {
   const game_state_copy = copyState(game_state)
   const player_action = doer.key === "player"
 
@@ -199,6 +202,7 @@ const processAction = (game_state, doer, target_keys, action, consume_gems) => {
 
   if(action.type === "effect" && action.effect_name === "summon"){
     game_state_copy.level.enemies = game_state_copy.level.enemies.concat(mapEnemiesForCombat(action.value, game_state_copy))
+    setCombatLog(combat_log.concat([`${doer.name} summoned new enemies to combat.`]))
     return game_state_copy
   }
 
@@ -210,10 +214,14 @@ const processAction = (game_state, doer, target_keys, action, consume_gems) => {
 
     if(action.type === "defend"){
       if(player_action){
-        game_state_copy.character.block += getBlockValue(game_state_copy.character, action)
+        const block_value = getBlockValue(game_state_copy.character, action)
+        game_state_copy.character.block += block_value
+        setCombatLog(combat_log.concat([`Character blocked for ${block_value}`]))
       }
       if(!player_action){
-        game_state_copy.level.enemies[doer_enemy_index].block += getBlockValue(game_state_copy.level.enemies[doer_enemy_index], action)
+        const block_value = getBlockValue(game_state_copy.level.enemies[doer_enemy_index], action)
+        game_state_copy.level.enemies[doer_enemy_index].block += block_value
+        setCombatLog(combat_log.concat([`${game_state_copy.level.enemies[doer_enemy_index].name} blocked for ${block_value}`]))
       }
     }
 
@@ -226,6 +234,9 @@ const processAction = (game_state, doer, target_keys, action, consume_gems) => {
       }
       if(doer_enemy_index >= 0){
         game_state_copy.level.enemies[doer_enemy_index] = parties.doer
+      }
+      if(action.type === "attack"){
+        setCombatLog(combat_log.concat(`${parties.doer.name} attacks ${parties.target.name} for ${parties.total_damage}.`))
       }
     }
   }
@@ -283,7 +294,7 @@ const sendCardsToGraveYard = (hand, cards, graveyard, game_state) => {
 
 
 
-const playCard = (card, game_state, target_keys, hand, graveyard) => {
+const playCard = (card, game_state, target_keys, hand, graveyard, combat_log, setCombatLog) => {
   let card_copy = copyState(card)
   const has_required_gems = doesCardRequireGem(card_copy) ? doesCharacterHaveGems(game_state, card_copy) : true
   if(!has_required_gems){
@@ -296,7 +307,7 @@ const playCard = (card, game_state, target_keys, hand, graveyard) => {
   return {
     game_state: processAction(
       card_sources.game_state, game_state.character, target_keys,
-      {...card_copy}, card_copy.gem_inventory
+      {...card_copy}, card_copy.gem_inventory, combat_log, setCombatLog
     ),
     hand: card_sources.hand,
     graveyard: card_sources.graveyard

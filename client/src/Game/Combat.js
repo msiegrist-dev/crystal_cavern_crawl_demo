@@ -30,6 +30,14 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
   const [combat_ended, setCombatEnded] = useState(false)
   const [victory_reward, setVictoryReward] = useState("")
   const [victory_selections, setVictorySelections] = useState([])
+  const [combat_log, setCombatLog] = useState([])
+  const [combat_modal_open, setCombatModalOpen] = useState(false)
+  const [combat_modal_mode, setCombatModalMode] = useState("")
+
+  const openCombatModal = mode => {
+    setCombatModalMode(mode)
+    setCombatModalOpen(true)
+  }
 
   const player_turn = turn.key === "player"
 
@@ -57,6 +65,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
     }
     const current_index = getIndexOfArrayItemByKey(turn_order, turn.key)
     if(current_index + 1 >= turn_order.length){
+      setTurnOrder(getTurnOrder(game_state))
       return setTurn(turn_order[0])
     }
     return setTurn(turn_order[current_index + 1])
@@ -66,7 +75,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
     if(!selected_card || !targetting || combat_ended){
       return
     }
-    const new_game_state = playCard(selected_card, game_state, [target_key], hand, graveyard, selected_card.gems)
+    const new_game_state = playCard(selected_card, game_state, [target_key], hand, graveyard, combat_log, setCombatLog)
     if(new_game_state.error){
       return setMessage(new_game_state.error)
     }
@@ -109,7 +118,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
       const enemy = enemies.find((ene) => ene.key === turn.key)
       const action = getEnemyAction(game_state, enemy)
       setGameState(
-        processAction(game_state, enemy, ["player"], action)
+        processAction(game_state, enemy, ["player"], action, false, combat_log, setCombatLog)
       )
       goNextTurn()
     }
@@ -224,7 +233,6 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
     }
   }, [game_state, combat_ended, setGameState])
 
-
   return (
     <div onClick={(e) => {
         if(!targetting){
@@ -237,6 +245,28 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
           }
         }
       }}>
+      {combat_modal_open &&
+        <Modal show_modal={combat_modal_open} setShowModal={setCombatModalOpen}>
+          {combat_modal_mode === "combat_log" &&
+            <div>
+              <h4>Combat Log</h4>
+              {combat_log.map((msg) => <p>{msg}</p>)}
+            </div>
+          }
+          {combat_modal_mode === "turn_order" &&
+            <div className="grid">
+              <h3>Turn Order</h3>
+              {turn_order.map((turn, index) => {
+                if(turn.key === "player"){
+                  return <p>`Moving ${index + 1} : Player`</p>
+                }
+                const enemy = game_state.level.enemies.find((en) => en.key === turn.key)
+                return <p>`Moving ${index + 1} : ${enemy.name} at ${turn.key}`</p>
+              })}
+            </div>
+          }
+        </Modal>
+      }
       {game_state.level.combat_victory &&
         <Modal show_modal={game_state.level.combat_victory} permanent={true}>
           <Victory game_state={game_state} setGameState={setGameState} reward={victory_reward}
@@ -262,6 +292,8 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
         </Modal>
       }
       <div>
+        <button onClick={(e) => openCombatModal("turn_order")}>Turn Order</button>
+        <button onClick={(e) => openCombatModal("combat_log")}>Combat Log</button>
         <h4 className="center_text m-0">It is {turn.key === "player" ? "Player Turn" : "Enemy Turn"}. {message}</h4>
         {targetting && selected_card &&
           <h4 className="center_text">Please select a target for {selected_card.name}</h4>
@@ -299,6 +331,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
             playable={!game_state.defeat} game_state={game_state} setGameState={setGameState}
             setTargetting={setTargetting} setSelectedCard={setSelectedCard} hand={hand}
             graveyard={graveyard} setHand={setHand} setGraveyard={setGraveyard} setMessage={setMessage}
+            combat_log={combat_log} setCombatLog={setCombatLog}
           />)}
         </div>
 

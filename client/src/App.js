@@ -2,7 +2,7 @@ import {useState} from 'react'
 import default_game_state from "./data/default_game_state"
 import Game from "./Game"
 
-import state from "./test_states/grublin_king"
+import grublin_king_state from "./test_states/grublin_king"
 
 const App = () => {
 

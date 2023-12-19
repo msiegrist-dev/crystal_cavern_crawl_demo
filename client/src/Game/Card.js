@@ -2,8 +2,9 @@ import {playCard, addGemToCard, returnCardGemToCharacter} from "./lib/game"
 import {capitalizeFirst, formatKeyword} from "./lib/helper_lib"
 import buff_descriptions from "../data/buff_descriptions"
 const Card = (
-  {card, playable, game_state, setTargetting, setGameState, setSelectedCard, hand, graveyard, setHand, setGraveyard, setMessage, setCard}
+  {card, playable, game_state, setTargetting, setGameState, setSelectedCard, hand, graveyard, setHand, setGraveyard, setMessage, setCard, combat_log, setCombatLog}
 ) => {
+
   const type = capitalizeFirst(card.type)
   const card_base_value = card.type === "effect" ? card.effect_value : card.value
   return (
@@ -113,7 +114,7 @@ const Card = (
             }
 
             const targets = card.type === "defend" || card.type === "effect" ? ["player"] : game_state.level.enemies.map((en) => en.key)
-            const new_game_state = playCard(card, game_state, targets, hand, graveyard)
+            const new_game_state = playCard(card, game_state, targets, hand, graveyard, combat_log, setCombatLog)
             if(new_game_state.error){
               return setMessage(new_game_state.error)
             }
