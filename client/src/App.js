@@ -7,7 +7,7 @@ import state from "./test_states/grublin_king"
 const App = () => {
 
   const [page, setPage] = useState("main_menu")
-  const [game_state, setGameState] = useState(state)
+  const [game_state, setGameState] = useState(default_game_state)
   console.log('game_state', game_state)
 
   return (

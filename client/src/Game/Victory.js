@@ -35,7 +35,7 @@ const Victory = ({game_state, setGameState, reward, resetCombat, selections, set
     <div className="grid three_col_equal">
 
 
-    {!is_trade && selections.length > 0 &&
+    {!is_trade && selections && selections.length > 0 &&
       <>
       <h2 className='center_text span_three_col'>Select a {type} {entity} {type === "remove" && " from your deck"}</h2>
 

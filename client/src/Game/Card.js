@@ -24,7 +24,7 @@ const Card = (
       {card.attack_effects && card.attack_effects.length > 0 &&
         <>
           {card.attack_effects.map((fect) => {
-            return <p key={fect.name}><b>{fect.name}</b> : {fect.value}</p>
+            return <p key={fect.name}><b>{fect.name}</b> : {fect.value || "true"}</p>
           })}
         </>
       }

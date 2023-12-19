@@ -1,4 +1,4 @@
-const rewards = [
+const all_rewards = [
   "random_gem",
   "random_item",
   "random_card",
@@ -12,4 +12,12 @@ const rewards = [
   "trade_item",
   "remove_card",
 ]
-export default rewards
+
+const card_rewards = [
+  "random_card", "choice_card"
+]
+
+export {
+  all_rewards,
+  card_rewards
+}

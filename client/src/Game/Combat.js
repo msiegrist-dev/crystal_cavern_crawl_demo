@@ -1,14 +1,13 @@
 import {useState, useEffect} from 'react'
-import {getIndexOfArrayItemByKey, copyState, shuffleKeyedArray, getRandomNumber, getRandomValueFromList} from "./lib/helper_lib"
+import {getIndexOfArrayItemByKey, copyState, shuffleKeyedArray, getRandomNumber} from "./lib/helper_lib"
 import {
   getTurnOrder, getEnemyAction, processAction, startTurnDraw, playCard, goNextLevel,
-  sendCardsToGraveYard, getTradeSelections
+  sendCardsToGraveYard, getTradeSelections, determineVictoryReward
 } from "./lib/game"
 import {getRandomCards} from "./lib/cards"
 import {getRandomItems} from "./lib/items"
 import {getRandomStatName, getRandomStatValue} from "./lib/stats"
 import default_game_state from "../data/default_game_state"
-import victory_reward_options from "../data/victory_reward_options"
 import environment from "../data/environment"
 import Card from "./Card"
 import Enemy from "./Enemy"
@@ -194,7 +193,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
       const game_state_copy = copyState(game_state)
       game_state_copy.level.combat_victory = true
       game_state_copy.character.block = 0
-      const reward_text = getRandomValueFromList(victory_reward_options)
+      const reward_text = determineVictoryReward(game_state_copy)
       const [type, entity] = reward_text.split("_")
       setVictoryReward(reward_text)
       setVictorySelections(getRewardChoices(type, entity))

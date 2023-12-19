@@ -2,6 +2,7 @@ import {goNextLevel} from "./lib/game"
 import {getRandomGemName, giveCharacterGems} from "./lib/gems"
 import {getRandomStatName, getRandomStatValue, giveCharacterStats} from "./lib/stats"
 import {getRandomItems, giveCharacterItem} from "./lib/items"
+import {getRandomCards, addCardToDeck} from "./lib/cards"
 
 import {copyState} from "./lib/helper_lib"
 
@@ -36,12 +37,23 @@ const Level0 = ({game_state, setGameState}) => {
     )
   }
 
+  const randomCard = () => {
+    const game_state_copy = copyState(game_state)
+    const random_card = getRandomCards(1, "warrior")[0]
+    setGameState(
+      goNextLevel(
+        addCardToDeck(game_state_copy, random_card)
+      )
+    )
+  }
+
   return (
     <>
     <h3>Welcome ! Please select an option</h3>
     <button onClick={randomGem}>Random Gem</button>
     <button onClick={randomStat}>Random Stat</button>
     <button onClick={randomItem}>Random Item</button>
+    <button onClick={randomCard}>Random Card</button>
     </>
   )
 }

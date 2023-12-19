@@ -1,5 +1,6 @@
 import environment from "../../data/environment"
 import first_stage from "../../data/stage_encounters/first_stage"
+import {all_rewards, card_rewards} from "../../data/victory_reward_options"
 import {
   getRandomValueFromList, getRandomNumber100, getRandomNumber, copyState, shuffleKeyedArray,
   getIndexOfArrayItemByKey, roundToNearestInt
@@ -86,14 +87,13 @@ const getTurnOrder = game_state => {
 
 const getEnemyAction = (game_state, enemy) => {
   if(enemy.name === "Grublin King"){
-    const grublins = game_state.level.enemies.filter((en) => en.name === "Grublin")
+    const grublins = game_state.level.enemies.filter((en) => en.name === "Grublin" && en.hp > 0)
     if(grublins.length < 2){
       return enemy.options.effect.find((fect) => fect.effect_name === "summon")
     }
   }
   const rand = getRandomNumber(2)
   const {options} = enemy
-  const type = rand === 0 ? "attack" : "defend"
   const list = rand === 0 ? options.attack : options.defend
   const move = getRandomValueFromList(list)
   return move
@@ -380,6 +380,14 @@ const getTradeSelections = (quantity, trade_for, trade_in, character) => {
   return selections
 }
 
+const determineVictoryReward = game_state => {
+  const value = getRandomNumber100()
+  if(value <= 60){
+    return getRandomValueFromList(card_rewards)
+  }
+  return getRandomValueFromList(all_rewards)
+}
+
 export {
   goNextLevel,
   getTurnOrder,
@@ -391,4 +399,5 @@ export {
   addGemToCard,
   returnCardGemToCharacter,
   getTradeSelections,
+  determineVictoryReward
 }
