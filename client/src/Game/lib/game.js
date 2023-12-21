@@ -1,11 +1,10 @@
 import environment from "../../data/environment"
 import first_stage from "../../data/stage_encounters/first_stage"
-import {all_rewards, card_rewards} from "../../data/victory_reward_options"
 import {
   getRandomValueFromList, getRandomNumber100, getRandomNumber, copyState, shuffleKeyedArray,
   getIndexOfArrayItemByKey, roundToNearestInt
 } from "./helper_lib"
-import {doesCharacterHaveGems, getRandomGemName} from "./gems"
+import {doesCharacterHaveCardAugmentGems, getRandomGemName} from "./gems"
 import {getRandomItems} from "./items"
 import {getRandomCards, doesCardRequireGem, isCardUsingAugmentGem, processGemAugment, cardHasAttackEffect} from "./cards"
 
@@ -238,6 +237,9 @@ const processAction = (game_state, doer, target_keys, action, consume_gems, comb
       if(action.type === "attack"){
         setCombatLog(combat_log.concat(`${parties.doer.name} attacks ${parties.target.name} for ${parties.total_damage}.`))
       }
+      if(action.type === "effect"){
+        setCombatLog(combat_log.concat(`${parties.doer_name} used ${action.name} for ${action.value}`))
+      }
     }
   }
   return game_state_copy
@@ -296,7 +298,7 @@ const sendCardsToGraveYard = (hand, cards, graveyard, game_state) => {
 
 const playCard = (card, game_state, target_keys, hand, graveyard, combat_log, setCombatLog) => {
   let card_copy = copyState(card)
-  const has_required_gems = doesCardRequireGem(card_copy) ? doesCharacterHaveGems(game_state, card_copy) : true
+  const has_required_gems = doesCardRequireGem(card_copy) ? doesCharacterHaveCardAugmentGems(game_state, card_copy) : true
   if(!has_required_gems){
     return {error: "You do not have enough gems to complete this action."}
   }
@@ -375,6 +377,12 @@ const getTradeSelections = (quantity, trade_for, trade_in, character) => {
       trade_for_entity = getRandomCards(1, "warrior")[0]
     }
     if(trade_for_entity_name === "gem"){
+      let gem_name = getRandomGemName()
+      if(trade_in === "gem"){
+        while(gem_name === trade_in_entity.name){
+          gem_name = getRandomGemName()
+        }
+      }
       trade_for_entity = {name: getRandomGemName(), value: getRandomNumber(3) || 1}
     }
     if(trade_for_entity_name === "item"){
@@ -394,9 +402,9 @@ const getTradeSelections = (quantity, trade_for, trade_in, character) => {
 const determineVictoryReward = game_state => {
   const value = getRandomNumber100()
   if(value <= 60){
-    return getRandomValueFromList(card_rewards)
+    return getRandomValueFromList(environment.CARD_REWARDS)
   }
-  return getRandomValueFromList(all_rewards)
+  return getRandomValueFromList(environment.ALL_REWARDS)
 }
 
 export {

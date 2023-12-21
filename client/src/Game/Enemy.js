@@ -4,14 +4,13 @@ import {displayArmorAsPct} from "./lib/helper_lib"
 export default ({enemy, targettingHandler}) => {
 
   return (
-    <div className="grid" style={{alignItems: "end", gridAutoRows: "min-content", marginTop: "auto"}} key={enemy.key}>
-      <img src={enemy.image_url} className="hov_pointer enemy_img m-4 block" style={{height: "120px", width: "auto"}}
+    <div className="grid p-4" style={{alignItems: "end", gridAutoRows: "min-content", marginTop: "auto", border: "2px solid black"}} key={enemy.key}>
+      <img src={enemy.image_url} className="hov_pointer enemy_img m-4 block" style={{height: "180px", width: "auto"}}
         onClick={(e) => targettingHandler(enemy.key)}
       />
+    <h3 className="mt-0 mb-0 center_text">{enemy.name}</h3>
+      <p className="mt-0 mb-2 center_text">{enemy.splash_text}</p>
       <Healthbar max_hp={enemy.max_hp} current_hp={enemy.hp} block={enemy.block}/>
-      <h3 style={{margin: "0"}}>{enemy.name}</h3>
-      <p style={{margin: "0"}}>{enemy.splash_text}</p>
-      <p style={{margin: "0"}}>POSITION KEY : {enemy.key}</p>
       <div className="grid two_col_equal">
         <table>
           <tbody>

@@ -54,6 +54,7 @@ const warrior_deck = [
     name: "Warrior's Resolve",
     type: "attack",
     value: 4,
+    hits: 1,
     target_required: true,
     attack_effects: [
       {

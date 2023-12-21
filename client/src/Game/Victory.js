@@ -3,11 +3,12 @@ import {copyState, removeItemFromArrayByKey} from "./lib/helper_lib"
 import {addCardToDeck, removeCardFromDeck} from "./lib/cards"
 import {giveCharacterItem} from "./lib/items"
 import {giveCharacterStats} from "./lib/stats"
-import {giveCharacterGems} from "./lib/gems"
+import {giveCharacterGems, doesCharacterHaveGems} from "./lib/gems"
 import Card from "./Card"
 const Victory = ({game_state, setGameState, reward, resetCombat, selections, setSelections
 }) => {
 
+  const [message, setMessage] = useState("")
   const [selection_made, setSelectionMade] = useState(false)
   const [type, entity] = reward.split("_")
   const is_trade = type === "trade"
@@ -117,7 +118,7 @@ const Victory = ({game_state, setGameState, reward, resetCombat, selections, set
 
     {is_trade &&
       <>
-      <h2 className="span_three_col">Trade in a {entity} for a reward</h2>
+      <h2 className="span_three_col">Trade your {entity}?</h2>
         {selections.map((trade, i) => {
           const commitTrade = trade => {
             const {trade_in, trade_for, trade_in_entity, trade_for_entity} = trade
@@ -129,6 +130,9 @@ const Victory = ({game_state, setGameState, reward, resetCombat, selections, set
               game_copy.character.inventory = removeItemFromArrayByKey(game_copy.character.inventory, trade_in_entity.key)
             }
             if(trade_in === "gem"){
+              if(!doesCharacterHaveGems(game_state.character, trade_in_entity.name, trade_in_entity.value)){
+                return setMessage("You do not have enough gems to complete this trade")
+              }
               game_copy.character.gems[trade_in_entity.name] -= trade_in_entity.value
             }
             if(trade_for === "card"){
@@ -200,6 +204,7 @@ const Victory = ({game_state, setGameState, reward, resetCombat, selections, set
       </>
     }
     </div>
+    <h3 className="center_text">{message}</h3>
     <button onClick={(e) => {
         setSelections([])
         setSelectionMade(false)

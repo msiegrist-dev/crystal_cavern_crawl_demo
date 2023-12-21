@@ -53,9 +53,9 @@ const Level = ({game_state, setGameState, setMessage}) => {
           </div>
         }
       </Modal>
-      <div className="gap-4 m-4 p-4" style={{display: "flex", borderBottom: "1px solid blue", height: "35px"}}>
-        <h3>{character.name}</h3>
-        <p>{character.sub_name}</p>
+      <div className="gap-4 m-4 p-4 flex center_all_items" style={{borderBottom: "1px solid blue", height: "35px"}}>
+        <img src="warrior_icon.png"  className="mb-0 mt-0 block" style={{height: "35px"}}/>
+        <p className="mb-0 mt-0">{character.sub_name}</p>
         <table>
           <tbody>
             <tr>

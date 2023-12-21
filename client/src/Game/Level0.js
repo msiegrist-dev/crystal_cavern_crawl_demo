@@ -49,7 +49,7 @@ const Level0 = ({game_state, setGameState}) => {
 
   return (
     <>
-    <h3>Welcome ! Please select an option</h3>
+    <h3>Select your new run gift.</h3>
     <button onClick={randomGem}>Random Gem</button>
     <button onClick={randomStat}>Random Stat</button>
     <button onClick={randomItem}>Random Item</button>

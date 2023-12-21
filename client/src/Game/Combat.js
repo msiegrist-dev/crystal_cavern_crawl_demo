@@ -45,6 +45,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
     setHand([])
     setDrawPile(shuffleKeyedArray(game_state.character.deck))
     setGraveyard([])
+    setCombatLog([])
     const next_level = goNextLevel(copyState(game_state))
     const turn_order = getTurnOrder(next_level)
     setTurnOrder(turn_order)
@@ -84,6 +85,31 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
     setGraveyard(new_game_state.graveyard)
     setTargetting(false)
     setSelectedCard(null)
+  }
+
+  const filterDeadEnemyTurns = turn_order => {
+    return turn_order.filter((turn) => {
+      if(turn.key === "player"){
+        return true
+      }
+      const enemy = game_state.level.enemies.find((en) => en.key === turn.key)
+      if(enemy.hp <= 0){
+        return false
+      }
+      return true
+    })
+  }
+
+  const handleCombatSpaceOnClick = e => {
+    if(!targetting){
+      return
+    }
+    if(targetting){
+      if(!e.target.className.includes("enemy_img")){
+        setTargetting(false)
+        return
+      }
+    }
   }
 
   //handles enemy turn and inits player turn when turn is changed
@@ -234,17 +260,8 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
   }, [game_state, combat_ended, setGameState])
 
   return (
-    <div onClick={(e) => {
-        if(!targetting){
-          return
-        }
-        if(targetting){
-          if(!e.target.className.includes("enemy_img")){
-            setTargetting(false)
-            return
-          }
-        }
-      }}>
+    <div onClick={(e) => handleCombatSpaceOnClick(e)}>
+
       {combat_modal_open &&
         <Modal show_modal={combat_modal_open} setShowModal={setCombatModalOpen}>
           {combat_modal_mode === "combat_log" &&
@@ -279,21 +296,19 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
           </button>
         </Modal>
       }
-      <div className="grid center_all_items" style={{
-          gridTemplateColumns: "repeat(4, 1fr)"
-        }}>
+      <div className="grid center_all_items four_col_equal">
         <button onClick={(e) => openCombatModal("combat_log")}>Combat Log</button>
           <div className="flex gap-4 center_all_items">
-            {turn_order.map((list_turn, index) => {
+            {filterDeadEnemyTurns(turn_order).map((list_turn, index) => {
               const style = {border: "none"}
               if(turn.key === list_turn.key){
                 style.border = "2px solid blue"
               }
               if(list_turn.key === "player"){
-                return <p style={style}>{index + 1} : Player</p>
+                return <p className="p-2" style={style}>{index + 1} : Player</p>
               }
               const enemy = game_state.level.enemies.find((en) => en.key === list_turn.key)
-              return <p style={style}>{index + 1} : {enemy.name}</p>
+              return <p className="p-2" style={style}>{index + 1} : {enemy.name}</p>
             })}
           </div>
         <h4 className="center_text m-0">It is {turn.key === "player" ? "Player Turn" : "Enemy Turn"}. {message}</h4>
@@ -302,7 +317,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
           <h4 className="center_text">Please select a target for {selected_card.name}</h4>
         }
       </div>
-      <div className="grid" style={{gridTemplateColumns: "35% 65%", height: "450px", alignItems: "end"}}>
+      <div className="grid" style={{gridTemplateColumns: "30% 70%", height: "450px", alignItems: "end"}}>
         <div className="grid center_all_items">
           <img alt="player character" src="warrior-idle.gif" style={{height: "325px"}}/>
           <div className="grid two_col_equal w-80 m-4 p-4" style={{height: "125px", border: "2px solid black"}}>
