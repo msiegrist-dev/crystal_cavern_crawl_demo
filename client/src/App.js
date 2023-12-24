@@ -11,11 +11,12 @@ const App = () => {
   console.log('game_state', game_state)
 
   return (
-    <div>
+    <div className="grid w-100 center_all_items" style={{height: "100%"}}>
       {page === "main_menu" &&
-        <div>
-          <h2>Welcome</h2>
-          <button onClick={(e) => setPage("game")}>Start Game</button>
+        <div className="grid center_all_items gap-8">
+          <h1>Game Name</h1>
+          <h2 className="action_text" onClick={(e) => setPage("game")}>Start Game</h2>
+          <h2 className="action_text" onClick={(e) => setPage("guide")}>About</h2>
         </div>
       }
       {page === "game" &&

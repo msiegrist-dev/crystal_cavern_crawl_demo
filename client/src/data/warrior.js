@@ -19,7 +19,9 @@ const warrior = {
     "Attack",
     "Defend",
     "Defend"
-  ]
+  ],
+  idle: "warrior_idle.gif",
+  icon: "warrior_icon.png"
 }
 
 export default warrior

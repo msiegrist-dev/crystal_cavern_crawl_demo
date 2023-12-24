@@ -32,7 +32,7 @@ const Level = ({game_state, setGameState, setMessage}) => {
   }
 
   return (
-    <div>
+    <>
       <Modal show_modal={show_modal} setShowModal={setShowModal}>
         {modal_mode === "deck" &&
           <div className="grid eq_four_col">
@@ -53,8 +53,9 @@ const Level = ({game_state, setGameState, setMessage}) => {
           </div>
         }
       </Modal>
-      <div className="gap-4 m-4 p-4 flex center_all_items" style={{borderBottom: "1px solid blue", height: "35px"}}>
+      <div className="gap-4 m-4 p-4 flex center_all_items w-98 mb-0" style={{borderBottom: "1px solid blue", height: "35px"}}>
         <img src="warrior_icon.png"  className="mb-0 mt-0 block" style={{height: "35px"}}/>
+        <h3 className="mb-0 mt-0">{character.name}</h3>
         <p className="mb-0 mt-0">{character.sub_name}</p>
         <table>
           <tbody>
@@ -96,7 +97,7 @@ const Level = ({game_state, setGameState, setMessage}) => {
       {level.type === "combat" &&
         <Combat game_state={game_state} setGameState={setGameState} toggleDeckModal={toggleDeckModal} setMessage={setMessage}/>
       }
-    </div>
+    </>
   )
 }
 

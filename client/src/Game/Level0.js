@@ -49,11 +49,13 @@ const Level0 = ({game_state, setGameState}) => {
 
   return (
     <>
-    <h3>Select your new run gift.</h3>
-    <button onClick={randomGem}>Random Gem</button>
-    <button onClick={randomStat}>Random Stat</button>
-    <button onClick={randomItem}>Random Item</button>
-    <button onClick={randomCard}>Random Card</button>
+    <h1>Select your new run gift.</h1>
+    <div className="grid two_col_equal w-60 m-4 p-4 gap- 8">
+      <h2 className="action_text center_text" onClick={randomGem}>Random Gem</h2>
+      <h2 className="action_text center_text" onClick={randomStat}>Random Stat</h2>
+      <h2 className="action_text center_text" onClick={randomItem}>Random Item</h2>
+      <h2 className="action_text center_text" onClick={randomCard}>Random Card</h2>
+    </div>
     </>
   )
 }

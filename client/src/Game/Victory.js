@@ -89,7 +89,7 @@ const Victory = ({game_state, setGameState, reward, resetCombat, selections, set
           return (
             <div key={i} className="hov_pointer" onClick={(e) => onClickFunc(select_entity)} style={style}>
               {entity === "card" &&
-                <Card card={select_entity} playable={false} game_state={game_state} />
+                <Card card={select_entity} playable={false} game_state={game_state} big_card={true}/>
               }
               {entity === "item" &&
                 <div>

@@ -1,18 +1,18 @@
 import {playCard, addGemToCard, returnCardGemToCharacter} from "./lib/game"
 import {capitalizeFirst, formatKeyword} from "./lib/helper_lib"
 import buff_descriptions from "../data/buff_descriptions"
-const Card = (
-  {card, playable, game_state, setTargetting, setGameState, setSelectedCard, hand, graveyard, setHand, setGraveyard, setMessage, setCard, combat_log, setCombatLog}
-) => {
+const Card = ({
+  card, playable, game_state, setTargetting, setGameState, setSelectedCard,
+  hand, graveyard, setHand, setGraveyard, setMessage, setCard, combat_log, setCombatLog,
+  big_card
+}) => {
 
   const type = capitalizeFirst(card.type)
   const card_base_value = card.type === "effect" ? card.effect_value : card.value
+  const width = big_card ? "400px" : "250px"
+
   return (
-    <div style={{
-        width: "90%",
-        border: "2px solid black",
-        borderRadius: "12px"
-      }} className="m-4 p-4 grid center_all_items">
+    <div className="m-4 p-4 game_card grid center_all_items" style={{width}}>
       <h4 className="m-0-all">{card.name}</h4>
       <p className="m-0-all"><b>Type</b> : {formatKeyword(card.type)}</p>
       <p className="m-0-all">{type} Value : {card_base_value}</p>
@@ -25,7 +25,11 @@ const Card = (
       {card.attack_effects && card.attack_effects.length > 0 &&
         <>
           {card.attack_effects.map((fect) => {
-            return <p key={fect.name}><b>{fect.name}</b> : {fect.value || "true"}</p>
+            let value = fect.value
+            if(value < 1){
+              value = (value * 100) + "%"
+            }
+            return <p key={fect.name}><b>{fect.name}</b> : {value || "true"}</p>
           })}
         </>
       }
@@ -70,10 +74,10 @@ const Card = (
               <img alt={alt} key={gem_name} src={img} style={{height: "25px", width: "25px"}} className="block" />
               {gem_data.number && <h4>x{gem_data.number}</h4>}
               {gem_data.required && <h4>Required.</h4>}
+              {gem_data.effect &&
+                <p style={{margin: "0"}}>{gem_data.effect_description}</p>
+              }
             </div>
-            {gem_data.effect &&
-              <p style={{margin: "0"}}>{gem_data.effect_description}</p>
-            }
           </div>
         })}
         </>

@@ -31,16 +31,9 @@ header {
 }
 
 .three_col_equal {
-  display: grid !important;
   grid-template-columns: repeat(3, 1fr);
 }
-
-.three_col_equal select {
-  width: 80%;
-}
-
 .four_col_equal {
-  display: grid;
   grid-template-columns: repeat(4, 1fr);
 }
 
@@ -66,7 +59,7 @@ header {
 }
 
 .p-4 {
-  padding: .5em !important;;
+  padding: .5em;
 }
 
 .p-8 {
@@ -127,7 +120,7 @@ header {
 }
 
 .m-4 {
-  margin: .5em auto !important;
+  margin: .5em auto;
 }
 
 .m-8 {
@@ -298,6 +291,10 @@ p {
   margin-top: 0;
 }
 
+.pt-0 {
+  padding-top: 0;
+}
+
 .mb-0 {
   margin-bottom: 0;
 }
@@ -308,4 +305,31 @@ p {
 
 button:hover {
   cursor: pointer;
+}
+
+.action_text {
+  color: blue;
+}
+
+.action_text:hover {
+  cursor: pointer;
+  color: lightblue;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.w-95 {
+  width: 95%
+}
+
+.w-98 {
+  width: 98%;
+}
+
+.game_card {
+  border: 2px solid black;
+  border-radius: 12px;
 }

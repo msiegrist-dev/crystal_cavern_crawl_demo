@@ -260,7 +260,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
   }, [game_state, combat_ended, setGameState])
 
   return (
-    <div onClick={(e) => handleCombatSpaceOnClick(e)}>
+    <div className="w-98 m-4 p-4 pt-0 mt-0" onClick={(e) => handleCombatSpaceOnClick(e)}>
 
       {combat_modal_open &&
         <Modal show_modal={combat_modal_open} setShowModal={setCombatModalOpen}>
@@ -296,50 +296,55 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
           </button>
         </Modal>
       }
-      <div className="grid center_all_items four_col_equal">
-        <button onClick={(e) => openCombatModal("combat_log")}>Combat Log</button>
-          <div className="flex gap-4 center_all_items">
-            {filterDeadEnemyTurns(turn_order).map((list_turn, index) => {
-              const style = {border: "none"}
-              if(turn.key === list_turn.key){
-                style.border = "2px solid blue"
-              }
-              if(list_turn.key === "player"){
-                return <p className="p-2" style={style}>{index + 1} : Player</p>
-              }
-              const enemy = game_state.level.enemies.find((en) => en.key === list_turn.key)
-              return <p className="p-2" style={style}>{index + 1} : {enemy.name}</p>
-            })}
-          </div>
+      <div className="flex center_all_items gap-8">
+        <h2 className="action_text mt-0" onClick={(e) => openCombatModal("combat_log")}>Combat Log</h2>
+        <div className="m-4 flex gap-4 center_all_items">
+          <h3 className="m-4">Turn Order : </h3>
+          {filterDeadEnemyTurns(turn_order).map((list_turn, index) => {
+            const style = {border: "none"}
+            if(turn.key === list_turn.key){
+              style.border = "2px solid blue"
+            }
+            if(list_turn.key === "player"){
+              return <p className="m-2 p-2" style={style}>{index + 1} : Player</p>
+            }
+            const enemy = game_state.level.enemies.find((en) => en.key === list_turn.key)
+            return <p className="p-2 m-2" style={style}>{index + 1} : {enemy.name}</p>
+          })}
+        </div>
         <h4 className="center_text m-0">It is {turn.key === "player" ? "Player Turn" : "Enemy Turn"}. {message}</h4>
         <h4 className="center_text m-0">{combat_log[combat_log.length - 1]}</h4>
-        {targetting && selected_card &&
-          <h4 className="center_text">Please select a target for {selected_card.name}</h4>
-        }
       </div>
-      <div className="grid" style={{gridTemplateColumns: "30% 70%", height: "450px", alignItems: "end"}}>
+      {targetting && selected_card &&
+        <h3 className="center_text" style={{color: "red"}}>Please select a target for {selected_card.name}</h3>
+      }
+
+      <div className="grid" style={{gridTemplateColumns: "30% 70%", height: "500px", alignItems: "end"}}>
         <div className="grid center_all_items">
-          <img alt="player character" src="warrior-idle.gif" style={{height: "325px"}}/>
-          <div className="grid two_col_equal w-80 m-4 p-4" style={{height: "125px", border: "2px solid black"}}>
-            <h4 className="center_text">{game_state.character.name}</h4>
-            <p className="center_text">{game_state.character.sub_name}</p>
+          <img alt="player character" src={game_state.character.idle} style={{height: "325px"}}/>
+          <div className="grid two_col_equal w-80 m-4 p-4" style={{border: "2px solid black"}}>
             <div className="span_two_col" style={{height: "125px"}}>
               <Healthbar max_hp={game_state.character.max_hp} current_hp={game_state.character.hp} block={game_state.character.block}/>
-              {Object.keys(game_state.character.buffs).map((buff_name) => {
-                return <p key={buff_name}><b>{buff_name}</b> : {game_state.character.buffs[buff_name]}</p>
-              })}
+              <div className="flex">
+                {Object.keys(game_state.character.buffs).map((buff_name) => {
+                  return <p key={buff_name}><b>{buff_name}</b> : {game_state.character.buffs[buff_name]}</p>
+                })}
+              </div>
             </div>
           </div>
         </div>
-        <div style={{display: "flex", justifyContent: "end"}}>
+
+        <div className="flex gap-4" style={{justifyContent: "end"}}>
           {enemies.filter((en) => en.hp > 0).map((enemy) => <Enemy key={enemy.key} enemy={enemy} targettingHandler={targettingHandler} />)}
         </div>
       </div>
+
       <div className="grid" style={{gridTemplateColumns: "200px 1fr 200px", margin: "2.5em auto"}}>
         <div>
           <h3 className="hov_pointer center_text" onClick={(e) => toggleDeckModal(draw_pile)}>Draw Pile ({draw_pile.length})</h3>
         </div>
-        <div className="grid eq_four_col">
+
+        <div className="grid eq_four_col gap-4">
           {hand.map((card) => <Card key={card.key} card={card}
             playable={!game_state.defeat} game_state={game_state} setGameState={setGameState}
             setTargetting={setTargetting} setSelectedCard={setSelectedCard} hand={hand}
@@ -347,6 +352,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
             combat_log={combat_log} setCombatLog={setCombatLog}
           />)}
         </div>
+
         <div>
           <h3 className="hov_pointer center_text" onClick={(e) => toggleDeckModal(graveyard)}>Graveyard ({graveyard.length})</h3>
           {player_turn &&
