@@ -4,7 +4,7 @@ import buff_descriptions from "../data/buff_descriptions"
 const Card = ({
   card, playable, game_state, setTargetting, setGameState, setSelectedCard,
   hand, graveyard, setHand, setGraveyard, setMessage, setCard, combat_log, setCombatLog,
-  big_card
+  big_card, combat_stats, setCombatStats
 }) => {
 
   const type = capitalizeFirst(card.type)
@@ -118,7 +118,7 @@ const Card = ({
             }
 
             const targets = card.type === "defend" || card.type === "effect" ? ["player"] : game_state.level.enemies.map((en) => en.key)
-            const new_game_state = playCard(card, game_state, targets, hand, graveyard, combat_log, setCombatLog)
+            const new_game_state = playCard(card, game_state, targets, hand, graveyard, combat_log, setCombatLog, combat_stats, setCombatStats)
             if(new_game_state.error){
               return setMessage(new_game_state.error)
             }

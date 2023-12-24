@@ -45,9 +45,11 @@ const getRandomLevel = number => {
 }
 
 const goNextLevel = game_state => {
+  const game_state_copy = copyState(game_state)
   const next_level = game_state.level.number + 1
-  game_state.level = getRandomLevel(next_level)
-  return game_state
+  game_state_copy.level = getRandomLevel(next_level)
+  game_state_copy.score += 50
+  return game_state_copy
 }
 
 const getTurnOrder = game_state => {
@@ -129,6 +131,7 @@ const processAttack = (doer, target, action) => {
   const doer_copy = copyState(doer)
   const target_copy = copyState(target)
   let total_damage_value = 0
+  let damage_dealt = 0
   for(let i = 0; i < action.hits; i++){
     if(actionMissed(action)){
       console.log("YER MISSED")
@@ -145,14 +148,17 @@ const processAttack = (doer, target, action) => {
     if(remaining_block <= 0){
       target_copy.block = 0
       target_copy.hp -= (remaining_block * -1)
+      damage_dealt = target.block + (remaining_block * -1)
       continue
     }
+    damage_dealt = target.block - remaining_block
     target_copy.block = remaining_block
   }
   return {
     doer: doer_copy,
     target: target_copy,
-    total_damage: total_damage_value
+    total_damage: total_damage_value,
+    damage_dealt
   }
 }
 
@@ -189,7 +195,7 @@ const getBlockValue = (doer, action) => {
   return block_value
 }
 
-const processAction = (game_state, doer, target_keys, action, consume_gems, combat_log, setCombatLog) => {
+const processAction = (game_state, doer, target_keys, action, consume_gems, combat_log, setCombatLog, combat_stats, setCombatStats) => {
   const game_state_copy = copyState(game_state)
   const player_action = doer.key === "player"
 
@@ -235,6 +241,10 @@ const processAction = (game_state, doer, target_keys, action, consume_gems, comb
         game_state_copy.level.enemies[doer_enemy_index] = parties.doer
       }
       if(action.type === "attack"){
+        const combat_stats_copy = copyState(combat_stats)
+        const combat_stats_key = parties.doer_key === "player" ? "damage_taken" : "damage_dealt"
+        combat_stats_copy[combat_stats_key] += parties.damage_dealt
+        setCombatStats(combat_stats_copy)
         setCombatLog(combat_log.concat(`${parties.doer.name} attacks ${parties.target.name} for ${parties.total_damage}.`))
       }
       if(action.type === "effect"){
@@ -296,7 +306,7 @@ const sendCardsToGraveYard = (hand, cards, graveyard, game_state) => {
 
 
 
-const playCard = (card, game_state, target_keys, hand, graveyard, combat_log, setCombatLog) => {
+const playCard = (card, game_state, target_keys, hand, graveyard, combat_log, setCombatLog, combat_stats, setCombatStats) => {
   let card_copy = copyState(card)
   const has_required_gems = doesCardRequireGem(card_copy) ? doesCharacterHaveCardAugmentGems(game_state, card_copy) : true
   if(!has_required_gems){
@@ -309,7 +319,8 @@ const playCard = (card, game_state, target_keys, hand, graveyard, combat_log, se
   return {
     game_state: processAction(
       card_sources.game_state, game_state.character, target_keys,
-      {...card_copy}, card_copy.gem_inventory, combat_log, setCombatLog
+      {...card_copy}, card_copy.gem_inventory, combat_log, setCombatLog,
+      combat_stats, setCombatStats
     ),
     hand: card_sources.hand,
     graveyard: card_sources.graveyard

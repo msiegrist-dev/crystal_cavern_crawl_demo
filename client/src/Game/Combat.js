@@ -33,7 +33,13 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
   const [combat_log, setCombatLog] = useState([])
   const [combat_modal_open, setCombatModalOpen] = useState(false)
   const [combat_modal_mode, setCombatModalMode] = useState("")
+  const [combat_stats, setCombatStats] = useState({
+    enemies_killed: 0,
+    damage_taken: 0,
+    damage_dealt: 0
+  })
 
+  console.log("COMB STATS", combat_stats)
   const openCombatModal = mode => {
     setCombatModalMode(mode)
     setCombatModalOpen(true)
@@ -76,7 +82,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
     if(!selected_card || !targetting || combat_ended){
       return
     }
-    const new_game_state = playCard(selected_card, game_state, [target_key], hand, graveyard, combat_log, setCombatLog)
+    const new_game_state = playCard(selected_card, game_state, [target_key], hand, graveyard, combat_log, setCombatLog, combat_stats, setCombatStats)
     if(new_game_state.error){
       return setMessage(new_game_state.error)
     }
@@ -144,7 +150,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
       const enemy = enemies.find((ene) => ene.key === turn.key)
       const action = getEnemyAction(game_state, enemy)
       setGameState(
-        processAction(game_state, enemy, ["player"], action, false, combat_log, setCombatLog)
+        processAction(game_state, enemy, ["player"], action, false, combat_log, setCombatLog, combat_stats, setCombatStats)
       )
       setTimeout(() => goNextTurn(), 3000)
     }
@@ -225,6 +231,9 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
         }
       }
 
+      const combat_stats_copy = copyState(combat_stats)
+      combat_stats_copy.enemies_killed = game_state.level.enemies.length
+      setCombatStats(combat_stats_copy)
       const game_state_copy = copyState(game_state)
       game_state_copy.level.combat_victory = true
       game_state_copy.character.block = 0
@@ -276,6 +285,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
         <Modal show_modal={game_state.level.combat_victory} permanent={true}>
           <Victory game_state={game_state} setGameState={setGameState} reward={victory_reward}
             resetCombat={resetCombat} selections={victory_selections} setSelections={setVictorySelections}
+            combat_stats={combat_stats}
           />
         </Modal>
       }
@@ -349,7 +359,8 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
             playable={!game_state.defeat} game_state={game_state} setGameState={setGameState}
             setTargetting={setTargetting} setSelectedCard={setSelectedCard} hand={hand}
             graveyard={graveyard} setHand={setHand} setGraveyard={setGraveyard} setMessage={setMessage}
-            combat_log={combat_log} setCombatLog={setCombatLog}
+            combat_log={combat_log} setCombatLog={setCombatLog} combat_stats={combat_stats}
+            setCombatStats={setCombatStats}
           />)}
         </div>
 

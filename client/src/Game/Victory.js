@@ -5,7 +5,8 @@ import {giveCharacterItem} from "./lib/items"
 import {giveCharacterStats} from "./lib/stats"
 import {giveCharacterGems, doesCharacterHaveGems} from "./lib/gems"
 import Card from "./Card"
-const Victory = ({game_state, setGameState, reward, resetCombat, selections, setSelections
+const Victory = ({
+  game_state, setGameState, reward, resetCombat, selections, setSelections, combat_stats
 }) => {
 
   const [message, setMessage] = useState("")
@@ -24,12 +25,19 @@ const Victory = ({game_state, setGameState, reward, resetCombat, selections, set
 
     <>
     <h2 className="center_text">Combat Victory</h2>
-    <table>
+    <table className="w-60 m-4 p-4 center_text">
+      <thead>
+        <tr>
+          <th><b>Damage Taken</b></th>
+          <th><b>Damage Done</b></th>
+          <th><b>Enemies Slain</b></th>
+        </tr>
+      </thead>
       <tbody>
         <tr>
-          <td><b>Damage Taken</b></td>
-          <td><b>Damage Done</b></td>
-          <td><b>Enemies Slain</b></td>
+          <td>{combat_stats.damage_taken}</td>
+          <td>{combat_stats.damage_dealt}</td>
+          <td>{combat_stats.enemies_killed}</td>
         </tr>
       </tbody>
     </table>

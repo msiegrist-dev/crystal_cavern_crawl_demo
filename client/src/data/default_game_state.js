@@ -1,8 +1,11 @@
-export default {
+const default_game_state =  {
   level: {
     number: 0,
     type: null,
   },
   character: null,
-  difficulty: 0
+  difficulty: 0,
+  score: 0
 }
+
+export default default_game_state
