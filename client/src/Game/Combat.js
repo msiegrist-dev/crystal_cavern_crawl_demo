@@ -14,6 +14,7 @@ import Enemy from "./Enemy"
 import Modal from "../Modal"
 import Victory from "./Victory"
 import Healthbar from "./Healthbar"
+import CombatStatsTable from "./CombatStatsTable"
 
 const Combat = ({game_state, setGameState, toggleDeckModal}) => {
 
@@ -39,13 +40,16 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
     damage_dealt: 0
   })
 
-  console.log("COMB STATS", combat_stats)
   const openCombatModal = mode => {
     setCombatModalMode(mode)
     setCombatModalOpen(true)
   }
 
   const player_turn = turn.key === "player"
+
+  const calculateCombatScore = stats_copy => {
+    return (stats_copy.enemies_killed * 50) + combat_stats.damage_dealt - combat_stats.damage_taken
+  }
 
   const resetCombat = game_state => {
     setHand([])
@@ -231,12 +235,10 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
         }
       }
 
-      const combat_stats_copy = copyState(combat_stats)
-      combat_stats_copy.enemies_killed = game_state.level.enemies.length
-      setCombatStats(combat_stats_copy)
       const game_state_copy = copyState(game_state)
       game_state_copy.level.combat_victory = true
       game_state_copy.character.block = 0
+      game_state_copy.score += calculateCombatScore(combat_stats)
       const reward_text = determineVictoryReward(game_state_copy)
       const [type, entity] = reward_text.split("_")
       setVictoryReward(reward_text)
@@ -274,9 +276,12 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
       {combat_modal_open &&
         <Modal show_modal={combat_modal_open} setShowModal={setCombatModalOpen}>
           {combat_modal_mode === "combat_log" &&
-            <div>
-              <h4>Combat Log</h4>
-              {combat_log.map((msg) => <p>{msg}</p>)}
+            <div className="grid two_col_equal center_all_items">
+              <div>
+                <h4>Combat Log</h4>
+                {combat_log.map((msg) => <p>{msg}</p>)}
+              </div>
+              <CombatStatsTable combat_stats={combat_stats} />
             </div>
           }
         </Modal>

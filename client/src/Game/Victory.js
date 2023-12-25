@@ -5,6 +5,7 @@ import {giveCharacterItem} from "./lib/items"
 import {giveCharacterStats} from "./lib/stats"
 import {giveCharacterGems, doesCharacterHaveGems} from "./lib/gems"
 import Card from "./Card"
+import CombatStatsTable from "./CombatStatsTable"
 const Victory = ({
   game_state, setGameState, reward, resetCombat, selections, setSelections, combat_stats
 }) => {
@@ -25,24 +26,9 @@ const Victory = ({
 
     <>
     <h2 className="center_text">Combat Victory</h2>
-    <table className="w-60 m-4 p-4 center_text">
-      <thead>
-        <tr>
-          <th><b>Damage Taken</b></th>
-          <th><b>Damage Done</b></th>
-          <th><b>Enemies Slain</b></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>{combat_stats.damage_taken}</td>
-          <td>{combat_stats.damage_dealt}</td>
-          <td>{combat_stats.enemies_killed}</td>
-        </tr>
-      </tbody>
-    </table>
-    <div className="grid three_col_equal">
+    <CombatStatsTable combat_stats={combat_stats} />
 
+    <div className="grid three_col_equal">
 
     {!is_trade && selections && selections.length > 0 &&
       <>

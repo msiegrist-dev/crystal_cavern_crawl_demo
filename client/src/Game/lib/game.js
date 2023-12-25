@@ -47,8 +47,10 @@ const getRandomLevel = number => {
 const goNextLevel = game_state => {
   const game_state_copy = copyState(game_state)
   const next_level = game_state.level.number + 1
+  if(next_level > 1){
+    game_state_copy.score += 50
+  }
   game_state_copy.level = getRandomLevel(next_level)
-  game_state_copy.score += 50
   return game_state_copy
 }
 
@@ -212,6 +214,7 @@ const processAction = (game_state, doer, target_keys, action, consume_gems, comb
   }
 
   for(let target_key of target_keys){
+    const combat_stats_copy = copyState(combat_stats)
     const doer_key = player_action ? "player" : doer.key
     const target_enemy_index = target_key !== "player" ? getIndexOfArrayItemByKey(game_state.level.enemies, target_key) : null
     const doer_enemy_index = doer_key !== "player" ? getIndexOfArrayItemByKey(game_state.level.enemies, doer_key) : null
@@ -236,21 +239,24 @@ const processAction = (game_state, doer, target_keys, action, consume_gems, comb
       game_state_copy.character = player_action ? parties.doer : parties.target
       if(target_enemy_index >= 0){
         game_state_copy.level.enemies[target_enemy_index] = parties.target
+        if(parties.target.hp <= 0){
+          combat_stats_copy.enemies_killed += 1
+        }
       }
       if(doer_enemy_index >= 0){
         game_state_copy.level.enemies[doer_enemy_index] = parties.doer
       }
       if(action.type === "attack"){
-        const combat_stats_copy = copyState(combat_stats)
-        const combat_stats_key = parties.doer_key === "player" ? "damage_taken" : "damage_dealt"
+        const combat_stats_key = parties.doer.key === "player" ? "damage_dealt" : "damage_taken"
         combat_stats_copy[combat_stats_key] += parties.damage_dealt
-        setCombatStats(combat_stats_copy)
+
         setCombatLog(combat_log.concat(`${parties.doer.name} attacks ${parties.target.name} for ${parties.total_damage}.`))
       }
       if(action.type === "effect"){
         setCombatLog(combat_log.concat(`${parties.doer_name} used ${action.name} for ${action.value}`))
       }
     }
+    setCombatStats(combat_stats_copy)
   }
   return game_state_copy
 }

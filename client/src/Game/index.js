@@ -48,14 +48,13 @@ const Game = ({setPage, setGameState, game_state}) => {
         <>
           <h1>Select a character</h1>
           <div className="grid three_col_equal w-60 m-4 p-4 gap-4">
-            <div>
-              <img src={warrior.idle} className="m-4 p-4 block" style={{width: "300px", height: "auto"}}
-                onClick={(e) => setCharacter("warrior")}
+            <div className="hov_pointer" onClick={(e) => setCharacter("warrior")}>
+              <img src={warrior.idle} className="m-4 p-4 block"
+                style={{width: "300px", height: "auto"}}
               />
-              <h2 className="action_text center_text" onClick={(e) => setCharacter("warrior")}>Warrior</h2>
+              <h2 className="action_text center_text">Warrior</h2>
               <p>
-
-                An adept melee fighter capable of enhancing his defenses.
+                A stout melee fighter capable of enhancing his defenses.
               </p>
             </div>
           </div>
