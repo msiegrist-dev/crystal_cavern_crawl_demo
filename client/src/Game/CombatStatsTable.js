@@ -1,19 +1,19 @@
 const CombatStatsTable = ({combat_stats}) => {
   return (
-    <div>
+    <div className="m-4 p-4">
       <table>
         <thead>
-          <tr>
-            <th><b>Damage Taken</b></th>
-            <th><b>Damage Done</b></th>
-            <th><b>Enemies Slain</b></th>
+          <tr className="center_text">
+            <th className="p-4 m-4"><b>Damage Taken</b></th>
+            <th className="p-4 m-4"><b>Damage Done</b></th>
+            <th className="p-4 m-4"><b>Enemies Slain</b></th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>{combat_stats.damage_taken}</td>
-            <td>{combat_stats.damage_dealt}</td>
-            <td>{combat_stats.enemies_killed}</td>
+          <tr className='center_text'>
+            <td className="p-4 m-4">{combat_stats.damage_taken}</td>
+            <td className="p-4 m-4">{combat_stats.damage_dealt}</td>
+            <td className="p-4 m-4">{combat_stats.enemies_killed}</td>
           </tr>
         </tbody>
       </table>

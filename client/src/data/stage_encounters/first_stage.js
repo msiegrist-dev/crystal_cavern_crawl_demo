@@ -6,7 +6,8 @@ import grublin_king from "../bosses/grublin_king"
 export default {
   mob_sets: [
     [grublin, grublin],
-    [spider]
+    [spider],
+    [grublin, spider]
   ],
   bosses: [
     [grublin_king]

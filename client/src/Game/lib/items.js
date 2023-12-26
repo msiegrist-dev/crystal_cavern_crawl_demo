@@ -12,10 +12,12 @@ const getRandomItems = quantity => {
 
 const processItemEffect = (character, item) => {
   const character_copy = copyState(character)
-  const {effect, stat_name, value} = item
   let updated_character
-  if(effect === "increase_stat_flat"){
-    updated_character = giveCharacterStats(character_copy, stat_name, value)
+  for(let stat of item.increase_stats){
+    const {type, name, value} = stat
+    if(type === "flat"){
+      updated_character = giveCharacterStats(character_copy, name, value)
+    }
   }
   return updated_character
 }

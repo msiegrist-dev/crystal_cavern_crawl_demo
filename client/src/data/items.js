@@ -1,37 +1,39 @@
-export default [
+const items = [
   {
     name: "Poor Man's Shield",
-    effect: "increase_stat_flat",
-    stat_name: "defense",
-    value: 1,
+    increase_stats: [
+      {name: "defense", value: 1, type: "flat"}
+    ],
     rarity: "common"
   },
   {
     name: "Rusty Dagger",
-    effect: "increase_stat_flat",
-    stat_name: "attack",
-    value: 1,
+    increase_stats: [
+      {name: "attack", value: 1, type: "flat"}
+    ],
     rarity: "common"
   },
   {
     name: "Joggers",
-    effect: "increase_stat_flat",
-    stat_name: "speed",
-    value: 1,
+    increase_stats: [
+      {name: "speed", value: 1, type: "flat"}
+    ],
     rarity: "common"
   },
   {
     name: "Spinach",
-    effect: "increase_stat_flat",
-    stat_name: "max_hp",
-    value: 3,
+    increase_stats: [
+      {name: "max_hp", value: 5, type: "flat"}
+    ],
     rarity: "common"
   },
   {
     name: "Leather Tunic",
-    effect: "increase_stat_flat",
-    stat_name: "armor",
-    value: .02,
+    increase_stats: [
+      {name: "armor", value: .02, type: "flat"}
+    ],
     rarity: "common"
   }
 ]
+
+export default items

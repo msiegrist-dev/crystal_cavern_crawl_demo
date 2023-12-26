@@ -6,6 +6,8 @@ import {giveCharacterStats} from "./lib/stats"
 import {giveCharacterGems, doesCharacterHaveGems} from "./lib/gems"
 import Card from "./Card"
 import CombatStatsTable from "./CombatStatsTable"
+import Item from "./Item"
+
 const Victory = ({
   game_state, setGameState, reward, resetCombat, selections, setSelections, combat_stats
 }) => {
@@ -26,7 +28,9 @@ const Victory = ({
 
     <>
     <h2 className="center_text">Combat Victory</h2>
-    <CombatStatsTable combat_stats={combat_stats} />
+    <div className="grid center_all_items">
+      <CombatStatsTable combat_stats={combat_stats} />
+    </div>
 
     <div className="grid three_col_equal">
 
@@ -86,11 +90,7 @@ const Victory = ({
                 <Card card={select_entity} playable={false} game_state={game_state} big_card={true}/>
               }
               {entity === "item" &&
-                <div>
-                  <h3>{select_entity.name}</h3>
-                  <h4>{select_entity.rarity}</h4>
-                  <p>{select_entity.effect} - {select_entity.stat_name} - {select_entity.value}</p>
-                </div>
+                <Item item={select_entity} />
               }
               {entity === "gem" &&
                 <div>

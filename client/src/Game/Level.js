@@ -2,6 +2,7 @@ import {useState} from 'react'
 import Combat from "./Combat"
 import Modal from "../Modal"
 import Card from "./Card"
+import Item from "./Item"
 import {displayArmorAsPct} from "./lib/helper_lib"
 
 const Level = ({game_state, setGameState, setMessage}) => {
@@ -40,13 +41,7 @@ const Level = ({game_state, setGameState, setMessage}) => {
         {modal_mode === "items" &&
           <div className="grid eq_four_col">
             {game_state.character.inventory.map((item) => {
-              return (
-                <div className="grid center_all_items">
-                  <h3>{item.name} - {item.rarity}</h3>
-                  <h4>{item.effect}</h4>
-                  <p>{item.stat_name} - {item.value}</p>
-                </div>
-              )
+              return <Item item={item} />
             })}
           </div>
         }
