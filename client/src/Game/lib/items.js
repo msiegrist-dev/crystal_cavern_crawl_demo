@@ -11,15 +11,25 @@ const getRandomItems = quantity => {
 }
 
 const processItemEffect = (character, item) => {
-  const character_copy = copyState(character)
-  let updated_character
-  for(let stat of item.increase_stats){
-    const {type, name, value} = stat
-    if(type === "flat"){
-      updated_character = giveCharacterStats(character_copy, name, value)
+
+  const processItemStatEffects = (character, stats, negative) => {
+    if(!stats || stats.length === 0){
+      return character
     }
+    for(let stat of stats){
+      const {type, name, value} = stat
+      if(type === "flat"){
+        character = giveCharacterStats(character, name, negative ? value * -1 : value)
+      }
+    }
+    return character
   }
-  return updated_character
+
+  let character_copy = copyState(character)
+  character_copy = processItemStatEffects(character_copy, item.increase_stats, false)
+  character_copy = processItemStatEffects(character_copy, item.decrease_stats, true)
+
+  return character_copy
 }
 
 const giveCharacterItem = (game_state, item) => {

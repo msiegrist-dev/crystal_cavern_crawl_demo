@@ -1,16 +1,16 @@
-import {getRandomNumber100, getRandomValueFromList, copyState} from "./helper_lib"
+import {getRandomNumber100, getRandomValueFromList, copyState, roundToNearestInt} from "./helper_lib"
 import environment from "../../data/environment"
 
 const giveCharacterStats = (character, stat_name, amount) => {
   const state_copy = copyState(character)
   state_copy[stat_name] += amount
   if(stat_name === "max_hp"){
-    state_copy.hp += amount
+    state_copy.hp = roundToNearestInt(state_copy.hp + amount)
   }
   if(!state_copy["flat_stat_increases"][stat_name]){
     state_copy["flat_stat_increases"][stat_name] = 0
   }
-  state_copy["flat_stat_increases"][stat_name] += amount
+  state_copy["flat_stat_increases"][stat_name] = roundToNearestInt(state_copy["flat_stat_increases"][stat_name] + amount)
   return state_copy
 }
 

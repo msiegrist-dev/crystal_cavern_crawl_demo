@@ -5,9 +5,20 @@ const Item = ({item}) => {
       <img className="w-125px m-4 block" src="sword_icon.jpg" />
       <h3 className="mt-0 mb-0">{item.name}</h3>
       <h4 className="mt-0 mb-0">{item.rarity}</h4>
-      {item.increase_stats.map((stat) => {
-        return <p className="mt-0 mb-0">{stat.name} +{stat.value}</p>
-      })}
+      {item.increase_stats &&
+        <>
+        {item.increase_stats.map((stat) => {
+          return <p className="mt-0 mb-0">{stat.name} +{stat.value}</p>
+        })}
+        </>
+      }
+      {item.decrease_stats &&
+        <>
+        {item.decrease_stats.map((stat) => {
+          return <p className="mt-0 mb-0">{stat.name} -{stat.value}</p>
+        })}
+        </>
+      }
     </div>
   )
 }

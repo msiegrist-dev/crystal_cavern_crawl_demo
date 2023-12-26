@@ -33,6 +33,15 @@ const items = [
       {name: "armor", value: .02, type: "flat"}
     ],
     rarity: "common"
+  },
+  {
+    name: "Lightweight Plate",
+    increase_stats: [
+      {name: "speed", value: 2, type: "flat"}
+    ],
+    decrease_stats: [
+      {name: "armor", value: .05, type: "flat"}
+    ]
   }
 ]
 

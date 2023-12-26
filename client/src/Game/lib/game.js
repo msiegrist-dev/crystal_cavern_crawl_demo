@@ -58,7 +58,8 @@ const getTurnOrder = game_state => {
   const speed_keys = [
     {key: "player", speed: game_state.character.speed}
   ].concat(
-    game_state.level.enemies.map((enemy) => {
+    game_state.level.enemies.filter((ene) => ene.hp > 0)
+    .map((enemy) => {
       return {key: enemy.key, speed: enemy.speed}
     })
   )
