@@ -299,19 +299,13 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
       }
       {game_state.defeat &&
         <Modal show_modal={game_state.defeat} permanent={true}>
-          <h2 className="center_text">You are defeated.</h2>
-          <table>
-            <tbody>
-              <tr>
-                <td><b>Damage Taken</b></td>
-                <td><b>Damage Done</b></td>
-                <td><b>Enemies Slain</b></td>
-              </tr>
-            </tbody>
-          </table>
-          <button onClick={(e) => setGameState(default_game_state)}>
-            Return to Menu
-          </button>
+          <div className="grid w-80 m-4 center_all_items">
+            <h2 className="center_text">You are defeated.</h2>
+            <CombatStatsTable combat_stats={combat_stats} />
+            <button onClick={(e) => setGameState(default_game_state)}>
+              Return to Menu
+            </button>
+          </div>
         </Modal>
       }
       <div className="flex center_all_items gap-8">
@@ -359,7 +353,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
 
       <div className="grid" style={{gridTemplateColumns: "200px 1fr 200px", margin: "2.5em auto"}}>
         <div>
-          <h3 className="hov_pointer center_text" onClick={(e) => toggleDeckModal(draw_pile)}>Draw Pile ({draw_pile.length})</h3>
+          <h3 className="action_text center_text" onClick={(e) => toggleDeckModal(draw_pile)}>Draw Pile ({draw_pile.length})</h3>
         </div>
 
         <div className="grid eq_four_col gap-4">
@@ -373,7 +367,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
         </div>
 
         <div>
-          <h3 className="hov_pointer center_text" onClick={(e) => toggleDeckModal(graveyard)}>Graveyard ({graveyard.length})</h3>
+          <h3 className="action_text center_text" onClick={(e) => toggleDeckModal(graveyard)}>Graveyard ({graveyard.length})</h3>
           {player_turn &&
             <button className="m-4 p-4 block" onClick={goNextTurn}>End Turn</button>
           }

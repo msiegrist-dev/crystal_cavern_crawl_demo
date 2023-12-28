@@ -90,17 +90,28 @@ const getTurnOrder = game_state => {
 }
 
 const getEnemyAction = (game_state, enemy) => {
+
+  const handleOdds = (attack, defend, random) => {
+    if(random <= attack){
+      return "attack"
+    }
+    if(random > attack && random <= (attack + defend)){
+      return "defend"
+    }
+  }
+
   if(enemy.name === "Grublin King"){
     const grublins = game_state.level.enemies.filter((en) => en.name === "Grublin" && en.hp > 0)
     if(grublins.length < 2){
       return enemy.options.effect.find((fect) => fect.effect_name === "summon")
     }
   }
-  const rand = getRandomNumber(2)
-  const {options} = enemy
-  const list = rand === 0 ? options.attack : options.defend
-  const move = getRandomValueFromList(list)
-  return move
+  const base_odds = [50, 50]
+  const has_block_odds = [80, 20]
+  const use_odds = enemy.block >= 5 ? has_block_odds : base_odds
+
+  const list = handleOdds(use_odds[0], use_odds[1], getRandomNumber100())
+  return getRandomValueFromList(enemy.options[list])
 }
 
 const getAttackValue = (doer, action) => {
