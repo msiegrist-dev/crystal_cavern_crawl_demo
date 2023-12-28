@@ -23,6 +23,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
   const [message, setMessage] = useState("")
   const [turn_order, setTurnOrder] = useState(getTurnOrder(game_state))
   const [turn, setTurn] = useState(turn_order[0])
+  const [turn_number, setTurnNumber] = useState(1)
   const [draw_pile, setDrawPile] = useState(shuffleKeyedArray(game_state.character.deck))
   const [hand, setHand] = useState([])
   const [graveyard, setGraveyard] = useState([])
@@ -59,6 +60,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
     const next_level = goNextLevel(copyState(game_state))
     const turn_order = getTurnOrder(next_level)
     setTurnOrder(turn_order)
+    setTurnNumber(1)
     setTurn(turn_order[0])
     setGameState(next_level)
     setCombatEnded(false)
@@ -77,6 +79,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
     const current_index = getIndexOfArrayItemByKey(turn_order, turn.key)
     if(current_index + 1 >= turn_order.length){
       setTurnOrder(getTurnOrder(game_state))
+      setTurnNumber(turn_number + 1)
       return setTurn(turn_order[0])
     }
     return setTurn(turn_order[current_index + 1])
@@ -314,7 +317,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
       <div className="flex center_all_items gap-8">
         <h2 className="action_text mt-0" onClick={(e) => openCombatModal("combat_log")}>Combat Log</h2>
         <div className="m-4 flex gap-4 center_all_items">
-          <h3 className="m-4">Turn Order : </h3>
+          <h3 className="m-4">Turn {turn_number} : </h3>
           {filterDeadEnemyTurns(turn_order).map((list_turn, index) => {
             const style = {border: "none"}
             if(turn.key === list_turn.key){

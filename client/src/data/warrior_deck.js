@@ -139,7 +139,7 @@ const warrior_deck = [
       },
       {
         name: "block_as_attack",
-        value: .75
+        value: .5
       }
     ]
   }
