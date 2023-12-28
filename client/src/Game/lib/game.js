@@ -401,7 +401,7 @@ const getTradeSelections = (quantity, trade_for, trade_in, character) => {
           gem_name = getRandomGemName()
         }
       }
-      trade_for_entity = {name: getRandomGemName(), value: getRandomNumber(3) || 1}
+      trade_for_entity = {name: gem_name, value: getRandomNumber(3) || 1}
     }
     if(trade_for_entity_name === "item"){
       trade_for_entity = getRandomItems(1)[0]
