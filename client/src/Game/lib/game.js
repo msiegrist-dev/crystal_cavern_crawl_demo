@@ -2,7 +2,7 @@ import environment from "../../data/environment"
 import first_stage from "../../data/stage_encounters/first_stage"
 import {
   getRandomValueFromList, getRandomNumber100, getRandomNumber, copyState, shuffleKeyedArray,
-  getIndexOfArrayItemByKey, roundToNearestInt
+  getIndexOfArrayItemByKey, roundToNearestInt, handleOdds
 } from "./helper_lib"
 import {doesCharacterHaveCardAugmentGems, getRandomGemName} from "./gems"
 import {getRandomItems} from "./items"
@@ -37,9 +37,16 @@ const getRandomLevel = number => {
   const level_type = getRandomValueFromList(environment.LEVEL_TYPES)
   if(level_type === "combat"){
     return {
-      number: number,
+      number,
       type: level_type,
       enemies: generateCombatLevel(number)
+    }
+  }
+  if(level_type === "event"){
+    return {
+      number,
+      type: level_type,
+      event_name: getRandomValueFromList(environment.EVENTS)
     }
   }
 }
@@ -91,26 +98,21 @@ const getTurnOrder = game_state => {
 
 const getEnemyAction = (game_state, enemy) => {
 
-  const handleOdds = (attack, defend, random) => {
-    if(random <= attack){
-      return "attack"
-    }
-    if(random > attack && random <= (attack + defend)){
-      return "defend"
-    }
-  }
-
   if(enemy.name === "Grublin King"){
     const grublins = game_state.level.enemies.filter((en) => en.name === "Grublin" && en.hp > 0)
     if(grublins.length < 2){
       return enemy.options.effect.find((fect) => fect.effect_name === "summon")
     }
   }
-  const base_odds = [50, 50]
-  const has_block_odds = [80, 20]
+  const base_odds = [
+    {name: "attack", value: 50}, {name: "defend", value: 50}
+  ]
+  const has_block_odds = [
+    {name: "attack", value: "80"}, {name: "defend", value: 20}
+  ]
   const use_odds = enemy.block >= 5 ? has_block_odds : base_odds
-
-  const list = handleOdds(use_odds[0], use_odds[1], getRandomNumber100())
+  const list = handleOdds(use_odds)
+  console.log("list", list)
   return getRandomValueFromList(enemy.options[list])
 }
 

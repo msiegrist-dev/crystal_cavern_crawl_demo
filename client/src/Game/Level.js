@@ -3,6 +3,7 @@ import Combat from "./Combat"
 import Modal from "../Modal"
 import Card from "./Card"
 import Item from "./Item"
+import Event from "./Event"
 import {displayArmorAsPct} from "./lib/helper_lib"
 
 const Level = ({game_state, setGameState, setMessage}) => {
@@ -89,7 +90,10 @@ const Level = ({game_state, setGameState, setMessage}) => {
       </div>
 
       {game_state.level.type === "combat" &&
-        <Combat game_state={game_state} setGameState={setGameState} toggleDeckModal={toggleDeckModal} setMessage={setMessage}/>
+        <Combat game_state={game_state} setGameState={setGameState} toggleDeckModal={toggleDeckModal} setMessage={setMessage} />
+      }
+      {game_state.level.type === "event" &&
+        <Event game_state={game_state} setGameState={setGameState} toggleDeckModal={toggleDeckModal} setMessage={setMessage} />
       }
     </>
   )

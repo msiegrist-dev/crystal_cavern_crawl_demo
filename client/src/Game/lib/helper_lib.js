@@ -75,6 +75,33 @@ const assignRandomKey = (entity, inventory) => {
   return entity_copy
 }
 
+const handleOdds = odds => {
+  const random = getRandomNumber100()
+  let current = 0
+  for(let i = 0; i < odds.length; i++){
+    const {name, value} = odds[i]
+    console.log(random, current, name, value)
+
+    if(i === 0){
+      if(random <= value){
+        return name
+      }
+    }
+
+    if(i === (odds.length - 1)){
+      if(random > current){
+        return name
+      }
+    }
+    console.log('lower condy', odds[i + 1].value)
+    if(random > current && random <= current + odds[i + 1].value){
+      return name
+    }
+    current += value
+  }
+  throw new Error("HANDLE ODDS DIDNT RETURN SHIT")
+}
+
 export {
   getRandomNumber100,
   getRandomNumber,
@@ -87,5 +114,6 @@ export {
   copyState,
   displayArmorAsPct,
   removeItemFromArrayByKey,
-  assignRandomKey
+  assignRandomKey,
+  handleOdds
 }

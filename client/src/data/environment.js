@@ -3,7 +3,7 @@ const environment = {
   ALL_STATS: [
     "max_hp", "attack", "defense", "speed", "armor"
   ],
-  LEVEL_TYPES: ["combat"],
+  LEVEL_TYPES: ["combat", "event"],
   TRADABLE_ENTITIES: ["gem", "item", "card"],
   ALL_REWARDS: [
     "random_gem",
@@ -21,6 +21,9 @@ const environment = {
   ],
   CARD_REWARDS: [
     "random_card", "choice_card"
+  ],
+  EVENTS: [
+    "harmful_healer"
   ]
 }
 

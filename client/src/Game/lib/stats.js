@@ -27,8 +27,17 @@ const getRandomStatValue = stat_name => {
   }
 }
 
+const healCharacter = (game_state, value) => {
+  game_state.character.hp += value
+  if(game_state.character.hp > game_state.character.max_hp){
+    game_state.character.hp = game_state.character.max_hp
+  }
+  return game_state
+}
+
 export {
   giveCharacterStats,
   getRandomStatName,
-  getRandomStatValue
+  getRandomStatValue,
+  healCharacter
 }
