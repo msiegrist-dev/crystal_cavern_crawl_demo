@@ -1,7 +1,9 @@
 import {useState} from 'react'
-import HarmfulHealer from "./Events/HarmfulHealer"
-import {goNextLevel} from "./lib/game"
+import {goNextLevel} from "./lib/levels"
 import {copyState} from "./lib/helper_lib"
+
+import HarmfulHealer from "./Events/HarmfulHealer"
+import DamageForCard from "./Events/DamageForCard"
 
 const Event = ({game_state, setGameState, toggleDeckModal}) => {
 
@@ -16,6 +18,9 @@ const Event = ({game_state, setGameState, toggleDeckModal}) => {
   const component_map = {
     "": <p></p>,
     "harmful_healer": <HarmfulHealer satisfied={satisfied} setSatisfied={setSatisfied}
+      game_state={game_state} setGameState={setGameState} setMessage={setMessage}
+    />,
+    "damage_for_card": <DamageForCard satisfied={satisfied} setSatisfied={setSatisfied}
       game_state={game_state} setGameState={setGameState} setMessage={setMessage}
     />
   }

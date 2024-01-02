@@ -1,4 +1,4 @@
-import {playCard, addGemToCard, returnCardGemToCharacter} from "./lib/game"
+import {playCard, addGemToCard, returnCardGemToCharacter} from "./lib/combat"
 import {capitalizeFirst, formatKeyword} from "./lib/helper_lib"
 import buff_descriptions from "../data/buff_descriptions"
 const Card = ({

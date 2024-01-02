@@ -23,7 +23,8 @@ const environment = {
     "random_card", "choice_card"
   ],
   EVENTS: [
-    "harmful_healer"
+    "harmful_healer",
+    "damage_for_card"
   ]
 }
 

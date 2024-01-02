@@ -1,4 +1,4 @@
-import {goNextLevel} from "./lib/game"
+import {goNextLevel} from "./lib/levels"
 import {getRandomGemName, giveCharacterGems} from "./lib/gems"
 import {getRandomStatName, getRandomStatValue, giveCharacterStats} from "./lib/stats"
 import {getRandomItems, giveCharacterItem} from "./lib/items"

@@ -22,7 +22,6 @@ const HarmfulHealer = ({satisfied, setSatisfied, game_state, setGameState, setMe
 
   return (
     <div>
-      <h3 className="center_text">Healer</h3>
       <p>
         You are offered healing from a mysterious doctor.
         He appears menacing but the other patients look well enough.

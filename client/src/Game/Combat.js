@@ -1,9 +1,10 @@
 import {useState, useEffect} from 'react'
 import {getIndexOfArrayItemByKey, copyState, shuffleKeyedArray, getRandomNumber} from "./lib/helper_lib"
 import {
-  getTurnOrder, getEnemyAction, processAction, startTurnDraw, playCard, goNextLevel,
+  getTurnOrder, getEnemyAction, processAction, startTurnDraw, playCard,
   sendCardsToGraveYard, getTradeSelections, determineVictoryReward
-} from "./lib/game"
+} from "./lib/combat"
+import {goNextLevel} from "./lib/levels"
 import {getRandomCards} from "./lib/cards"
 import {getRandomItems} from "./lib/items"
 import {getRandomStatName, getRandomStatValue} from "./lib/stats"
