@@ -59,10 +59,10 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
     setGraveyard([])
     setCombatLog([])
     const next_level = goNextLevel(copyState(game_state))
-    const turn_order = getTurnOrder(next_level)
-    setTurnOrder(turn_order)
+    const is_combat = next_level.level.type === "combat"
+    setTurnOrder(is_combat ? getTurnOrder(next_level) : [])
     setTurnNumber(1)
-    setTurn(turn_order[0])
+    setTurn(is_combat ? getTurnOrder(next_level)[0] : {})
     setGameState(next_level)
     setCombatEnded(false)
   }

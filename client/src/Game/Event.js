@@ -10,8 +10,8 @@ const Event = ({game_state, setGameState, toggleDeckModal}) => {
   const [message, setMessage] = useState("")
   const [satisfied, setSatisfied] = useState(false)
   const goNext = game_state => {
-    setGameState(goNextLevel(copyState(game_state)))
     setSatisfied(false)
+    setGameState(goNextLevel(copyState(game_state)))
     setMessage("")
   }
 

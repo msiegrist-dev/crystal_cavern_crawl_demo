@@ -1,7 +1,7 @@
 const warrior = {
   name: "Warrior",
   sub_name: "Il'Manesh the Unsatiated",
-  speed: 3,
+  speed: 2,
   attack: 1,
   defense: 3,
   max_hp: 120,

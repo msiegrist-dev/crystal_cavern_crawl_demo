@@ -105,14 +105,14 @@ const actionMissed = action => {
   return Number(action.accuracy) < getRandomNumber100()
 }
 
-const processAttack = (doer, target, action) => {
+const processAttack = (doer, target, action, combat_log, setCombatLog) => {
   const doer_copy = copyState(doer)
   const target_copy = copyState(target)
   let total_damage_value = 0
   let damage_dealt = 0
   for(let i = 0; i < action.hits; i++){
     if(actionMissed(action)){
-      console.log("YER MISSED")
+      setCombatLog(combat_log.concat(`${doer.name} missed their attack on ${target.name}.`))
       continue
     }
     const give_block_effect = cardHasAttackEffect(action, "give_block")
@@ -151,7 +151,7 @@ const applyBuff = (target, buff_name, buff_value) => {
   return target
 }
 
-const processEffect = (doer, target, action) => {
+const processEffect = (doer, target, action, combat_log, setCombatLog) => {
   if(actionMissed(action)){
     return {doer, target}
   }
@@ -211,7 +211,7 @@ const processAction = (game_state, doer, target_keys, action, consume_gems, comb
 
     if(action.type === "attack" || action.type === "effect"){
       const processor = action.type === "attack" ? processAttack : processEffect
-      const parties = processor(doer, target, action)
+      const parties = processor(doer, target, action, combat_log, setCombatLog)
       game_state_copy.character = player_action ? parties.doer : parties.target
       if(target_enemy_index >= 0){
         game_state_copy.level.enemies[target_enemy_index] = parties.target

@@ -116,7 +116,7 @@ const warrior_deck = [
     name: "Forearm Smash",
     type: "attack",
     target_required: true,
-    value: 5,
+    value: 3,
     hits: 1,
     accuracy: 98,
     attack_effects: [

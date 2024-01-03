@@ -1,9 +1,21 @@
+import {useState} from 'react'
 import warrior from "../data/warrior.js"
 import warrior_deck from "../data/warrior_deck"
 import Level0 from "./Level0"
 import Level from "./Level"
+import TopBar from "./TopBar"
+import Modal from "../Modal"
+import Card from "./Card"
+import Item from "./Item"
+
 import {copyState} from "./lib/helper_lib"
+
 const Game = ({setPage, setGameState, game_state}) => {
+
+
+  const [show_modal, setShowModal] = useState("")
+  const [modal_mode, setModalMode] = useState("")
+  const [modal_deck, setModalDeck] = useState([])
 
   const starting_char_map = {
     "warrior": {
@@ -41,6 +53,26 @@ const Game = ({setPage, setGameState, game_state}) => {
     setGameState(game_state_copy)
   }
 
+  const toggleDeckModal = deck => {
+    if(show_modal){
+      setShowModal(false)
+      return
+    }
+    setModalMode("deck")
+    setModalDeck(deck)
+    setShowModal(true)
+  }
+
+  const toggleItemModal = () => {
+    if(show_modal){
+      setShowModal(false)
+      return
+    }
+    setModalMode("items")
+    setShowModal(true)
+  }
+
+
   return (
     <>
 
@@ -60,11 +92,31 @@ const Game = ({setPage, setGameState, game_state}) => {
           </div>
         </>
       }
+
+      {game_state.character &&
+        <TopBar game_state={game_state} toggleDeckModal={toggleDeckModal} toggleItemModal={toggleItemModal}/>
+      }
+
+      <Modal show_modal={show_modal} setShowModal={setShowModal}>
+        {modal_mode === "deck" &&
+          <div className="grid eq_four_col">
+            {modal_deck.map((card) => <Card key={card.key} card={card} />)}
+          </div>
+        }
+        {modal_mode === "items" &&
+          <div className="grid eq_four_col">
+            {game_state.character.inventory.map((item) => {
+              return <Item item={item} />
+            })}
+          </div>
+        }
+      </Modal>
+
       {game_state.character && game_state.level.number === 0 &&
         <Level0 game_state={game_state} setGameState={setGameState} />
       }
       {game_state.character && game_state.level.number >= 1 &&
-        <Level game_state={game_state} setGameState={setGameState}/>
+        <Level game_state={game_state} setGameState={setGameState} toggleDeckModal={toggleDeckModal}/>
       }
     </>
   )

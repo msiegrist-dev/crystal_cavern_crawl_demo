@@ -20,7 +20,10 @@ const DamageForCard = ({satisfied, setSatisfied, game_state, setGameState, setMe
       </p>
       <p>Take 10 damage but receive a random card.</p>
       {!satisfied &&
+        <>
         <h3 className="center_text action_text" onClick={(e) => accept()}>Accept</h3>
+        <h3 className="center_text action_text" onClick={(e) => setSatisfied(true)}>Reject</h3>
+        </>
       }
     </div>
   )
