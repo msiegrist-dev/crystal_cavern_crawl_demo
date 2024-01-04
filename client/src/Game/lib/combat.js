@@ -70,11 +70,10 @@ const getEnemyAction = (game_state, enemy) => {
     {name: "attack", value: 50}, {name: "defend", value: 50}
   ]
   const has_block_odds = [
-    {name: "attack", value: "80"}, {name: "defend", value: 20}
+    {name: "attack", value: 80}, {name: "defend", value: 20}
   ]
   const use_odds = enemy.block >= 5 ? has_block_odds : base_odds
   const list = handleOdds(use_odds)
-  console.log("list", list)
   return getRandomValueFromList(enemy.options[list])
 }
 

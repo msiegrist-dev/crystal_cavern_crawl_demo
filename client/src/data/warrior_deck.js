@@ -10,7 +10,7 @@ const warrior_deck = [
   {
     name: "Defend",
     type: "defend",
-    value: 4
+    value: 3
   },
   {
     name: "Overhead Slice",
@@ -59,7 +59,7 @@ const warrior_deck = [
     attack_effects: [
       {
         name: "give_block",
-        value: 3
+        value: 2
       }
     ],
     gem_augments: {
@@ -135,7 +135,7 @@ const warrior_deck = [
     attack_effects: [
       {
         name: "give_block",
-        value: 3
+        value: 2
       },
       {
         name: "block_as_attack",

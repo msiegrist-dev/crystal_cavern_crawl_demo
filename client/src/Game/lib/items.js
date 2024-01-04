@@ -1,11 +1,18 @@
-import {getRandomValueFromList, copyState} from "./helper_lib"
+import {getRandomValueFromList, copyState, handleOdds} from "./helper_lib"
 import {giveCharacterStats} from "./stats"
 import items from "../../data/items"
 
 const getRandomItems = quantity => {
+  const rarity_odds = [
+    {name: "common", value: 80},
+    {name: "uncommon", value: 15},
+    {name: "rare", value: 5}
+  ]
+  const rarity = handleOdds(rarity_odds)
+  const item_set = items.filter((it) => it.rarity === rarity)
   const random_items = []
   for(let i = 0; i < quantity; i++){
-    random_items.push(getRandomValueFromList(items))
+    random_items.push(getRandomValueFromList(item_set))
   }
   return random_items
 }

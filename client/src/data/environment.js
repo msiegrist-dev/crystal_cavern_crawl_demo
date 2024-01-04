@@ -24,7 +24,8 @@ const environment = {
   ],
   EVENTS: [
     "harmful_healer",
-    "damage_for_card"
+    "damage_for_card",
+    "item_stash"
   ]
 }
 
