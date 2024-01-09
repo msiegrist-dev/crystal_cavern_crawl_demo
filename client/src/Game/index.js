@@ -105,8 +105,8 @@ const Game = ({setPage, setGameState, game_state}) => {
         }
         {modal_mode === "items" &&
           <div className="grid eq_four_col">
-            {game_state.character.inventory.map((item) => {
-              return <Item item={item} />
+            {game_state.character.inventory.map((item, i) => {
+              return <Item key={i} item={item} />
             })}
           </div>
         }

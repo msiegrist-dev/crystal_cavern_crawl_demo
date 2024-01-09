@@ -8,14 +8,14 @@ const Item = ({item}) => {
       {item.increase_stats &&
         <>
         {item.increase_stats.map((stat) => {
-          return <p className="mt-0 mb-0">{stat.name} +{stat.value}</p>
+          return <p key={stat.name} className="mt-0 mb-0">{stat.name} +{stat.value}</p>
         })}
         </>
       }
       {item.decrease_stats &&
         <>
         {item.decrease_stats.map((stat) => {
-          return <p className="mt-0 mb-0">{stat.name} -{stat.value}</p>
+          return <p key={stat.name} className="mt-0 mb-0">{stat.name} -{stat.value}</p>
         })}
         </>
       }

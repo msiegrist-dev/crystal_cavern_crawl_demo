@@ -58,7 +58,9 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
     setDrawPile(shuffleKeyedArray(game_state.character.deck))
     setGraveyard([])
     setCombatLog([])
-    const next_level = goNextLevel(copyState(game_state))
+    let copy = copyState(game_state)
+    copy.character.buffs = {}
+    const next_level = goNextLevel(copy)
     const is_combat = next_level.level.type === "combat"
     setTurnOrder(is_combat ? getTurnOrder(next_level) : [])
     setTurnNumber(1)
@@ -90,7 +92,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
     if(!selected_card || !targetting || combat_ended){
       return
     }
-    const new_game_state = playCard(selected_card, game_state, [target_key], hand, graveyard, combat_log, setCombatLog, combat_stats, setCombatStats)
+    const new_game_state = playCard(selected_card, game_state, [target_key], hand, graveyard, combat_log, setCombatLog, combat_stats, setCombatStats, setMessage)
     if(new_game_state.error){
       return setMessage(new_game_state.error)
     }

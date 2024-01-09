@@ -12,13 +12,13 @@ const doesCardRequireGem = card => {
   return false
 }
 
-const isCardUsingAugmentGem = card => {
+const isCardUsingGems = card => {
   if(!card.gem_augments || !card.gem_inventory){
     return false
   }
   for(let gem_name of Object.keys(card.gem_augments)){
     const gem = card.gem_augments[gem_name]
-    if(!gem.required && card.gem_inventory[gem_name] === gem.number){
+    if(card.gem_inventory[gem_name] === gem.number){
       return true
     }
   }
@@ -26,14 +26,22 @@ const isCardUsingAugmentGem = card => {
 }
 
 const processGemAugment = card => {
+  if(!card.gem_augments || !Object.keys(card.gem_augments).length){
+    return card
+  }
+
   let card_copy = copyState(card)
 
   for(let gem_name of Object.keys(card.gem_augments)){
     const augment = card.gem_augments[gem_name]
-    if(!augment.number === card_copy.gem_inventory[gem_name]){
+    if(!augment){
       continue
     }
-    if(!augment.effect){
+    const inventory = card.gem_inventory[gem_name]
+    if(!inventory){
+      continue
+    }
+    if(augment.number > card_copy.gem_inventory[gem_name]){
       continue
     }
     if(augment.effect_name === "increase_card_value"){
@@ -46,6 +54,20 @@ const processGemAugment = card => {
   }
 
   return card_copy
+}
+
+const doesCardHaveRequiredGems = card => {
+  for(let gem_name of Object.keys(card.gem_augments)){
+    const augment = card.gem_augments[gem_name]
+    if(!augment.required){
+      continue
+    }
+    const inventory = card.gem_inventory[gem_name]
+    if(inventory < augment.required){
+      return false
+    }
+  }
+  return true
 }
 
 const addCardToDeck = (game_state, card) => {
@@ -83,8 +105,9 @@ export {
   addCardToDeck,
   removeCardFromDeck,
   processGemAugment,
-  isCardUsingAugmentGem,
+  isCardUsingGems,
   doesCardRequireGem,
   getRandomCards,
-  cardHasAttackEffect
+  cardHasAttackEffect,
+  doesCardHaveRequiredGems
 }

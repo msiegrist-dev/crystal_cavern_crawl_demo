@@ -118,7 +118,7 @@ const Card = ({
             }
 
             const targets = card.type === "defend" || card.type === "effect" ? ["player"] : game_state.level.enemies.map((en) => en.key)
-            const new_game_state = playCard(card, game_state, targets, hand, graveyard, combat_log, setCombatLog, combat_stats, setCombatStats)
+            const new_game_state = playCard(card, game_state, targets, hand, graveyard, combat_log, setCombatLog, combat_stats, setCombatStats, setMessage)
             if(new_game_state.error){
               return setMessage(new_game_state.error)
             }

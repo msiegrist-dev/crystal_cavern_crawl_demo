@@ -6,7 +6,7 @@ import {
 } from "./helper_lib"
 import {doesCharacterHaveCardAugmentGems, getRandomGemName} from "./gems"
 import {getRandomItems} from "./items"
-import {getRandomCards, doesCardRequireGem, isCardUsingAugmentGem, processGemAugment, cardHasAttackEffect} from "./cards"
+import {getRandomCards, doesCardRequireGem, isCardUsingGems, processGemAugment, cardHasAttackEffect, doesCardHaveRequiredGems} from "./cards"
 
 const mapEnemiesForCombat = (new_enemies, game_state) => {
   let start = 0
@@ -287,13 +287,20 @@ const sendCardsToGraveYard = (hand, cards, graveyard, game_state) => {
 
 
 
-const playCard = (card, game_state, target_keys, hand, graveyard, combat_log, setCombatLog, combat_stats, setCombatStats) => {
+const playCard = (card, game_state, target_keys, hand, graveyard, combat_log, setCombatLog, combat_stats, setCombatStats, setMessage) => {
   let card_copy = copyState(card)
-  const has_required_gems = doesCardRequireGem(card_copy) ? doesCharacterHaveCardAugmentGems(game_state, card_copy) : true
-  if(!has_required_gems){
-    return {error: "You do not have enough gems to complete this action."}
+  console.log('card', card_copy)
+  const requires_gems = doesCardRequireGem(card_copy)
+  const using_gems = isCardUsingGems(card_copy)
+  if(requires_gems && !using_gems){
+    return setMessage("Card requires a gem to play.")
   }
-  if(isCardUsingAugmentGem(card_copy)){
+  if(requires_gems){
+    if(!doesCardHaveRequiredGems(card_copy)){
+      return setMessage("Card requires a gem to play.")
+    }
+  }
+  if(using_gems){
     card_copy = processGemAugment(card_copy)
   }
   const card_sources = sendCardsToGraveYard(hand, [card], graveyard, game_state)
