@@ -199,13 +199,14 @@ const Victory = ({
     }
     </div>
     <h3 className="center_text">{message}</h3>
-    <button onClick={(e) => {
+    <h2  className="m-4 p-4 center_text action_text"
+      onClick={(e) => {
         setSelections([])
         setSelectionMade(false)
         resetCombat(game_state)
       }}>
       Continue
-    </button>
+    </h2>
     </>
   )
 }

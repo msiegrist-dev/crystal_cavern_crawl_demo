@@ -80,6 +80,13 @@ const items = [
     rarity: "uncommon"
   },
   {
+    name: "Starting Pistol",
+    increase_stats: [
+      {name: "starting_draw", value: 1, type: "flat"}
+    ],
+    rarity: "uncommon"
+  },
+  {
     name: "Jade Rose",
     increase_stats: [
       {name: "max_hp", value: 8, type: "flat"},
@@ -87,6 +94,13 @@ const items = [
       {name: "defense", value: 2, type: "flat"},
       {name: "speed", value: .05, type: "flat"},
       {name: "armor", value: .05, type: "flat"},
+    ],
+    rarity: "rare"
+  },
+  {
+    name: "Seer's Crystal Ball",
+    increase_stats: [
+      {name: "card_draw", value: 1, type: "flat"}
     ],
     rarity: "rare"
   }

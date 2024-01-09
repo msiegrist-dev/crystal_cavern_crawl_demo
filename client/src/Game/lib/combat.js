@@ -237,13 +237,13 @@ const processAction = (game_state, doer, target_keys, action, consume_gems, comb
 }
 
 
-const startTurnDraw = (draw_pile, graveyard, hand) => {
+const drawCards = (draw_pile, graveyard, hand, number_to_draw) => {
   let draw = copyState(draw_pile)
   let grave = copyState(graveyard)
   let hand_copy = []
 
   const available_cards = draw.length + grave.length
-  const to_draw = available_cards >= 4 ? 4 : available_cards
+  const to_draw = available_cards >= number_to_draw ? number_to_draw : available_cards
   let drawn = 0
   while(drawn < to_draw){
     if(draw.length > 0){
@@ -404,7 +404,7 @@ export {
   getTurnOrder,
   getEnemyAction,
   processAction,
-  startTurnDraw,
+  drawCards,
   playCard,
   sendCardsToGraveYard,
   addGemToCard,

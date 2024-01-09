@@ -7,10 +7,10 @@ const giveCharacterStats = (character, stat_name, amount) => {
   if(stat_name === "max_hp"){
     state_copy.hp = roundToNearestInt(state_copy.hp + amount)
   }
-  if(!state_copy["flat_stat_increases"][stat_name]){
-    state_copy["flat_stat_increases"][stat_name] = 0
+  const ignore_flat_stat_stats = ["starting_draw", "card_draw"]
+  if(!ignore_flat_stat_stats.includes(stat_name)){
+    state_copy["flat_stat_increases"][stat_name] = roundToNearestInt(state_copy["flat_stat_increases"][stat_name] + amount)
   }
-  state_copy["flat_stat_increases"][stat_name] = roundToNearestInt(state_copy["flat_stat_increases"][stat_name] + amount)
   return state_copy
 }
 
