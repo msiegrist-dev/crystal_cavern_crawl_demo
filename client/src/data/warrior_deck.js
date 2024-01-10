@@ -2,7 +2,7 @@ const warrior_deck = [
   {
     name: "Attack",
     type: "attack",
-    value: 4,
+    value: 3,
     hits: 1,
     accuracy: 98,
     target_required: true
@@ -10,7 +10,7 @@ const warrior_deck = [
   {
     name: "Defend",
     type: "defend",
-    value: 3
+    value: 2
   },
   {
     name: "Overhead Slice",
@@ -97,7 +97,7 @@ const warrior_deck = [
     name: "Combo Slice",
     type: "attack",
     target_required: true,
-    value: 4,
+    value: 3,
     hits: 2,
     accuracy: 98
   },

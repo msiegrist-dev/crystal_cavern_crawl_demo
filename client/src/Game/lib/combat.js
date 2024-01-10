@@ -199,7 +199,7 @@ const processAction = (game_state, doer, target_keys, action, consume_gems, comb
       if(player_action){
         const block_value = getBlockValue(game_state_copy.character, action)
         game_state_copy.character.block += block_value
-        setCombatLog(combat_log.concat([`Character blocked for ${block_value}`]))
+        setCombatLog(combat_log.concat([`${game_state.character.name} blocked for ${block_value}`]))
       }
       if(!player_action){
         const block_value = getBlockValue(game_state_copy.level.enemies[doer_enemy_index], action)
@@ -212,15 +212,7 @@ const processAction = (game_state, doer, target_keys, action, consume_gems, comb
       const processor = action.type === "attack" ? processAttack : processEffect
       const parties = processor(doer, target, action, combat_log, setCombatLog)
       game_state_copy.character = player_action ? parties.doer : parties.target
-      if(target_enemy_index >= 0){
-        game_state_copy.level.enemies[target_enemy_index] = parties.target
-        if(parties.target.hp <= 0){
-          combat_stats_copy.enemies_killed += 1
-        }
-      }
-      if(doer_enemy_index >= 0){
-        game_state_copy.level.enemies[doer_enemy_index] = parties.doer
-      }
+
       if(action.type === "attack"){
         const combat_stats_key = parties.doer.key === "player" ? "damage_dealt" : "damage_taken"
         combat_stats_copy[combat_stats_key] += parties.damage_dealt
@@ -229,6 +221,17 @@ const processAction = (game_state, doer, target_keys, action, consume_gems, comb
       }
       if(action.type === "effect"){
         setCombatLog(combat_log.concat(`${parties.doer_name} used ${action.name} for ${action.value}`))
+      }
+
+      if(target_enemy_index >= 0){
+        game_state_copy.level.enemies[target_enemy_index] = parties.target
+        if(parties.target.hp <= 0){
+          setCombatLog(combat_log.concat(`${parties.doer.name} has defeated ${parties.target.name}`))
+          combat_stats_copy.enemies_killed += 1
+        }
+      }
+      if(doer_enemy_index >= 0){
+        game_state_copy.level.enemies[doer_enemy_index] = parties.doer
       }
     }
     setCombatStats(combat_stats_copy)
@@ -293,11 +296,11 @@ const playCard = (card, game_state, target_keys, hand, graveyard, combat_log, se
   const requires_gems = doesCardRequireGem(card_copy)
   const using_gems = isCardUsingGems(card_copy)
   if(requires_gems && !using_gems){
-    return setMessage("Card requires a gem to play.")
+    return {error: "Card requires a gem to play."}
   }
   if(requires_gems){
     if(!doesCardHaveRequiredGems(card_copy)){
-      return setMessage("Card requires a gem to play.")
+      return {error: "Card requires a gem to play."}
     }
   }
   if(using_gems){

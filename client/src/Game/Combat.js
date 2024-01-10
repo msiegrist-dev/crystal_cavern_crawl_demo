@@ -163,6 +163,9 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
       }
       console.log("IT IS ENEMIES TURN")
       const enemy = enemies.find((ene) => ene.key === turn.key)
+      if(enemy.hp <= 0){
+        return goNextTurn()
+      }
       const action = getEnemyAction(game_state, enemy)
       setGameState(
         processAction(game_state, enemy, ["player"], action, false, combat_log, setCombatLog, combat_stats, setCombatStats)
@@ -271,6 +274,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
     }
 
     if(game_state.character.hp <= 0){
+      setCombatLog(combat_log.concat(`${game_state.character.name} has been defeated.`))
       setCombatEnded(true)
       return defeat()
     }
