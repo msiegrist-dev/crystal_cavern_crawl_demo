@@ -7,6 +7,7 @@ const ItemStash = ({satisfied, setSatisfied, game_state, setGameState, setMessag
   }
 
   return <div>
+    <h3 className="center_text">Item Stash</h3>
     <p>While searching for the next passage, you stumble across a secret stash of trinkets.
       Why don't you take something to bolster your kit?
     </p>

@@ -13,6 +13,7 @@ const DamageForCard = ({satisfied, setSatisfied, game_state, setGameState, setMe
 
   return (
     <div>
+      <h3 className='center_text'>Blood for Power</h3>
       <p>
         A scraggly blood wizard of the occult approaches you from the shadows.
         For a small donation, he can gift you with new powers.

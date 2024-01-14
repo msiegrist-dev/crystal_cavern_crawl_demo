@@ -3,6 +3,7 @@ import default_game_state from "./data/default_game_state"
 import Game from "./Game"
 
 import grublin_king_state from "./test_states/grublin_king"
+import seers_state from "./test_states/seers_sacrifice"
 
 const App = () => {
 

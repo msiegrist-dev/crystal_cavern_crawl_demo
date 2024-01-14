@@ -333,3 +333,10 @@ body {
   border: 2px solid black;
   border-radius: 12px;
 }
+
+ul {
+  list-style-type: none;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+}

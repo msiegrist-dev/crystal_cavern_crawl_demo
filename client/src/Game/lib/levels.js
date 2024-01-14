@@ -14,6 +14,21 @@ const generateCombatLevel = number => {
   }
 }
 
+const generateEvent = number => {
+  if(number < 15){
+    return getRandomValueFromList(environment.BASE_EVENTS)
+  }
+  const odds = [
+    {name: "all", value: 85},
+    {name: "late", value: 15}
+  ]
+  const result = handleOdds(odds)
+  if(result === "all"){
+    return getRandomValueFromList(environment.BASE_EVENTS.concat(environment.LATE_EVENTS))
+  }
+  return getRandomValueFromList(environment.LATE_EVENTS)
+}
+
 const getRandomLevel = number => {
   const level_type_odds = [
     {name: "combat", value: 75},
@@ -31,7 +46,7 @@ const getRandomLevel = number => {
     return {
       number,
       type: level_type,
-      event_name: getRandomValueFromList(environment.EVENTS)
+      event_name: generateEvent(number)
     }
   }
 }

@@ -22,10 +22,13 @@ const environment = {
   CARD_REWARDS: [
     "random_card", "choice_card"
   ],
-  EVENTS: [
+  BASE_EVENTS: [
     "harmful_healer",
     "damage_for_card",
     "item_stash"
+  ],
+  LATE_EVENTS: [
+    "seers_sacrifice"
   ]
 }
 

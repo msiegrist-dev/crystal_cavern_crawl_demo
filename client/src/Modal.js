@@ -1,12 +1,12 @@
 const Modal = ({show_modal, setShowModal, children, permanent}) => {
 
-  const modal_class = show_modal ? "show_modal p-16 overflow-y-scroll w-80" : "w-80 hide_modal p-16 overflow-y-scroll"
+  const modal_class = show_modal ? "show_modal p-16 overflow-y-scroll w-90" : "w-90 hide_modal p-16 overflow-y-scroll"
 
   return (
     <div className={modal_class}
       style={{
-        left: "10%",
-        height: "80vh",
+        left: "5%",
+        height: "85vh",
         top: "5vh",
         zIndex: "12",
         position: "fixed",

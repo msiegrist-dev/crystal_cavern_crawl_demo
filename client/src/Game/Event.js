@@ -5,6 +5,7 @@ import {copyState} from "./lib/helper_lib"
 import HarmfulHealer from "./Events/HarmfulHealer"
 import DamageForCard from "./Events/DamageForCard"
 import ItemStash from "./Events/ItemStash"
+import SeersSacrifice from "./Events/SeersSacrifice"
 
 const Event = ({game_state, setGameState, toggleDeckModal}) => {
 
@@ -25,6 +26,9 @@ const Event = ({game_state, setGameState, toggleDeckModal}) => {
       game_state={game_state} setGameState={setGameState} setMessage={setMessage}
     />,
     "item_stash": <ItemStash satisfied={satisfied} setSatisfied={setSatisfied}
+      game_state={game_state} setGameState={setGameState} setMessage={setMessage}
+    />,
+    "seers_sacrifice": <SeersSacrifice satisfied={satisfied} setSatisfied={setSatisfied}
       game_state={game_state} setGameState={setGameState} setMessage={setMessage}
     />
   }

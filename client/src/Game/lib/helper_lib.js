@@ -40,7 +40,7 @@ const getIndexOfArrayItemByKey = (array, key) => {
       return i
     }
   }
-  return null
+  return -1
 }
 
 const capitalizeFirst = str => str[0].toUpperCase() + str.substr(1, str.length)
