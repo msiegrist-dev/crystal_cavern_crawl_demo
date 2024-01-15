@@ -6,10 +6,10 @@ import grublin_king from "../bosses/grublin_king"
 
 export default {
   mob_sets: [
-    // [grublin, grublin],
-    // [spider],
-    // [grublin, spider],
-    // [living_spike, grublin],
+    [grublin, grublin],
+    [spider],
+    [grublin, spider],
+    [living_spike, grublin],
     [living_spike, living_spike]
   ],
   bosses: [
