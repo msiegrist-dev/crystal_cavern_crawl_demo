@@ -12,7 +12,7 @@ export default {
     attack: [
       {
         type: "attack",
-        value: 5,
+        value: 7,
         hits: 1
       }
     ],

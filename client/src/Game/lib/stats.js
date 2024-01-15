@@ -17,10 +17,10 @@ const giveCharacterStats = (character, stat_name, amount) => {
 const getRandomStatName = () => getRandomValueFromList(environment.ALL_STATS)
 const getRandomStatValue = stat_name => {
   if(stat_name === "max_hp"){
-    return Math.ceil(getRandomNumber100() / 10)
+    return Math.ceil(getRandomNumber100() / 15)
   }
   if(stat_name === "attack" || stat_name === "defense" || stat_name === "speed"){
-    return Math.ceil(getRandomNumber100() / 20)
+    return Math.ceil(getRandomNumber100() / 25)
   }
   if(stat_name === "armor"){
     return Number(Math.ceil(getRandomNumber100() / 25) / 100)

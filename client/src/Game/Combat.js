@@ -345,9 +345,9 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
 
       <div className="grid" style={{gridTemplateColumns: "30% 70%", height: "500px", alignItems: "end"}}>
         <div className="grid center_all_items">
-          <img alt="player character" src={game_state.character.idle} style={{height: "325px"}}/>
-          <div className="grid two_col_equal w-80 m-4 p-4" style={{border: "2px solid black"}}>
-            <div className="span_two_col" style={{height: "125px"}}>
+          <img alt="player character" src={game_state.character.idle} style={{height: "350px"}}/>
+          <div className="grid two_col_equal w-80 m-4 p-4">
+            <div className="span_two_col" style={{height: "100px"}}>
               <Healthbar max_hp={game_state.character.max_hp} current_hp={game_state.character.hp} block={game_state.character.block}/>
               <div className="flex">
                 {Object.keys(game_state.character.buffs).map((buff_name) => {
