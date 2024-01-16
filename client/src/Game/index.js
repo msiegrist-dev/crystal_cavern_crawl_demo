@@ -100,7 +100,7 @@ const Game = ({setPage, setGameState, game_state}) => {
       <Modal show_modal={show_modal} setShowModal={setShowModal}>
         {modal_mode === "deck" &&
           <div className="grid eq_four_col">
-            {modal_deck.map((card) => <Card key={card.key} card={card} />)}
+            {modal_deck.map((card) => <Card key={card.key} card={card} game_state={game_state} playable={false}/>)}
           </div>
         }
         {modal_mode === "items" &&

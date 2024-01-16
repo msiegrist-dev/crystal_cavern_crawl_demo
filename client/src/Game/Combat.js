@@ -16,6 +16,7 @@ import Modal from "../Modal"
 import Victory from "./Victory"
 import Healthbar from "./Healthbar"
 import CombatStatsTable from "./CombatStatsTable"
+import Buffs from "./Buffs"
 
 const Combat = ({game_state, setGameState, toggleDeckModal}) => {
 
@@ -320,7 +321,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
           </div>
         </Modal>
       }
-      <div className="flex center_all_items gap-8">
+      <div className="flex center_all_items gap-8 w-vw-100">
         <h2 className="action_text mt-0" onClick={(e) => openCombatModal("combat_log")}>Combat Log</h2>
         <div className="m-4 flex gap-4 center_all_items">
           <h3 className="m-4">Turn {turn_number} : </h3>
@@ -336,34 +337,32 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
             return <p className="p-2 m-2" style={style}>{index + 1} : {enemy.name}</p>
           })}
         </div>
-        <h4 className="center_text m-0">It is {turn.key === "player" ? "Player Turn" : "Enemy Turn"}. {message}</h4>
-        <h4 className="center_text m-0">{combat_log[combat_log.length - 1]}</h4>
+        <h3 className="center_text m-0">It is {turn.key === "player" ? "Player Turn" : "Enemy Turn"}. {message}</h3>
+        <h3 className="center_text m-4 p-2"
+          style={{borderBottom: "2px solid #FB8B24"}}
+        >
+          {combat_log[combat_log.length - 1]}</h3>
       </div>
       {targetting && selected_card &&
         <h3 className="center_text" style={{color: "red"}}>Please select a target for {selected_card.name}</h3>
       }
 
-      <div className="grid" style={{gridTemplateColumns: "30% 70%", height: "500px", alignItems: "end"}}>
+      <div className="grid w-vw-100" style={{gridTemplateColumns: "30% 70%", height: "500px", alignItems: "end"}}>
         <div className="grid center_all_items">
           <img alt="player character" src={game_state.character.idle} style={{height: "350px"}}/>
           <div className="grid two_col_equal w-80 m-4 p-4">
             <div className="span_two_col" style={{height: "100px"}}>
               <Healthbar max_hp={game_state.character.max_hp} current_hp={game_state.character.hp} block={game_state.character.block}/>
-              <div className="flex">
-                {Object.keys(game_state.character.buffs).map((buff_name) => {
-                  return <p key={buff_name}><b>{buff_name}</b> : {game_state.character.buffs[buff_name]}</p>
-                })}
-              </div>
             </div>
+            <Buffs combatant={game_state.character} />
           </div>
         </div>
-
         <div className="flex gap-4" style={{justifyContent: "end"}}>
           {enemies.filter((en) => en.hp > 0).map((enemy) => <Enemy key={enemy.key} enemy={enemy} targettingHandler={targettingHandler} />)}
         </div>
       </div>
 
-      <div className="grid" style={{gridTemplateColumns: "200px 1fr 200px", margin: "2.5em auto"}}>
+      <div className="grid w-vw-100" style={{gridTemplateColumns: "200px 1fr 200px", margin: "2.5em auto"}}>
         <div>
           <h3 className="action_text center_text" onClick={(e) => toggleDeckModal(draw_pile)}>Draw Pile ({draw_pile.length})</h3>
         </div>

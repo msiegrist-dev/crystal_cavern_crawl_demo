@@ -1,9 +1,29 @@
+@font-face {
+    font-family: "Roboto";
+    src: url("Roboto-Regular.ttf");
+}
+
+h1, h2, h3, h4, h5, h6, p, ul, table {
+  font-family: "Roboto";
+  color: #FFFFFF;
+}
+
+
 header {
   margin: 10px;
 }
 
+body {
+  background-color: #7D7E75;
+  width: 100vw;
+}
+
 .ui.menu .item:before{
   width: 0px;
+}
+
+w-vw-100: {
+  width: 100vw;
 }
 
 .five_col_equal {
@@ -20,14 +40,15 @@ header {
 }
 
 .two_col_equal {
-  display: grid;
   grid-template-columns: 1fr 1fr;
 }
 
 .two_col_60_40 {
-  display: grid;
   grid-template-columns: 60% 1fr;
-  gap: 1em;
+}
+
+.two_col_70_30 {
+  grid-template-columns: 70% 1fr;
 }
 
 .three_col_equal {
@@ -303,17 +324,22 @@ p {
   margin-bottom: .25em !important;
 }
 
+button {
+  border-radius: 8px;
+  padding: .5em;
+}
+
 button:hover {
   cursor: pointer;
 }
 
 .action_text {
-  color: blue;
+  color: #FB8B24;
 }
 
 .action_text:hover {
   cursor: pointer;
-  color: lightblue;
+  color: #D90368;
 }
 
 body {
@@ -359,9 +385,10 @@ ul {
   top: -8px;
   border-style: solid;
   border-width: 0 10px 10px 10px;
-  border-color: transparent transparent #bfbfbf transparent;
+  border-color: transparent transparent #B0B2B8 transparent;
   transition-duration: 0.3s;
   transition-property: transform;
+  border-radius: 12px;
 }
 .popover_message:hover ~ .popover_content {
   z-index: 10;

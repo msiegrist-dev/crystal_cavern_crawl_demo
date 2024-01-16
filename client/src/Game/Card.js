@@ -11,8 +11,10 @@ const Card = ({
   const card_base_value = card.type === "effect" ? card.effect_value : card.value
   const width = big_card ? "400px" : "250px"
 
+  const backgroundColor = game_state.character.name.toLowerCase() === "warrior" ? "#C42430" : "white"
+
   return (
-    <div className="m-4 p-4 game_card grid center_all_items" style={{width}}>
+    <div className="m-4 p-4 game_card grid center_all_items" style={{width, backgroundColor}}>
       <h4 className="m-0-all">{card.name}</h4>
       <p className="m-0-all"><b>Type</b> : {formatKeyword(card.type)}</p>
       <p className="m-0-all">{type} Value : {card_base_value}</p>

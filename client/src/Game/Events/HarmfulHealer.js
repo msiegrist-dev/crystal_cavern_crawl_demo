@@ -29,14 +29,14 @@ const HarmfulHealer = ({satisfied, setSatisfied, game_state, setGameState, setMe
         Will you undergo procedure?
       </p>
       {!satisfied &&
-        <>
-        <button className="w-200px m-4 p-4" onClick={(e) => healer()}>
-          Accept
-        </button>
-        <button className="w-200px m-4 p-4" onClick={(e) => setSatisfied(true)}>
-          Reject
-        </button>
-        </>
+        <div className="grid two_col_equal w-80 m-4 p-4">
+          <button className="w-200px m-4 p-4" onClick={(e) => healer()}>
+            Accept
+          </button>
+          <button className="w-200px m-4 p-4" onClick={(e) => setSatisfied(true)}>
+            Reject
+          </button>
+        </div>
       }
     </div>
   )

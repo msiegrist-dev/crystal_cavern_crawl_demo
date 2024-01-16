@@ -104,9 +104,12 @@ const actionMissed = action => {
   return Number(action.accuracy) < getRandomNumber100()
 }
 
-const processAttack = (doer, target, action, combat_log, setCombatLog) => {
-  const doer_copy = copyState(doer)
-  const target_copy = copyState(target)
+const processAttack = (doer, target, action, combat_log, setCombatLog, do_not_refire_thorns) => {
+  let doer_copy = copyState(doer)
+  let target_copy = copyState(target)
+  const target_has_buffs = target_copy.buffs && Object.keys(target_copy.buffs).length > 0
+  console.log("TARGET HAS BUFFS")
+
   let total_damage_value = 0
   let damage_dealt = 0
   for(let i = 0; i < action.hits; i++){
@@ -122,6 +125,17 @@ const processAttack = (doer, target, action, combat_log, setCombatLog) => {
     total_damage_value += damage_value
     const armor_piercing_effect = cardHasAttackEffect(action, "armor_piercing")
     const remaining_block = getRemainingBlock(target_copy, damage_value, armor_piercing_effect)
+
+    if(target_has_buffs && !do_not_refire_thorns){
+      console.log("DOING THORNS OUCH")
+      const buff_names = Object.keys(target_copy.buffs)
+      if(buff_names.includes("thorns")){
+        const state_processed_thorns = processAttack(target, doer, {type: "attack", value: 8, hits: 1, accuracy: 100}, combat_log, setCombatLog, true)
+        target_copy = state_processed_thorns.doer
+        doer_copy = state_processed_thorns.target
+      }
+    }
+
     if(remaining_block <= 0){
       target_copy.block = 0
       target_copy.hp -= (remaining_block * -1)
@@ -135,7 +149,9 @@ const processAttack = (doer, target, action, combat_log, setCombatLog) => {
     doer: doer_copy,
     target: target_copy,
     total_damage: total_damage_value,
-    damage_dealt
+    damage_dealt,
+    hits: action.hits,
+    base_damage_value: action.value
   }
 }
 
@@ -292,7 +308,6 @@ const sendCardsToGraveYard = (hand, cards, graveyard, game_state) => {
 
 const playCard = (card, game_state, target_keys, hand, graveyard, combat_log, setCombatLog, combat_stats, setCombatStats, setMessage) => {
   let card_copy = copyState(card)
-  console.log('card', card_copy)
   const requires_gems = doesCardRequireGem(card_copy)
   const using_gems = isCardUsingGems(card_copy)
   if(requires_gems && !using_gems){
