@@ -89,7 +89,14 @@ const items = [
   {
     name: "Armor of Annoyance",
     starting_buffs: [
-      {name: "thorns", value: 3}
+      {name: "thorns", value: 2}
+    ],
+    rarity: "uncommon"
+  },
+  {
+    name: "Blood-Colored Glasses",
+    starting_buffs: [
+      {name: "fervor", value: 2}
     ],
     rarity: "uncommon"
   },

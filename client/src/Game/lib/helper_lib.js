@@ -34,6 +34,8 @@ const roundToNearestInt = (number) => {
   return Math.floor(number)
 }
 
+const increaseByPercent = (number, percent) => number + (number * (percent / 100))
+
 const getIndexOfArrayItemByKey = (array, key) => {
   for(let i = 0; i < array.length; i++){
     if(array[i].key === key){
@@ -116,5 +118,6 @@ export {
   displayArmorAsPct,
   removeItemFromArrayByKey,
   assignRandomKey,
-  handleOdds
+  handleOdds,
+  increaseByPercent
 }

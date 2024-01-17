@@ -7,3 +7,4 @@ client/public/*.jpg
 todo
 test.js
 test_notes
+client/build

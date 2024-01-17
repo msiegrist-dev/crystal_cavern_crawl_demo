@@ -21,7 +21,6 @@ const SeersSacrifice = ({satisfied, setSatisfied, game_state, setGameState, setM
     setModalMode(mode)
     setModalOpen(true)
   }
-  console.log('sel', selected_cards)
 
   const toggleEntitySelected = (entity, type) => {
     const array = type === "card" ? selected_cards : selected_gems

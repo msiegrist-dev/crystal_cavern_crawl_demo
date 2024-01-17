@@ -2,11 +2,30 @@ import environment from "../../data/environment"
 
 import {
   getRandomValueFromList, getRandomNumber100, getRandomNumber, copyState, shuffleKeyedArray,
-  getIndexOfArrayItemByKey, roundToNearestInt, handleOdds
+  getIndexOfArrayItemByKey, roundToNearestInt, handleOdds, increaseByPercent
 } from "./helper_lib"
 import {doesCharacterHaveCardAugmentGems, getRandomGemName} from "./gems"
 import {getRandomItems} from "./items"
 import {getRandomCards, doesCardRequireGem, isCardUsingGems, processGemAugment, cardHasAttackEffect, doesCardHaveRequiredGems} from "./cards"
+
+const applyBuff = (target, buff_name, buff_value) => {
+  if(!target.buffs){
+    target.buffs = {}
+  }
+  if(!target.buffs[buff_name]){
+    target.buffs[buff_name] = 0
+  }
+  target.buffs[buff_name] += buff_value
+  return target
+}
+
+const hasBuffs = combatant => {
+  if(!combatant.buffs) return false
+  if(!Object.keys(combatant.buffs).length) return false
+  return true
+}
+
+const hasBuff = (combatant, buff_name) => Object.keys(combatant.buffs).includes(buff_name)
 
 const mapEnemiesForCombat = (new_enemies, game_state) => {
   let start = 0
@@ -78,7 +97,9 @@ const getEnemyAction = (game_state, enemy) => {
 }
 
 const getAttackValue = (doer, action) => {
-  let value = action.value
+  const has_buffs = hasBuffs(doer)
+  const has_fervor = has_buffs ? hasBuff(doer, "fervor") : false
+  let value = has_fervor ? roundToNearestInt(increaseByPercent(action.value, 25)) : action.value
   if(action.do_not_process_attack_modifiers){
     return value
   }
@@ -90,7 +111,8 @@ const getAttackValue = (doer, action) => {
   if(block_as_attack){
     value = roundToNearestInt(doer.block * block_as_attack.value)
   }
-  return doer.attack + value
+  const attack_stat = has_fervor ? roundToNearestInt(increaseByPercent(doer.attack, 25)) : doer.attack
+  return value + attack_stat
 }
 
 const getRemainingBlock = (target, damage, pierce_armor) => {
@@ -113,6 +135,7 @@ const processAttack = (doer, target, action, combat_log, do_not_refire_thorns) =
   let combat_log_copy = copyState(combat_log)
   let total_damage_value = 0
   let damage_dealt = 0
+
   for(let i = 0; i < action.hits; i++){
     if(actionMissed(action)){
       combat_log_copy = combat_log_copy.concat([`${doer.name} missed their attack on ${target.name}.`])
@@ -122,13 +145,16 @@ const processAttack = (doer, target, action, combat_log, do_not_refire_thorns) =
     if(give_block_effect){
       doer_copy.block += getBlockValue(doer_copy, {value: give_block_effect.value})
     }
+
     const damage_value = getAttackValue(doer_copy, action)
     total_damage_value += damage_value
     const armor_piercing_effect = cardHasAttackEffect(action, "armor_piercing")
     const remaining_block = getRemainingBlock(target_copy, damage_value, armor_piercing_effect)
+
     if(target_has_buffs && !do_not_refire_thorns){
       console.log("DOING THORNS OUCH")
       const buff_names = Object.keys(target_copy.buffs)
+
       if(buff_names.includes("thorns")){
         const thorns_action = target.key === "character" ? environment.THORNS_ATTACK_PLAYER : environment.THORNS_ATTACK_ENEMY
         const state_processed_thorns = processAttack(target, doer, thorns_action, combat_log, true)
@@ -144,8 +170,10 @@ const processAttack = (doer, target, action, combat_log, do_not_refire_thorns) =
       damage_dealt = target.block + (remaining_block * -1)
       continue
     }
+
     damage_dealt = target.block - remaining_block
     target_copy.block = remaining_block
+
   }
   return {
     doer: doer_copy,
@@ -156,17 +184,6 @@ const processAttack = (doer, target, action, combat_log, do_not_refire_thorns) =
     base_damage_value: action.value,
     combat_log: combat_log_copy
   }
-}
-
-const applyBuff = (target, buff_name, buff_value) => {
-  if(!target.buffs){
-    target.buffs = {}
-  }
-  if(!target.buffs[buff_name]){
-    target.buffs[buff_name] = 0
-  }
-  target.buffs[buff_name] += buff_value
-  return target
 }
 
 const processEffect = (doer, target, action, combat_log, setCombatLog) => {
