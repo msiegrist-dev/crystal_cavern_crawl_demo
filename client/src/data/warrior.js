@@ -10,7 +10,13 @@ const warrior = {
   starting_draw: 4,
   card_draw: 4,
   block: 0,
-  inventory: [],
+  inventory: [{
+    name: "Armor of Annoyance",
+    starting_buffs: [
+      {name: "thorns", value: 3}
+    ],
+    rarity: "uncommon"
+  }],
   gems: {
     red: 3,
     blue: 3

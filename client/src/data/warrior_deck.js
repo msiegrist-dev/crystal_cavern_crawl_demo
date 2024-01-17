@@ -135,7 +135,7 @@ const warrior_deck = [
     attack_effects: [
       {
         name: "give_block",
-        value: 2
+        value: 1
       },
       {
         name: "block_as_attack",

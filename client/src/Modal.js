@@ -11,7 +11,7 @@ const Modal = ({show_modal, setShowModal, children, permanent}) => {
         zIndex: "12",
         position: "fixed",
         overflowY: "scroll",
-        background: "rgba(255, 255, 255, .95)"
+        background: "rgba(90, 91, 84, .9)"
       }}
       >
       {!permanent &&

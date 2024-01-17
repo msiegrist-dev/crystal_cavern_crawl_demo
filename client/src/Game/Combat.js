@@ -2,7 +2,8 @@ import {useState, useEffect} from 'react'
 import {getIndexOfArrayItemByKey, copyState, shuffleKeyedArray, getRandomNumber, roundToNearestInt} from "./lib/helper_lib"
 import {
   getTurnOrder, getEnemyAction, processAction, drawCards, playCard,
-  sendCardsToGraveYard, getTradeSelections, determineVictoryReward
+  sendCardsToGraveYard, getTradeSelections, determineVictoryReward,
+  applyBuff
 } from "./lib/combat"
 import {goNextLevel} from "./lib/levels"
 import {getRandomCards} from "./lib/cards"
@@ -148,6 +149,15 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
       }
       if(game_state_copy.character.block > 5){
         game_state_copy.character.block = roundToNearestInt(game_state_copy.character.block / 2)
+      }
+      if(turn_number === 1){
+        for(let item of game_state_copy.character.inventory){
+          if(Object.keys(item).includes("starting_buffs")){
+            for(let buff of item.starting_buffs){
+              game_state_copy.character = applyBuff(game_state_copy.character, buff.name, buff.value)
+            }
+          }
+        }
       }
       setGameState(game_state_copy)
       const {card_draw, starting_draw} = game_state_copy.character

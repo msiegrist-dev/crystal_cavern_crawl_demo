@@ -87,6 +87,13 @@ const items = [
     rarity: "uncommon"
   },
   {
+    name: "Armor of Annoyance",
+    starting_buffs: [
+      {name: "thorns", value: 3}
+    ],
+    rarity: "uncommon"
+  },
+  {
     name: "Jade Rose",
     increase_stats: [
       {name: "max_hp", value: 8, type: "flat"},

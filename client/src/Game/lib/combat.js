@@ -79,7 +79,9 @@ const getEnemyAction = (game_state, enemy) => {
 
 const getAttackValue = (doer, action) => {
   let value = action.value
-
+  if(action.do_not_process_attack_modifiers){
+    return value
+  }
   const block_as_bonus_attack = cardHasAttackEffect(action, "block_as_bonus_attack")
   if(block_as_bonus_attack){
     value += roundToNearestInt(doer.block * block_as_bonus_attack.value)
@@ -104,17 +106,16 @@ const actionMissed = action => {
   return Number(action.accuracy) < getRandomNumber100()
 }
 
-const processAttack = (doer, target, action, combat_log, setCombatLog, do_not_refire_thorns) => {
+const processAttack = (doer, target, action, combat_log, do_not_refire_thorns) => {
   let doer_copy = copyState(doer)
   let target_copy = copyState(target)
   const target_has_buffs = target_copy.buffs && Object.keys(target_copy.buffs).length > 0
-  console.log("TARGET HAS BUFFS")
-
+  let combat_log_copy = copyState(combat_log)
   let total_damage_value = 0
   let damage_dealt = 0
   for(let i = 0; i < action.hits; i++){
     if(actionMissed(action)){
-      setCombatLog(combat_log.concat(`${doer.name} missed their attack on ${target.name}.`))
+      combat_log_copy = combat_log_copy.concat([`${doer.name} missed their attack on ${target.name}.`])
       continue
     }
     const give_block_effect = cardHasAttackEffect(action, "give_block")
@@ -125,14 +126,15 @@ const processAttack = (doer, target, action, combat_log, setCombatLog, do_not_re
     total_damage_value += damage_value
     const armor_piercing_effect = cardHasAttackEffect(action, "armor_piercing")
     const remaining_block = getRemainingBlock(target_copy, damage_value, armor_piercing_effect)
-
     if(target_has_buffs && !do_not_refire_thorns){
       console.log("DOING THORNS OUCH")
       const buff_names = Object.keys(target_copy.buffs)
       if(buff_names.includes("thorns")){
-        const state_processed_thorns = processAttack(target, doer, {type: "attack", value: 8, hits: 1, accuracy: 100}, combat_log, setCombatLog, true)
+        const thorns_action = target.key === "character" ? environment.THORNS_ATTACK_PLAYER : environment.THORNS_ATTACK_ENEMY
+        const state_processed_thorns = processAttack(target, doer, thorns_action, combat_log, true)
         target_copy = state_processed_thorns.doer
         doer_copy = state_processed_thorns.target
+        combat_log_copy = combat_log_copy.concat([`${target_copy.name} did thorns damage back to ${doer_copy.name}`])
       }
     }
 
@@ -151,7 +153,8 @@ const processAttack = (doer, target, action, combat_log, setCombatLog, do_not_re
     total_damage: total_damage_value,
     damage_dealt,
     hits: action.hits,
-    base_damage_value: action.value
+    base_damage_value: action.value,
+    combat_log: combat_log_copy
   }
 }
 
@@ -200,10 +203,10 @@ const processAction = (game_state, doer, target_keys, action, consume_gems, comb
 
   if(action.type === "effect" && action.effect_name === "summon"){
     game_state_copy.level.enemies = game_state_copy.level.enemies.concat(mapEnemiesForCombat(action.value, game_state_copy))
-    setCombatLog(combat_log.concat([`${doer.name} summoned new enemies to combat.`]))
+    combat_log_copy = combat_log_copy.concat([`${doer.name} summoned new enemies to combat.`])
     return game_state_copy
   }
-
+  let combat_log_copy = copyState(combat_log)
   for(let target_key of target_keys){
     const combat_stats_copy = copyState(combat_stats)
     const doer_key = player_action ? "player" : doer.key
@@ -215,34 +218,35 @@ const processAction = (game_state, doer, target_keys, action, consume_gems, comb
       if(player_action){
         const block_value = getBlockValue(game_state_copy.character, action)
         game_state_copy.character.block += block_value
-        setCombatLog(combat_log.concat([`${game_state.character.name} blocked for ${block_value}`]))
+        combat_log_copy = combat_log_copy.concat([`${game_state.character.name} blocked for ${block_value}`])
       }
       if(!player_action){
         const block_value = getBlockValue(game_state_copy.level.enemies[doer_enemy_index], action)
         game_state_copy.level.enemies[doer_enemy_index].block += block_value
-        setCombatLog(combat_log.concat([`${game_state_copy.level.enemies[doer_enemy_index].name} blocked for ${block_value}`]))
+        combat_log_copy = combat_log_copy.concat([`${game_state_copy.level.enemies[doer_enemy_index].name} blocked for ${block_value}`])
       }
     }
 
     if(action.type === "attack" || action.type === "effect"){
       const processor = action.type === "attack" ? processAttack : processEffect
-      const parties = processor(doer, target, action, combat_log, setCombatLog)
+      const parties = processor(doer, target, action, combat_log_copy)
+      combat_log_copy = parties.combat_log
       game_state_copy.character = player_action ? parties.doer : parties.target
 
       if(action.type === "attack"){
         const combat_stats_key = parties.doer.key === "player" ? "damage_dealt" : "damage_taken"
         combat_stats_copy[combat_stats_key] += parties.damage_dealt
 
-        setCombatLog(combat_log.concat(`${parties.doer.name} attacks ${parties.target.name} for ${parties.total_damage}.`))
+        combat_log_copy = combat_log_copy.concat(`${parties.doer.name} attacks ${parties.target.name} for ${parties.total_damage}.`)
       }
       if(action.type === "effect"){
-        setCombatLog(combat_log.concat(`${parties.doer_name} used ${action.name} for ${action.value}`))
+        combat_log_copy = combat_log_copy.concat(`${parties.doer_name} used ${action.name} for ${action.value}`)
       }
 
       if(target_enemy_index >= 0){
         game_state_copy.level.enemies[target_enemy_index] = parties.target
         if(parties.target.hp <= 0){
-          setCombatLog(combat_log.concat(`${parties.doer.name} has defeated ${parties.target.name}`))
+          combat_log_copy = combat_log_copy.concat(`${parties.doer.name} has defeated ${parties.target.name}`)
           combat_stats_copy.enemies_killed += 1
         }
       }
@@ -250,6 +254,14 @@ const processAction = (game_state, doer, target_keys, action, consume_gems, comb
         game_state_copy.level.enemies[doer_enemy_index] = parties.doer
       }
     }
+    if(combat_log_copy.length > 2){
+      if(combat_log_copy[combat_log_copy.length - 2].includes("did thorns")){
+        const thorns = combat_log_copy[combat_log_copy.length - 2]
+        combat_log_copy[combat_log_copy.length - 2] = combat_log_copy[combat_log_copy.length - 1]
+        combat_log_copy[combat_log_copy.length - 1] = thorns
+      }
+    }
+    setCombatLog(combat_log_copy)
     setCombatStats(combat_stats_copy)
   }
   return game_state_copy
@@ -435,5 +447,6 @@ export {
   addGemToCard,
   returnCardGemToCharacter,
   getTradeSelections,
-  determineVictoryReward
+  determineVictoryReward,
+  applyBuff
 }
