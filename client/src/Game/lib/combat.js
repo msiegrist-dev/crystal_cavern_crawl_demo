@@ -208,21 +208,16 @@ const getBlockValue = (doer, action) => {
   return block_value
 }
 
-const processAction = (game_state, doer, target_keys, action, consume_gems, combat_log, setCombatLog, combat_stats, setCombatStats) => {
+const processAction = (game_state, doer, target_keys, action, combat_log, setCombatLog, combat_stats, setCombatStats) => {
   const game_state_copy = copyState(game_state)
   const player_action = doer.key === "player"
-
-  if(consume_gems){
-    for(let gem_name of Object.keys(consume_gems)){
-      game_state_copy.character.gems[gem_name] -= consume_gems[gem_name].number
-    }
-  }
 
   if(action.type === "effect" && action.effect_name === "summon"){
     game_state_copy.level.enemies = game_state_copy.level.enemies.concat(mapEnemiesForCombat(action.value, game_state_copy))
     combat_log_copy = combat_log_copy.concat([`${doer.name} summoned new enemies to combat.`])
     return game_state_copy
   }
+
   let combat_log_copy = copyState(combat_log)
   for(let target_key of target_keys){
     const combat_stats_copy = copyState(combat_stats)
@@ -350,11 +345,11 @@ const playCard = (card, game_state, target_keys, hand, graveyard, combat_log, se
   if(using_gems){
     card_copy = processGemAugment(card_copy)
   }
-  const card_sources = sendCardsToGraveYard(hand, [card], graveyard, game_state)
+  const card_sources = sendCardsToGraveYard(hand, [card_copy], graveyard, game_state)
   return {
     game_state: processAction(
       card_sources.game_state, game_state.character, target_keys,
-      {...card_copy}, card_copy.gem_inventory, combat_log, setCombatLog,
+      {...card_copy}, combat_log, setCombatLog,
       combat_stats, setCombatStats
     ),
     hand: card_sources.hand,

@@ -179,7 +179,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
       }
       const action = getEnemyAction(game_state, enemy)
       setGameState(
-        processAction(game_state, enemy, ["player"], action, false, combat_log, setCombatLog, combat_stats, setCombatStats)
+        processAction(game_state, enemy, ["player"], action, combat_log, setCombatLog, combat_stats, setCombatStats)
       )
       setTimeout(() => goNextTurn(), 3000)
     }
