@@ -297,7 +297,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
   }, [game_state, combat_ended, setGameState])
 
   return (
-    <div className="w-98 m-4 p-4 pt-0 mt-0" onClick={(e) => handleCombatSpaceOnClick(e)}>
+    <div className="w-100 m-4 p-4 pt-0 mt-0" onClick={(e) => handleCombatSpaceOnClick(e)}>
 
       {combat_modal_open &&
         <Modal show_modal={combat_modal_open} setShowModal={setCombatModalOpen}>
@@ -357,9 +357,9 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
         <h3 className="center_text" style={{color: "red"}}>Please select a target for {selected_card.name}</h3>
       }
 
-      <div className="grid w-vw-100" style={{gridTemplateColumns: "30% 70%", height: "500px", alignItems: "end"}}>
+      <div className="grid w-vw-100" style={{gridTemplateColumns: "30% 70%", height: "400px", alignItems: "end"}}>
         <div className="grid center_all_items">
-          <img alt="player character" src={game_state.character.idle} style={{height: "350px"}}/>
+          <img alt="player character" src={game_state.character.idle} style={{height: "250px"}}/>
           <div className="grid two_col_equal w-80 m-4 p-4">
             <div className="span_two_col" style={{height: "100px"}}>
               <Healthbar max_hp={game_state.character.max_hp} current_hp={game_state.character.hp} block={game_state.character.block}/>
@@ -372,18 +372,18 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
         </div>
       </div>
 
-      <div className="grid w-vw-100" style={{gridTemplateColumns: "200px 1fr 200px", margin: "2.5em auto"}}>
+      <div className="grid w-vw-100 p-2" style={{gridTemplateColumns: "125px 1fr 125px", marginBottom: "32px"}}>
         <div>
           <h3 className="action_text center_text" onClick={(e) => toggleDeckModal(draw_pile)}>Draw Pile ({draw_pile.length})</h3>
         </div>
 
-        <div className="grid eq_four_col gap-4">
-          {hand.map((card) => <Card key={card.key} card={card}
+        <div className="w-100 m-0">
+          {hand.map((card, i) => <Card key={card.key} card={card}
             playable={!game_state.defeat} game_state={game_state} setGameState={setGameState}
             setTargetting={setTargetting} setSelectedCard={setSelectedCard} hand={hand}
             graveyard={graveyard} setHand={setHand} setGraveyard={setGraveyard} setMessage={setMessage}
             combat_log={combat_log} setCombatLog={setCombatLog} combat_stats={combat_stats}
-            setCombatStats={setCombatStats}
+            setCombatStats={setCombatStats} in_combat_hand={true} index={i}
           />)}
         </div>
 

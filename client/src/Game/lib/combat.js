@@ -211,6 +211,7 @@ const getBlockValue = (doer, action) => {
 const processAction = (game_state, doer, target_keys, action, combat_log, setCombatLog, combat_stats, setCombatStats) => {
   const game_state_copy = copyState(game_state)
   const player_action = doer.key === "player"
+  let combat_log_copy = copyState(combat_log)
 
   if(action.type === "effect" && action.effect_name === "summon"){
     game_state_copy.level.enemies = game_state_copy.level.enemies.concat(mapEnemiesForCombat(action.value, game_state_copy))
@@ -218,7 +219,6 @@ const processAction = (game_state, doer, target_keys, action, combat_log, setCom
     return game_state_copy
   }
 
-  let combat_log_copy = copyState(combat_log)
   for(let target_key of target_keys){
     const combat_stats_copy = copyState(combat_stats)
     const doer_key = player_action ? "player" : doer.key

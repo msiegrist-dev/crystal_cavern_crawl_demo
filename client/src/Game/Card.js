@@ -1,20 +1,83 @@
 import {playCard, addGemToCard, returnCardGemToCharacter} from "./lib/combat"
-import {capitalizeFirst, formatKeyword} from "./lib/helper_lib"
+import {capitalizeFirst, formatKeyword, roundToNearestInt} from "./lib/helper_lib"
 import buff_descriptions from "../data/buff_descriptions"
 const Card = ({
   card, playable, game_state, setTargetting, setGameState, setSelectedCard,
   hand, graveyard, setHand, setGraveyard, setMessage, setCard, combat_log, setCombatLog,
-  big_card, combat_stats, setCombatStats
+  big_card, combat_stats, setCombatStats, in_combat_hand, index
 }) => {
+
+  const isInt = num => num % 1 === 0
 
   const type = capitalizeFirst(card.type)
   const card_base_value = card.type === "effect" ? card.effect_value : card.value
   const width = big_card ? "400px" : "250px"
-
   const backgroundColor = game_state.character.name.toLowerCase() === "warrior" ? "#C42430" : "white"
 
+  let in_hand_style = {}
+  if(in_combat_hand){
+    const cards_in_hand = hand.length
+    const left_starting_point = 450 - (roundToNearestInt(cards_in_hand / 2) * 125)
+    const left = left_starting_point + (215 * index) + "px"
+    const min = -20
+    const max = 20
+    const increment = ((min * -1) + max) / (cards_in_hand - 1)
+
+    const rounded_middle = roundToNearestInt(cards_in_hand / 2)
+    console.log(rounded_middle)
+    let distance_from_center = rounded_middle - index
+    if(index === 0){
+      console.log("INDEX", index, "DISTANCE FROM CENTER", distance_from_center)
+    }
+    //even number of cards in hand
+    if(isInt(rounded_middle)){
+      if(distance_from_center >= rounded_middle && index >= rounded_middle){
+        distance_from_center += 1
+      }
+    }
+    if(distance_from_center < 0){
+      distance_from_center = distance_from_center * -1
+    }
+
+    let bottom = 250
+    let distance_multiplier = 28
+    if(distance_from_center > 1){
+      distance_multiplier = 40
+    }
+    if(distance_from_center > 2){
+      distance_multiplier = 60
+    }
+    bottom = bottom - (distance_from_center * distance_multiplier)
+
+    let rotate = min + (increment * index)
+    if(index === hand.length - 1){
+      rotate = 20
+    }
+    if(index === rounded_middle && isInt(rounded_middle)){
+      rotate = 0
+    }
+    if(index === 0){
+      rotate = -20
+    }
+    const transform = `rotate(${rotate}deg)`
+    in_hand_style = {
+      position: "absolute",
+      left,
+      transform,
+      margin: "0px",
+      bottom: bottom + "px"
+    }
+  }
+
+
+  const style = {
+    width,
+    backgroundColor,
+    height: "185px"
+  }
+
   return (
-    <div className="m-4 p-4 game_card grid center_all_items" style={{width, backgroundColor}}>
+    <div className="m-4 p-4 game_card grid center_all_items" style={{...style, ...in_hand_style}}>
       <h4 className="m-0-all">{card.name}</h4>
       <p className="m-0-all"><b>Type</b> : {formatKeyword(card.type)}</p>
       <p className="m-0-all">{type} Value : {card_base_value}</p>
