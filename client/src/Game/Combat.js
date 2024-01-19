@@ -297,7 +297,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
   }, [game_state, combat_ended, setGameState])
 
   return (
-    <div className="w-100 m-4 p-4 pt-0 mt-0" onClick={(e) => handleCombatSpaceOnClick(e)}>
+    <div className="w-98 m-4 p-4 pt-0 mt-0 h-top-bar-minus-remainder" onClick={(e) => handleCombatSpaceOnClick(e)}>
 
       {combat_modal_open &&
         <Modal show_modal={combat_modal_open} setShowModal={setCombatModalOpen}>
@@ -331,8 +331,8 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
           </div>
         </Modal>
       }
-      <div className="flex center_all_items gap-8 w-vw-100">
-        <h2 className="action_text mt-0" onClick={(e) => openCombatModal("combat_log")}>Combat Log</h2>
+      <div className="flex center_all_items gap-8 w-98 m-2 p-4" style={{height: "35px"}}>
+        <h3 className="action_text mt-0 mb-0" onClick={(e) => openCombatModal("combat_log")}>Combat Log</h3>
         <div className="m-4 flex gap-4 center_all_items">
           <h3 className="m-4">Turn {turn_number} : </h3>
           {filterDeadEnemyTurns(turn_order).map((list_turn, index) => {
@@ -372,7 +372,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
         </div>
       </div>
 
-      <div className="grid w-vw-100 p-2" style={{gridTemplateColumns: "125px 1fr 125px", marginBottom: "32px"}}>
+      <div className="grid w-vw-98 p-2 h-100" style={{gridTemplateColumns: "125px 1fr 125px"}}>
         <div>
           <h3 className="action_text center_text" onClick={(e) => toggleDeckModal(draw_pile)}>Draw Pile ({draw_pile.length})</h3>
         </div>

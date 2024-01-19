@@ -22,8 +22,28 @@ body {
   width: 0px;
 }
 
-w-vw-100: {
+.w-vw-100: {
   width: 100vw;
+}
+
+.w-vw-98: {
+  width: 98vw;
+}
+
+.h-vh-50 {
+  height: 50vh;
+}
+
+.h-vh-100 {
+  height: 100vh;
+}
+
+.h-top-bar-minus-remainder {
+  height: calc(100vh - 60px)
+}
+
+.h-100 {
+  height: 100%;
 }
 
 .five_col_equal {

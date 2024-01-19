@@ -77,8 +77,8 @@ const Game = ({setPage, setGameState, game_state}) => {
     <>
 
       {!game_state.character &&
-        <>
-          <h1>Select a character</h1>
+        <div className="m-16 p-8 h-vh-50">
+          <h1 className="center_text m-4 p-4">Select a character</h1>
           <div className="grid three_col_equal w-60 m-4 p-4 gap-4">
             <div className="hov_pointer" onClick={(e) => setCharacter("warrior")}>
               <img src={warrior.idle} className="m-4 p-4 block"
@@ -90,7 +90,7 @@ const Game = ({setPage, setGameState, game_state}) => {
               </p>
             </div>
           </div>
-        </>
+        </div>
       }
 
       {game_state.character &&
