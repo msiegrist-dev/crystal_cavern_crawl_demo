@@ -421,3 +421,10 @@ ul {
   z-index: 10;
   position: relative;
 }
+
+.game_parent_container {
+  overflow-y: clip;
+  overflow-x: clip;
+  max-width: 1440px;
+  max-height: 1000px;
+}

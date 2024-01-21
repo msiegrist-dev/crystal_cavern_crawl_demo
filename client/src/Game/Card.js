@@ -8,13 +8,7 @@ const Card = ({
 }) => {
 
   const isInt = num => num % 1 === 0
-  const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
-  const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0)
-  const zero_vh = 1366
-  let left_starting_point = 0
-  if(vw >= zero_vh){
-    left_starting_point += (vw - zero_vh) / 5
-  }
+  let vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
   const type = capitalizeFirst(card.type)
   const card_base_value = card.type === "effect" ? card.effect_value : card.value
   const width = big_card ? "400px" : "250px"
@@ -22,75 +16,75 @@ const Card = ({
 
   let in_hand_style = {}
   if(in_combat_hand){
+
     const cards_in_hand = hand.length
-    const left_starting_point = 0 + (roundToNearestInt(cards_in_hand / 2) * 125)
-    const left = left_starting_point + (215 * index) + "px"
-    const min = -20
-    const max = 20
-    const increment = ((min * -1) + max) / (cards_in_hand - 1)
-    console.log("HAND", hand)
+    const midway = vw * .42
+    const left_starting_point = midway - (roundToNearestInt(cards_in_hand / 2) * 100)
+    const left = left_starting_point + (index * 150)
+    const min_rotate = hand.length === 2 ? -10 : -20
+    const max_rotate = hand.length === 2 ? 10 : 20
+    const increment = ((min_rotate * -1) + max_rotate) / (cards_in_hand - 1)
     const middle = cards_in_hand / 2
     const rounded_middle = roundToNearestInt(middle)
-    console.log(rounded_middle)
     const hand_is_even = isInt(middle)
     const middle_index = !hand_is_even ? rounded_middle - 1 : null
 
-    const bottom_base = 300
-    const tier_1 = 250
-    const tier_2 = 200
-    const tier_3 = 150
-    const bottom_tier_map = {
-      0: bottom_base,
+    const top_base = 550
+    const tier_1 = 600
+    const tier_2 = 650
+    const tier_3 = 700
+    const top_tier_map = {
+      0: top_base,
       1: tier_1,
       2: tier_2,
       3: tier_3
     }
 
-    let bottom
+    let top
     if(hand_is_even){
       const first_stop = rounded_middle - 1
       if(index <= first_stop){
         const distance_away = first_stop - index
-        bottom = [bottom_tier_map[distance_away + 1]]
+        top = [top_tier_map[distance_away + 1]]
       }
       const second_start = rounded_middle
       if(index >= second_start){
         const distance_away = index - second_start
-        bottom = bottom_tier_map[distance_away + 1]
+        top = top_tier_map[distance_away + 1]
       }
     }
-    console.log(hand_is_even)
+
     if(!hand_is_even){
-      console.log("HAND IS NOT EVEN")
       let distance_away = index - middle_index
       if(distance_away < 0){
         distance_away = distance_away * -1
       }
-      console.log("DAWAYA", distance_away, index, middle_index)
-      bottom = bottom_tier_map[distance_away]
+      top = top_tier_map[distance_away]
     }
     if(!hand_is_even && index === middle_index){
-      bottom = bottom_base
+      top = top_base
     }
 
-    console.log("BOTTOM", bottom)
-    let rotate = min + (increment * index)
+    let rotate = min_rotate + (increment * index)
     if(index === hand.length - 1){
-      rotate = 20
+      rotate = max_rotate
     }
     if(index === rounded_middle - 1 && !hand_is_even){
       rotate = 0
     }
     if(index === 0){
-      rotate = -20
+      rotate = min_rotate
+    }
+    if(hand.length === 1){
+      rotate = 0
     }
     const transform = `rotate(${rotate}deg)`
     in_hand_style = {
       position: "absolute",
-      left,
+      left: left + "px",
       transform,
       margin: "0px",
-      bottom: bottom + "px"
+      top: top + "px"
     }
   }
 

@@ -12,7 +12,7 @@ const App = () => {
   console.log('game_state', game_state)
 
   return (
-    <div className="grid h-vh-100 w-vw-100" style={{overflowY: "clip", overflowX: "clip"}}>
+    <div className="game_parent_container grid h-vh-100 w-vw-100 m-0">
       {page === "main_menu" &&
         <div className="grid center_all_items gap-8 w-80 h-vh-50 m-12">
           <h1>Game Name</h1>
