@@ -14,6 +14,7 @@ export default ({enemy, targettingHandler}) => {
       <Buffs combatant={enemy} />
       <div className="grid two_col_equal popover_content">
         <p className="mt-0 mb-2 center_text span_two_col">{enemy.splash_text}</p>
+        <p className="m-4 center_text span_two_col">{enemy.combat_detail}</p>
         <table>
           <tbody>
             <tr>

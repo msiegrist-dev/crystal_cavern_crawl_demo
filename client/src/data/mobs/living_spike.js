@@ -1,6 +1,7 @@
 export default {
   name: "Living Spike",
   splash_text: "What's lacking in brains is made up for in knives.",
+  combat_detail: "Spike's pointy exterior deals damage back to attackers.",
   image_url: "living_spike.png",
   speed: 3,
   attack: 2,

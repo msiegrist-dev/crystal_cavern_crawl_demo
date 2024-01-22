@@ -1,6 +1,6 @@
 import {playCard, addGemToCard, returnCardGemToCharacter} from "./lib/combat"
 import {capitalizeFirst, formatKeyword, roundToNearestInt} from "./lib/helper_lib"
-import buff_descriptions from "../data/buff_descriptions"
+import buff_debuff_descriptions from "../data/buff_debuff_descriptions"
 const Card = ({
   card, playable, game_state, setTargetting, setGameState, setSelectedCard,
   hand, graveyard, setHand, setGraveyard, setMessage, setCard, combat_log, setCombatLog,
@@ -126,7 +126,7 @@ const Card = ({
             <>
               <p className="m-0-all">Buff : <b>{card.buff_name}</b></p>
               <p className="m-0-all">Can Target : {card.can_target.map((targ) => targ)}</p>
-              <p className="m-0-all">{buff_descriptions[card.buff_name]}</p>
+              <p className="m-0-all">{buff_debuff_descriptions[card.buff_name]}</p>
             </>
           }
         </>

@@ -43,8 +43,15 @@ const mapEnemiesForCombat = (new_enemies, game_state) => {
 }
 
 const getTurnOrder = game_state => {
+  let player_speed = game_state.character.speed
+  if(hasBuffs(game_state.character)){
+    if(hasBuff(game_state.character, "slowed")){
+      console.log("applying slow debuff to turn calc")
+      player_speed = roundToNearestInt(player_speed / 2)
+    }
+  }
   const speed_keys = [
-    {key: "player", speed: game_state.character.speed}
+    {key: "player", speed: player_speed}
   ].concat(
     game_state.level.enemies.filter((ene) => ene.hp > 0)
     .map((enemy) => {
@@ -164,6 +171,10 @@ const processAttack = (doer, target, action, combat_log, do_not_refire_thorns) =
       }
     }
 
+    if(action.target_buff_on_hit){
+      target_copy = applyBuff(target_copy, action.target_buff_on_hit.name, action.target_buff_on_hit.value)
+    }
+
     if(remaining_block <= 0){
       target_copy.block = 0
       target_copy.hp -= (remaining_block * -1)
@@ -175,6 +186,7 @@ const processAttack = (doer, target, action, combat_log, do_not_refire_thorns) =
     target_copy.block = remaining_block
 
   }
+
   return {
     doer: doer_copy,
     target: target_copy,
