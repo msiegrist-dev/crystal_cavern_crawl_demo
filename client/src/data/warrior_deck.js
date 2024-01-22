@@ -129,6 +129,7 @@ const warrior_deck = [
   {
     name: "Shield Crash",
     type: "attack",
+    accuracy: 90,
     hits: 1,
     value: 0,
     target_required: true,

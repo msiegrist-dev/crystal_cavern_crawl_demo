@@ -97,14 +97,18 @@ const Card = ({
 
   return (
     <div className="m-4 p-4 game_card grid center_all_items" style={{...style, ...in_hand_style}}>
-      <h4 className="m-0-all">{card.name}</h4>
+      <h3 className="m-0-all">{card.name}</h3>
       <p className="m-0-all"><b>Type</b> : {formatKeyword(card.type)}</p>
-      <p className="m-0-all">{type} Value : {card_base_value}</p>
-      {card.hits &&
-        <p className="m-0-all">{type} Hits : {card.hits}</p>
+      {card.type === "attack" &&
+        <>
+          <div className="flex center_all_items">
+            <p><b>({card.value} * {card.hits}) </b> <i>{card.accuracy}%</i></p>
+            <img style={{height: "20px"}} className="block p-4" src="bullseye_icon.png" />
+          </div>
+        </>
       }
-      {card.accuracy &&
-        <p className="m-0-all">{type} Accuracy: {card.accuracy}%</p>
+      {card.type !== "attack" &&
+        <p className="m-0-all">{type} Value : {card_base_value}</p>
       }
       {card.attack_effects && card.attack_effects.length > 0 &&
         <>
