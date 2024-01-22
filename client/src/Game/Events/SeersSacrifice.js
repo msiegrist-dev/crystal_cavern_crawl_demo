@@ -10,7 +10,9 @@ import Card from "../Card"
 import GemCounter from "../GemCounter"
 
 
-const SeersSacrifice = ({satisfied, setSatisfied, game_state, setGameState, setMessage}) => {
+const SeersSacrifice = ({REQUIRED_EVENT_PROPS}) => {
+
+  const {satisfied, setSatisfied, game_state, setGameState, setMessage} = REQUIRED_EVENT_PROPS
 
   const [selected_cards, setSelectedCards] = useState([])
   const [selected_gems, setSelectedGems] = useState({red: 0, blue: 0})

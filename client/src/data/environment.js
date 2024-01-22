@@ -25,7 +25,9 @@ const environment = {
   BASE_EVENTS: [
     "harmful_healer",
     "damage_for_card",
-    "item_stash"
+    "item_stash",
+    "secret_tunnel",
+    "trap_fall"
   ],
   LATE_EVENTS: [
     "seers_sacrifice"

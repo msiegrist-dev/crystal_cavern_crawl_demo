@@ -1,6 +1,8 @@
 import {handleOdds, copyState, roundToNearestInt} from "../lib/helper_lib"
 import {healCharacter} from "../lib/stats"
-const HarmfulHealer = ({satisfied, setSatisfied, game_state, setGameState, setMessage}) => {
+const HarmfulHealer = ({REQUIRED_EVENT_PROPS}) => {
+
+  const {satisfied, setSatisfied, game_state, setGameState, setMessage} = REQUIRED_EVENT_PROPS
 
   const healer = () => {
     const odds = [

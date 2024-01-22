@@ -6,6 +6,8 @@ const HarmfulHealer = lazy(() => import("./Events/HarmfulHealer"))
 const DamageForCard = lazy(() => import("./Events/DamageForCard"))
 const ItemStash = lazy(() => import("./Events/ItemStash"))
 const SeersSacrifice = lazy(() => import("./Events/SeersSacrifice"))
+const SecretTunnel = lazy(() => import("./Events/SecretTunnel"))
+const TrapFall = lazy(() => import("./Events/TrapFall"))
 
 const Event = ({game_state, setGameState, toggleDeckModal}) => {
 
@@ -19,31 +21,39 @@ const Event = ({game_state, setGameState, toggleDeckModal}) => {
     setMessage("")
   }
 
+  const REQUIRED_EVENT_PROPS = {
+    satisfied,
+    setSatisfied,
+    game_state,
+    setGameState,
+    setMessage
+  }
+
+  const no_event = !event_name || event_name === ""
+
   return (
     <div className="m-12 p-8 h-top-bar-minus-remainder">
       <Suspense fallback={<h2>Loading...</h2>}>
-        {!event_name || event_name === "" &&
+        {no_event &&
           <p></p>
         }
         {event_name === "harmful_healer" &&
-          <HarmfulHealer satisfied={satisfied} setSatisfied={setSatisfied}
-            game_state={game_state} setGameState={setGameState} setMessage={setMessage}
-          />
+          <HarmfulHealer REQUIRED_EVENT_PROPS={REQUIRED_EVENT_PROPS} />
         }
         {event_name === "damage_for_card" &&
-          <DamageForCard satisfied={satisfied} setSatisfied={setSatisfied}
-            game_state={game_state} setGameState={setGameState} setMessage={setMessage}
-          />
+          <DamageForCard REQUIRED_EVENT_PROPS={REQUIRED_EVENT_PROPS} />
         }
         {event_name === "item_stash" &&
-          <ItemStash satisfied={satisfied} setSatisfied={setSatisfied}
-            game_state={game_state} setGameState={setGameState} setMessage={setMessage}
-          />
+          <ItemStash REQUIRED_EVENT_PROPS={REQUIRED_EVENT_PROPS} />
         }
         {event_name === "seers_sacrifice" &&
-          <SeersSacrifice satisfied={satisfied} setSatisfied={setSatisfied}
-            game_state={game_state} setGameState={setGameState} setMessage={setMessage}
-          />
+          <SeersSacrifice REQUIRED_EVENT_PROPS={REQUIRED_EVENT_PROPS} />
+        }
+        {event_name === "secret_tunnel" &&
+          <SecretTunnel REQUIRED_EVENT_PROPS={REQUIRED_EVENT_PROPS} />
+        }
+        {event_name === "trap_fall" &&
+          <TrapFall REQUIRED_EVENT_PROPS={REQUIRED_EVENT_PROPS} />
         }
       </Suspense>
       <h3 className="center_text">{message}</h3>

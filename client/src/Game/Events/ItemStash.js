@@ -1,5 +1,7 @@
 import {giveCharacterItem, getRandomItems} from "../lib/items"
-const ItemStash = ({satisfied, setSatisfied, game_state, setGameState, setMessage}) => {
+const ItemStash = ({REQUIRED_EVENT_PROPS}) => {
+
+  const {satisfied, setSatisfied, game_state, setGameState, setMessage} = REQUIRED_EVENT_PROPS
 
   const event = () => {
     setSatisfied(true)
