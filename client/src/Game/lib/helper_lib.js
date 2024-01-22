@@ -1,3 +1,4 @@
+//returns a random number 1 - 100
 const getRandomNumber100 = () => Math.floor(Math.random() * 100) + 1
 
 const getRandomNumber = limit => Math.floor(Math.random() * limit)
@@ -79,7 +80,7 @@ const assignRandomKey = (entity, inventory) => {
 
 const handleOdds = odds => {
   const random = getRandomNumber100()
-  console.log("RANDOM NUM ODDS", random)
+  console.log("RANDOM NUM FOR ODDS", random)
   let current = 0
   for(let i = 0; i < odds.length; i++){
     const {name, value} = odds[i]
@@ -97,7 +98,7 @@ const handleOdds = odds => {
       }
     }
 
-    if(random > current && random <= current + odds[i + 1].value){
+    if(random > current && random <= current + value){
       return name
     }
     current += value
