@@ -1,10 +1,10 @@
 .git
 docs/
-client/node_modules
-client/public/*.png
-client/public/*.gif
-client/public/*.jpg
+node_modules
+public/*.png
+public/*.gif
+public/*.jpg
 todo
 test.js
 test_notes
-client/build
+build
