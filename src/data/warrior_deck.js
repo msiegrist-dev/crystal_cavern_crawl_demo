@@ -34,7 +34,7 @@ const warrior_deck = [
   {
     name: "Sweeping Blade",
     type: "attack",
-    attack_effects: [
+    effects: [
       {name: "aoe"}
     ],
     value: 4,
@@ -56,7 +56,7 @@ const warrior_deck = [
     value: 4,
     hits: 1,
     target_required: true,
-    attack_effects: [
+    effects: [
       {
         name: "give_block",
         value: 2,
@@ -67,7 +67,7 @@ const warrior_deck = [
       blue: {
         number: 1,
         effect: true,
-        effect_name: "increase_attack_effect_value",
+        effect_name: "increase_give_block_value",
         attack_effect_name: "give_block",
         value: 3,
         effect_description: `Increase give block value by 3`
@@ -78,16 +78,16 @@ const warrior_deck = [
   {
     name: "Steel Yourself",
     type: "effect",
-    effect_name: "buff",
-    effect_value: 2,
-    target_required: true,
-    can_target: ["player"],
+    target_required: false,
+    effects: [
+      {name: "give_doer_buff", buff_name: "fortify", value: 1}
+    ],
     buff_name: "fortify",
     gem_augments: {
       blue: {
         number: 1,
         effect: true,
-        effect_name: "increase_card_effect_value",
+        effect_name: "increase_give_doer_buff",
         value: 2,
         effect_description: `Grants two additional fortify buffs`
       }
@@ -109,7 +109,7 @@ const warrior_deck = [
     value: 6,
     hits: 1,
     accuracy: 98,
-    attack_effects: [
+    effects: [
       {name: "armor_piercing"}
     ]
   },
@@ -120,7 +120,7 @@ const warrior_deck = [
     value: 3,
     hits: 1,
     accuracy: 98,
-    attack_effects: [
+    effects: [
       {
         name: "block_as_bonus_attack",
         value: .2
@@ -134,7 +134,7 @@ const warrior_deck = [
     hits: 1,
     value: 0,
     target_required: true,
-    attack_effects: [
+    effects: [
       {
         name: "give_block",
         value: 1,
@@ -152,7 +152,7 @@ const warrior_deck = [
     accuracy: 95,
     hits: 1,
     value: 5,
-    attack_effects: [
+    effects: [
       {name: "aoe"},
       {name: "give_block", value: 10, trigger: "on_attack"},
     ],
@@ -173,7 +173,7 @@ const warrior_deck = [
     accuracy: 90,
     hits: 1,
     value: 12,
-    attack_effects: [
+    effects: [
       {name: "give_doer_buff", value: 2, buff_name: "slowed", trigger: "on_hit"}
     ],
     gem_augments: {
@@ -183,6 +183,15 @@ const warrior_deck = [
       }
     },
     target_required: true
+  },
+  {
+    name: "Parry",
+    type: "defend",
+    target_required: false,
+    value: 2,
+    effects: [
+      {name: "give_doer_buff", buff_name: "thorns", value: 1}
+    ]
   }
 ]
 

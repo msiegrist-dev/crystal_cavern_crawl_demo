@@ -46,6 +46,15 @@ const getIndexOfArrayItemByKey = (array, key) => {
   return -1
 }
 
+const getIndexOfArrayItemByName = (array, name) => {
+  for(let i = 0; i < array.length; i++){
+    if(array[i].name === name){
+      return i
+    }
+  }
+  return -1
+}
+
 const capitalizeFirst = str => str[0].toUpperCase() + str.substr(1, str.length)
 const formatKeyword = str => {
   let res = ``
@@ -120,5 +129,6 @@ export {
   removeItemFromArrayByKey,
   assignRandomKey,
   handleOdds,
-  increaseByPercent
+  increaseByPercent,
+  getIndexOfArrayItemByName
 }

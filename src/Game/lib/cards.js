@@ -1,5 +1,9 @@
-import {copyState, assignRandomKey, removeItemFromArrayByKey, getRandomValueFromList} from "./helper_lib"
+import {
+  copyState, assignRandomKey, removeItemFromArrayByKey,
+  getIndexOfArrayItemByName, getRandomValueFromList
+} from "./helper_lib"
 import warrior_deck from "../../data/warrior_deck"
+
 const doesCardRequireGem = card => {
   if(!card.gem_augments){
     return false
@@ -47,8 +51,13 @@ const processGemAugment = card => {
     if(augment.effect_name === "increase_card_value"){
       card_copy.value += augment.value
     }
-    if(augment.effect_name === "increase_card_effect_value"){
-      card_copy.effect_value += augment.value
+    if(augment.effect_name === "increase_give_block_value"){
+      const index = getIndexOfArrayItemByName(card.effects, "give_block_value")
+      card_copy.effects[index].value += augment.value
+    }
+    if(augment.effect_name === "increase_give_doer_buff"){
+      const index = getIndexOfArrayItemByName(card.effects, "give_doer_buff")
+      card_copy.effects[index].value += augment.value
     }
     card_copy.gem_inventory[gem_name] = 0
   }

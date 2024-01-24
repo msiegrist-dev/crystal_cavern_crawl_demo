@@ -129,7 +129,9 @@ const Card = ({
           {card.buff_name &&
             <>
               <p className="m-0-all">Buff : <b>{card.buff_name}</b></p>
-              <p className="m-0-all">Can Target : {card.can_target.map((targ) => targ)}</p>
+              {card.can_target &&
+                <p className="m-0-all">Can Target : {card.can_target.map((targ) => targ)}</p>
+              }
               <p className="m-0-all">{buff_debuff_descriptions[card.buff_name]}</p>
             </>
           }
