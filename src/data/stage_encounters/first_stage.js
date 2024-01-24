@@ -3,6 +3,7 @@ import spider from "../mobs/spider"
 import living_spike from "../mobs/living_spike"
 
 import grublin_king from "../bosses/grublin_king"
+import flaming_rodent from "../bosses/flaming_rodent"
 
 export default {
   mob_sets: [
@@ -13,6 +14,7 @@ export default {
     [living_spike, living_spike]
   ],
   bosses: [
-    [grublin_king]
+    [grublin_king],
+    [flaming_rodent]
   ]
 }

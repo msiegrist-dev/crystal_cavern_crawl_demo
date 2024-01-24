@@ -4,9 +4,44 @@ import {
   getRandomValueFromList, getRandomNumber100, getRandomNumber, copyState, shuffleKeyedArray,
   getIndexOfArrayItemByKey, roundToNearestInt, handleOdds, increaseByPercent
 } from "./helper_lib"
-import {doesCharacterHaveCardAugmentGems, getRandomGemName} from "./gems"
+import {getRandomGemName} from "./gems"
 import {getRandomItems} from "./items"
-import {getRandomCards, doesCardRequireGem, isCardUsingGems, processGemAugment, cardHasAttackEffect, doesCardHaveRequiredGems} from "./cards"
+import {getRandomCards, doesCardRequireGem, isCardUsingGems, processGemAugment, doesCardHaveRequiredGems} from "./cards"
+
+const processAttackEffect = (effect, doer, target) => {
+  const {name, value, buff_name} = effect
+  let doer_copy = copyState(doer)
+  let target_copy = copyState(target)
+  if(name === "give_block"){
+    doer_copy.block += getBlockValue(doer_copy, {value})
+  }
+  if(name === "give_doer_buff"){
+    doer_copy = applyBuff(doer_copy, buff_name, value)
+  }
+  if(name === "give_target_buff"){
+    target_copy = applyBuff(target_copy, buff_name, value)
+  }
+  return {
+    doer: doer_copy, target: target_copy
+  }
+}
+
+const getAttackEffectsWithTrigger = (action, trigger) => {
+  if(!action.attack_effects){
+    return []
+  }
+  if(action.attack_effects.length === 0){
+    return []
+  }
+  return action.attack_effects.filter((fect) => fect.trigger === trigger)
+}
+
+const actionHasAttackEffect = (card, name) => {
+  if(!card.attack_effects || !card.attack_effects.length){
+    return false
+  }
+  return card.attack_effects.find((fect) => fect.name === name)
+}
 
 const applyBuff = (target, buff_name, buff_value) => {
   if(!target.buffs){
@@ -103,23 +138,30 @@ const getEnemyAction = (game_state, enemy) => {
   return getRandomValueFromList(enemy.options[list])
 }
 
-const getAttackValue = (doer, action) => {
+const getAttackValue = (doer, action, is_thorns_attack) => {
+  if(is_thorns_attack){
+    return action.value
+  }
   const has_buffs = hasBuffs(doer)
   const has_fervor = has_buffs ? hasBuff(doer, "fervor") : false
   let value = has_fervor ? roundToNearestInt(increaseByPercent(action.value, 25)) : action.value
   if(action.do_not_process_attack_modifiers){
     return value
   }
-  const block_as_bonus_attack = cardHasAttackEffect(action, "block_as_bonus_attack")
+  const block_as_bonus_attack = actionHasAttackEffect(action, "block_as_bonus_attack")
   if(block_as_bonus_attack){
     value += roundToNearestInt(doer.block * block_as_bonus_attack.value)
   }
-  const block_as_attack = cardHasAttackEffect(action, "block_as_attack")
+  const block_as_attack = actionHasAttackEffect(action, "block_as_attack")
   if(block_as_attack){
     value = roundToNearestInt(doer.block * block_as_attack.value)
   }
   const attack_stat = has_fervor ? roundToNearestInt(increaseByPercent(doer.attack, 25)) : doer.attack
-  return value + attack_stat
+  let final = value + attack_stat
+  if(has_buffs && hasBuff(doer, "burned")){
+    final = roundToNearestInt(final * .75)
+  }
+  return final
 }
 
 const getRemainingBlock = (target, damage, pierce_armor) => {
@@ -135,7 +177,7 @@ const actionMissed = action => {
   return Number(action.accuracy) < getRandomNumber100()
 }
 
-const processAttack = (doer, target, action, combat_log, do_not_refire_thorns) => {
+const processAttack = (doer, target, action, combat_log, do_not_refire_thorns, is_thorns_attack) => {
   let doer_copy = copyState(doer)
   let target_copy = copyState(target)
   const target_has_buffs = target_copy.buffs && Object.keys(target_copy.buffs).length > 0
@@ -143,36 +185,42 @@ const processAttack = (doer, target, action, combat_log, do_not_refire_thorns) =
   let total_damage_value = 0
   let damage_dealt = 0
 
+  let one_hit_landed = false
   for(let i = 0; i < action.hits; i++){
     if(actionMissed(action)){
       combat_log_copy = combat_log_copy.concat([`${doer.name} missed their attack on ${target.name}.`])
       continue
     }
-    const give_block_effect = cardHasAttackEffect(action, "give_block")
-    if(give_block_effect){
-      doer_copy.block += getBlockValue(doer_copy, {value: give_block_effect.value})
-    }
-
-    const damage_value = getAttackValue(doer_copy, action)
+    one_hit_landed = true
+    const damage_value = getAttackValue(doer_copy, action, is_thorns_attack)
     total_damage_value += damage_value
-    const armor_piercing_effect = cardHasAttackEffect(action, "armor_piercing")
+    const armor_piercing_effect = actionHasAttackEffect(action, "armor_piercing")
     const remaining_block = getRemainingBlock(target_copy, damage_value, armor_piercing_effect)
 
     if(target_has_buffs && !do_not_refire_thorns){
-      console.log("DOING THORNS OUCH")
-      const buff_names = Object.keys(target_copy.buffs)
 
-      if(buff_names.includes("thorns")){
+      if(hasBuff(target_copy, "thorns")){
+        console.log("DOING THORNS OUCH")
         const thorns_action = target.key === "character" ? environment.THORNS_ATTACK_PLAYER : environment.THORNS_ATTACK_ENEMY
-        const state_processed_thorns = processAttack(target, doer, thorns_action, combat_log, true)
+        const state_processed_thorns = processAttack(target, doer, thorns_action, combat_log, true, true)
         target_copy = state_processed_thorns.doer
         doer_copy = state_processed_thorns.target
         combat_log_copy = combat_log_copy.concat([`${target_copy.name} did thorns damage back to ${doer_copy.name}`])
       }
+
+      if(hasBuff(target_copy, "flame_guard")){
+        console.log("DOING FLAME GUARD HOT")
+        doer_copy = applyBuff(doer_copy, "burned", 1)
+      }
     }
 
-    if(action.target_buff_on_hit){
-      target_copy = applyBuff(target_copy, action.target_buff_on_hit.name, action.target_buff_on_hit.value)
+    const on_hit_effects = getAttackEffectsWithTrigger(action, "on_hit")
+    if(on_hit_effects.length){
+      for(let effect of on_hit_effects){
+        const processed = processAttackEffect(effect, doer_copy, target_copy)
+        doer_copy = processed.doer
+        target_copy = processed.target
+      }
     }
 
     if(remaining_block <= 0){
@@ -185,6 +233,17 @@ const processAttack = (doer, target, action, combat_log, do_not_refire_thorns) =
     damage_dealt = target.block - remaining_block
     target_copy.block = remaining_block
 
+  }
+
+  if(one_hit_landed){
+    const on_attack_effects = getAttackEffectsWithTrigger(action, "on_attack")
+    if(on_attack_effects.length){
+      for(let effect of on_attack_effects){
+        const processed = processAttackEffect(effect, doer_copy, target_copy)
+        doer_copy = processed.doer
+        target_copy = processed.target
+      }
+    }
   }
 
   return {

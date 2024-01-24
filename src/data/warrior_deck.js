@@ -59,7 +59,8 @@ const warrior_deck = [
     attack_effects: [
       {
         name: "give_block",
-        value: 2
+        value: 2,
+        trigger: "on_hit"
       }
     ],
     gem_augments: {
@@ -136,13 +137,52 @@ const warrior_deck = [
     attack_effects: [
       {
         name: "give_block",
-        value: 1
+        value: 1,
+        trigger: "on_hit"
       },
       {
         name: "block_as_attack",
         value: .5
       }
     ]
+  },
+  {
+    name: "Immovable Force",
+    type: "attack",
+    accuracy: 95,
+    hits: 1,
+    value: 5,
+    attack_effects: [
+      {name: "aoe"},
+      {name: "give_block", value: 10, trigger: "on_attack"},
+    ],
+    gem_augments: {
+      blue: {
+        number: 1,
+        required: true
+      },
+      red: {
+        number: 1,
+        required: true
+      }
+    }
+  },
+  {
+    name: "Pile Driver",
+    type: "attack",
+    accuracy: 90,
+    hits: 1,
+    value: 12,
+    attack_effects: [
+      {name: "give_doer_buff", value: 2, buff_name: "slowed", trigger: "on_hit"}
+    ],
+    gem_augments: {
+      red: {
+        number: 1,
+        required: true
+      }
+    },
+    target_required: true
   }
 ]
 

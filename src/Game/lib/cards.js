@@ -94,13 +94,6 @@ const getRandomCards = (number, character_name) => {
   return cards
 }
 
-const cardHasAttackEffect = (card, name) => {
-  if(!card.attack_effects || !card.attack_effects.length){
-    return false
-  }
-  return card.attack_effects.find((fect) => fect.name === name)
-}
-
 export {
   addCardToDeck,
   removeCardFromDeck,
@@ -108,6 +101,5 @@ export {
   isCardUsingGems,
   doesCardRequireGem,
   getRandomCards,
-  cardHasAttackEffect,
   doesCardHaveRequiredGems
 }

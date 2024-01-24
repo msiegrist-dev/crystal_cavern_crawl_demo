@@ -3,6 +3,7 @@ import grublin from "../mobs/grublin"
 export default {
   name: "Grublin King",
   splash_text: "It is not above the K'Nesh to eat an unrly servant.",
+  combat_detail: "His grublin servants will flock to aid their king. They must all be eliminated.",
   image_url: "goblin_king.png",
   speed: 7,
   attack: 10,

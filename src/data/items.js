@@ -101,6 +101,13 @@ const items = [
     rarity: "uncommon"
   },
   {
+    name: "Flaming Rodent Hide",
+    starting_buffs: [
+      {name: "flame_guard", value: 2}
+    ],
+    rarity: "uncommon"
+  },
+  {
     name: "Jade Rose",
     increase_stats: [
       {name: "max_hp", value: 8, type: "flat"},

@@ -24,6 +24,11 @@ const Victory = ({
     setSelectionMade(true)
   }
 
+  const reward_message = `Select a ${type} ${entity}`
+  console.log(type, entity)
+  const remove_card_message = `Select a card to remove from your deck`
+  const use_message = type === "remove" && entity === "card" ? remove_card_message : reward_message
+
   return (
 
     <>
@@ -36,7 +41,7 @@ const Victory = ({
 
     {!is_trade && selections && selections.length > 0 &&
       <>
-      <h2 className='center_text span_three_col'>Select a {type} {entity} {type === "remove" && " from your deck"}</h2>
+      <h2 className='center_text span_three_col'>{use_message}</h2>
 
         {selections.map((select_entity, i) => {
 

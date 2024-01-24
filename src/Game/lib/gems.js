@@ -13,27 +13,8 @@ const doesCharacterHaveGems = (character, gem_name, number) => {
   return character.gems[gem_name] >= number
 }
 
-const doesCharacterHaveCardAugmentGems = (game_state, card) => {
-  if(!game_state.character.gems){
-    return false
-  }
-
-  for(let gem_name of Object.keys(card.gem_augments)){
-    const gem_obj = card.gem_augments[gem_name]
-    if(!gem_obj.required){
-      continue
-    }
-    if(!doesCharacterHaveGems(game_state.character, gem_name, gem_obj.number)){
-      return false
-    }
-  }
-  return true
-}
-
-
 export {
   getRandomGemName,
   giveCharacterGems,
-  doesCharacterHaveCardAugmentGems,
   doesCharacterHaveGems
 }

@@ -1,4 +1,4 @@
-export default {
+const spider = {
   name: "Spider",
   splash_text: "The ritzy bitzy spider.",
   combat_detail: "This creeper has a high blocking defense and her attacks will tangle you in her web.",
@@ -15,9 +15,9 @@ export default {
         type: "attack",
         value: 7,
         hits: 1,
-        target_buff_on_hit: {
-          name: "slowed", value: 2
-        }
+        attack_effects: [
+          {name: "give_target_buff", value: 2, buff_name: "slowed", trigger: "on_hit"}
+        ]
       }
     ],
     defend: [
@@ -28,3 +28,5 @@ export default {
     ]
   }
 }
+
+export default spider

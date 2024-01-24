@@ -18,9 +18,9 @@ const Card = ({
   if(in_combat_hand){
 
     const cards_in_hand = hand.length
-    const midway = vw * .42
-    const left_starting_point = midway - (roundToNearestInt(cards_in_hand / 2) * 100)
-    const left = left_starting_point + (index * 150)
+    const midway = vw * .5
+    const left_starting_point = midway - (roundToNearestInt(cards_in_hand / 2) * 235)
+    const left = left_starting_point + (index * 175)
     const min_rotate = hand.length === 2 ? -10 : -20
     const max_rotate = hand.length === 2 ? 10 : 20
     const increment = ((min_rotate * -1) + max_rotate) / (cards_in_hand - 1)
@@ -29,10 +29,10 @@ const Card = ({
     const hand_is_even = isInt(middle)
     const middle_index = !hand_is_even ? rounded_middle - 1 : null
 
-    const top_base = 550
-    const tier_1 = 600
-    const tier_2 = 650
-    const tier_3 = 700
+    const top_base = -10
+    const tier_1 = 35
+    const tier_2 = 70
+    const tier_3 = 105
     const top_tier_map = {
       0: top_base,
       1: tier_1,

@@ -297,7 +297,9 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
   }, [game_state, combat_ended, setGameState])
 
   return (
-    <div className="w-98 m-4 p-4 pt-0 mt-0 h-top-bar-minus-remainder" onClick={(e) => handleCombatSpaceOnClick(e)}>
+    <div className="w-98 m-4 p-4 pt-0 mt-0 h-top-bar-minus-remainder grid" onClick={(e) => handleCombatSpaceOnClick(e)}
+      style={{gridTemplateRows: "35px 1fr 350px"}}
+    >
 
       {combat_modal_open &&
         <Modal show_modal={combat_modal_open} setShowModal={setCombatModalOpen}>
@@ -331,7 +333,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
           </div>
         </Modal>
       }
-      <div className="flex center_all_items gap-8 w-98 m-2 p-4" style={{height: "35px"}}>
+      <div className="flex center_all_items gap-8 w-98 m-2 p-4">
         <h3 className="action_text mt-0 mb-0" onClick={(e) => openCombatModal("combat_log")}>Combat Log</h3>
         <div className="m-4 flex gap-4 center_all_items">
           <h3 className="m-4">Turn {turn_number} : </h3>
@@ -354,10 +356,10 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
           {combat_log[combat_log.length - 1]}</h3>
       </div>
       {targetting && selected_card &&
-        <h3 className="center_text" style={{color: "red"}}>Please select a target for {selected_card.name}</h3>
+        <h3 style={{color: "red", position: "absolute", top: "90px", left: "42vw"}}>Please select a target for {selected_card.name}</h3>
       }
 
-      <div className="grid w-vw-100" style={{gridTemplateColumns: "30% 70%", height: "400px", alignItems: "end"}}>
+      <div className="grid w-vw-100" style={{gridTemplateColumns: "30% 70%", alignItems: "end"}}>
         <div className="grid center_all_items">
           <img alt="player character" src={game_state.character.idle} style={{height: "250px"}}/>
           <div className="grid two_col_equal w-80 m-4 p-4">
@@ -377,7 +379,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
           <h3 className="action_text center_text" onClick={(e) => toggleDeckModal(draw_pile)}>Draw Pile ({draw_pile.length})</h3>
         </div>
 
-        <div className="w-100 m-0">
+        <div className="w-100 m-0" style={{position: "relative"}}>
           {hand.map((card, i) => <Card key={card.key} card={card}
             playable={!game_state.defeat} game_state={game_state} setGameState={setGameState}
             setTargetting={setTargetting} setSelectedCard={setSelectedCard} hand={hand}
