@@ -512,10 +512,27 @@ const getRandomCharacterEntity = (character, entity_name) => {
 }
 
 const getTradeSelections = (quantity, trade_for, trade_in, character) => {
+
+  const getPossibleCharEntities = char => {
+    let list = []
+    if(char.inventory.length > 0){
+      list.push("card")
+    }
+    if(char.deck.length > 0){
+      list.push("card")
+    }
+    if(char.gems){
+      if(char.gems.red > 0 || char.gems.blue > 0){
+        list.push("gem")
+      }
+    }
+    return list
+  }
+  const available_character_entities = getPossibleCharEntities(character)
   const selections = []
   for(let i = 0; i < quantity; i++){
     const trade_for_entity_name = trade_for === "random" ?
-      getRandomValueFromList(environment.TRADABLE_ENTITIES) : trade_for
+      getRandomValueFromList(available_character_entities) : trade_for
 
     let trade_for_entity
     const trade_in_entity = getRandomCharacterEntity(character, trade_in)
