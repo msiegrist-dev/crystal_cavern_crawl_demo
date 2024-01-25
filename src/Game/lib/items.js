@@ -46,8 +46,11 @@ const giveCharacterItem = (game_state, item) => {
   return state_copy
 }
 
+const hasItem = (character, item_name) => character.inventory.find((it) => it.name === item_name)
+
 export {
   getRandomItems,
   processItemEffect,
-  giveCharacterItem
+  giveCharacterItem,
+  hasItem
 }

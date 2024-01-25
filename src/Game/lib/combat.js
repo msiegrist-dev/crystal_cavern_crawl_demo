@@ -5,7 +5,7 @@ import {
   getIndexOfArrayItemByKey, roundToNearestInt, handleOdds, increaseByPercent
 } from "./helper_lib"
 import {getRandomGemName} from "./gems"
-import {getRandomItems} from "./items"
+import {getRandomItems, hasItem} from "./items"
 import {getRandomCards, doesCardRequireGem, isCardUsingGems, processGemAugment, doesCardHaveRequiredGems} from "./cards"
 
 const getConditionFieldName = type => type === "buff" ? "buffs" : "stat_increases"
@@ -252,7 +252,7 @@ const processAttack = (doer, target, action, combat_log, setCombatLog, do_not_re
       continue
     }
 
-    damage_dealt = target.block - remaining_block
+    damage_dealt = target_copy.block - remaining_block
     target_copy.block = remaining_block
 
   }
@@ -305,8 +305,9 @@ const getBlockValue = (doer, action) => {
   return block_value
 }
 
-const processAction = (game_state, doer, target_keys, action, combat_log, setCombatLog, combat_stats, setCombatStats) => {
-  const game_state_copy = copyState(game_state)
+const processAction = (game_state, doer, target_keys, action, combat_log, setCombatLog, combat_stats, setCombatStats, card_state) => {
+  let game_state_copy = copyState(game_state)
+  let card_state_copy = copyState(card_state)
   const player_action = doer.key === "player"
   let combat_log_copy = copyState(combat_log)
 
@@ -365,6 +366,12 @@ const processAction = (game_state, doer, target_keys, action, combat_log, setCom
         if(processed.target.hp <= 0){
           combat_log_copy = combat_log_copy.concat(`${processed.doer.name} has defeated ${processed.target.name}`)
           combat_stats_copy.enemies_killed += 1
+          if(hasItem(game_state_copy.character, "Lucky Grublin's Foot")){
+            const processed_cards = drawCards(card_state.draw_pile, card_state.graveyard, card_state.hand, 1)
+            card_state_copy.draw_pile = processed_cards.draw_pile
+            card_state_copy.hand = processed_cards.hand
+            card_state_copy.graveyard = processed_cards.graveyard
+          }
         }
       }
       if(doer_enemy_index >= 0){
@@ -381,7 +388,10 @@ const processAction = (game_state, doer, target_keys, action, combat_log, setCom
     setCombatLog(combat_log_copy)
     setCombatStats(combat_stats_copy)
   }
-  return game_state_copy
+  return {
+    game_state: game_state_copy,
+    card_state: card_state_copy
+  }
 }
 
 
@@ -435,7 +445,7 @@ const sendCardsToGraveYard = (hand, cards, graveyard, game_state) => {
 
 
 
-const playCard = (card, game_state, target_keys, hand, graveyard, combat_log, setCombatLog, combat_stats, setCombatStats, setMessage) => {
+const playCard = (card, game_state, target_keys, hand, graveyard, combat_log, setCombatLog, combat_stats, setCombatStats, setMessage, draw_pile) => {
   let card_copy = copyState(card)
   const requires_gems = doesCardRequireGem(card_copy)
   const using_gems = isCardUsingGems(card_copy)
@@ -451,14 +461,15 @@ const playCard = (card, game_state, target_keys, hand, graveyard, combat_log, se
     card_copy = processGemAugment(card_copy)
   }
   const card_sources = sendCardsToGraveYard(hand, [card_copy], graveyard, game_state)
+  const processed = processAction(
+    card_sources.game_state, card_sources.game_state.character, target_keys,
+    {...card_copy}, combat_log, setCombatLog,
+    combat_stats, setCombatStats,
+    {hand: card_sources.hand, graveyard: card_sources.graveyard, draw_pile: draw_pile}
+  )
   return {
-    game_state: processAction(
-      card_sources.game_state, game_state.character, target_keys,
-      {...card_copy}, combat_log, setCombatLog,
-      combat_stats, setCombatStats
-    ),
-    hand: card_sources.hand,
-    graveyard: card_sources.graveyard
+    game_state: processed.game_state,
+    card_state: processed.card_state
   }
 }
 

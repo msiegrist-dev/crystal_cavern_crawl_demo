@@ -124,6 +124,11 @@ const items = [
       {name: "card_draw", value: 1, type: "flat"}
     ],
     rarity: "rare"
+  },
+  {
+    name: "Lucky Grublin's Foot",
+    rarity: "rare",
+    custom_effect: "Draw one card when defeating an enemy."
   }
 ]
 

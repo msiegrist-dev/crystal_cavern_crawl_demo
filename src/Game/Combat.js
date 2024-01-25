@@ -95,13 +95,14 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
     if(!selected_card || !targetting || combat_ended){
       return
     }
-    const new_game_state = playCard(selected_card, game_state, [target_key], hand, graveyard, combat_log, setCombatLog, combat_stats, setCombatStats, setMessage)
-    if(new_game_state.error){
-      return setMessage(new_game_state.error)
+    const processed = playCard(selected_card, game_state, [target_key], hand, graveyard, combat_log, setCombatLog, combat_stats, setCombatStats, setMessage, draw_pile)
+    if(processed.error){
+      return setMessage(processed.error)
     }
-    setGameState(new_game_state.game_state)
-    setHand(new_game_state.hand)
-    setGraveyard(new_game_state.graveyard)
+    setGameState(processed.game_state)
+    setHand(processed.card_state.hand)
+    setDrawPile(processed.card_state.draw_pile)
+    setGraveyard(processed.card_state.graveyard)
     setTargetting(false)
     setSelectedCard(null)
   }
@@ -180,9 +181,11 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
         return goNextTurn()
       }
       const action = getEnemyAction(game_state, enemy)
-      setGameState(
-        processAction(game_state, enemy, ["player"], action, combat_log, setCombatLog, combat_stats, setCombatStats)
-      )
+      const processed = processAction(game_state, enemy, ["player"], action, combat_log, setCombatLog, combat_stats, setCombatStats, {draw_pile, hand, graveyard})
+      setGameState(processed.game_state)
+      setHand(processed.card_state.hand)
+      setDrawPile(processed.card_state.draw_pile)
+      setGraveyard(processed.card_state.graveyard)
       setTimeout(() => goNextTurn(), 3000)
     }
 
@@ -388,6 +391,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
             graveyard={graveyard} setHand={setHand} setGraveyard={setGraveyard} setMessage={setMessage}
             combat_log={combat_log} setCombatLog={setCombatLog} combat_stats={combat_stats}
             setCombatStats={setCombatStats} in_combat_hand={true} index={i}
+            draw_pile={draw_pile} setDrawPile={setDrawPile}
           />)}
         </div>
 
