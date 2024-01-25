@@ -16,6 +16,7 @@ const warrior = {
     blue: 3
   },
   buffs: {},
+  stat_increases: {},
   starting_deck: [
     "Attack",
     "Attack",

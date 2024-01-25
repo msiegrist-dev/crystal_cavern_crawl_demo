@@ -8,18 +8,61 @@ import {getRandomGemName} from "./gems"
 import {getRandomItems} from "./items"
 import {getRandomCards, doesCardRequireGem, isCardUsingGems, processGemAugment, doesCardHaveRequiredGems} from "./cards"
 
+const getConditionFieldName = type => type === "buff" ? "buffs" : "stat_increases"
+
+const giveCombatantCondition = (type, combatant, name, value) => {
+  const field_name = getConditionFieldName(type)
+  let copy = copyState(combatant)
+  if(!copy[field_name]){
+    copy[field_name] = {}
+  }
+  if(!copy[field_name][name]){
+    copy[field_name][name] = 0
+  }
+  copy[field_name][name] += value
+  return copy
+}
+
+const combatantHasCondition = (type, combatant, name) => {
+  const field_name = getConditionFieldName(type)
+  if(!combatant[field_name]){
+    return false
+  }
+  if(!combatant[field_name][name]){
+    return false
+  }
+  if(combatant[field_name][name] <= 0){
+    return false
+  }
+  return true
+}
+
+const getCombatStatIncreases = (combatant, stat_name) => {
+  let value = 0
+  if(combatantHasCondition("stat", combatant, stat_name)){
+    value += combatant.stat_increases[stat_name]
+  }
+  return value
+}
+
 const processActionEffect = (effect, doer, target) => {
-  const {name, value, buff_name} = effect
+  const {name, value, buff_name, stat_name} = effect
   let doer_copy = copyState(doer)
   let target_copy = copyState(target)
-  if(name === "give_block"){
+  if(name === "give_doer_block"){
     doer_copy.block += getBlockValue(doer_copy, {value})
   }
   if(name === "give_doer_buff"){
-    doer_copy = applyBuff(doer_copy, buff_name, value)
+    doer_copy = giveCombatantCondition("buff", doer_copy, buff_name, value)
   }
   if(name === "give_target_buff"){
-    target_copy = applyBuff(target_copy, buff_name, value)
+    target_copy = giveCombatantCondition("buff", target_copy, buff_name, value)
+  }
+  if(name === "give_doer_stat"){
+    doer_copy = giveCombatantCondition("stat", doer_copy, stat_name, value)
+  }
+  if(name === "remove_doer_hp"){
+    doer_copy.hp -= value
   }
   return {
     doer: doer_copy, target: target_copy
@@ -43,25 +86,6 @@ const actionHasAttackEffect = (card, name) => {
   return card.effects.find((fect) => fect.name === name)
 }
 
-const applyBuff = (target, buff_name, buff_value) => {
-  if(!target.buffs){
-    target.buffs = {}
-  }
-  if(!target.buffs[buff_name]){
-    target.buffs[buff_name] = 0
-  }
-  target.buffs[buff_name] += buff_value
-  return target
-}
-
-const hasBuffs = combatant => {
-  if(!combatant.buffs) return false
-  if(!Object.keys(combatant.buffs).length) return false
-  return true
-}
-
-const hasBuff = (combatant, buff_name) => Object.keys(combatant.buffs).includes(buff_name)
-
 const mapEnemiesForCombat = (new_enemies, game_state) => {
   let start = 0
   if(game_state){
@@ -79,11 +103,9 @@ const mapEnemiesForCombat = (new_enemies, game_state) => {
 
 const getTurnOrder = game_state => {
   let player_speed = game_state.character.speed
-  if(hasBuffs(game_state.character)){
-    if(hasBuff(game_state.character, "slowed")){
-      console.log("applying slow debuff to turn calc")
-      player_speed = roundToNearestInt(player_speed / 2)
-    }
+  if(combatantHasCondition("buff", game_state.character, "slowed")){
+    console.log("applying slow debuff to turn calc")
+    player_speed = roundToNearestInt(player_speed / 2)
   }
   const speed_keys = [
     {key: "player", speed: player_speed}
@@ -142,8 +164,7 @@ const getAttackValue = (doer, action, is_thorns_attack) => {
   if(is_thorns_attack){
     return action.value
   }
-  const has_buffs = hasBuffs(doer)
-  const has_fervor = has_buffs ? hasBuff(doer, "fervor") : false
+  const has_fervor = combatantHasCondition("buff", doer, "fervor")
   let value = has_fervor ? roundToNearestInt(increaseByPercent(action.value, 25)) : action.value
   if(action.do_not_process_attack_modifiers){
     return value
@@ -157,8 +178,9 @@ const getAttackValue = (doer, action, is_thorns_attack) => {
     value = roundToNearestInt(doer.block * block_as_attack.value)
   }
   const attack_stat = has_fervor ? roundToNearestInt(increaseByPercent(doer.attack, 25)) : doer.attack
-  let final = value + attack_stat
-  if(has_buffs && hasBuff(doer, "burned")){
+  const combat_increases = getCombatStatIncreases(doer, "attack")
+  let final = value + attack_stat + combat_increases
+  if(combatantHasCondition("buff", doer, "burned")){
     final = roundToNearestInt(final * .75)
   }
   return final
@@ -199,7 +221,7 @@ const processAttack = (doer, target, action, combat_log, setCombatLog, do_not_re
 
     if(target_has_buffs && !do_not_refire_thorns){
 
-      if(hasBuff(target_copy, "thorns")){
+      if(combatantHasCondition("buff", target_copy, "thorns")){
         console.log("DOING THORNS OUCH")
         const thorns_action = target.key === "character" ? environment.THORNS_ATTACK_PLAYER : environment.THORNS_ATTACK_ENEMY
         const state_processed_thorns = processAttack(target, doer, thorns_action, combat_log, setCombatLog, true, true)
@@ -208,9 +230,9 @@ const processAttack = (doer, target, action, combat_log, setCombatLog, do_not_re
         combat_log_copy = combat_log_copy.concat([`${target_copy.name} did thorns damage back to ${doer_copy.name}`])
       }
 
-      if(hasBuff(target_copy, "flame_guard")){
+      if(combatantHasCondition("buff", target_copy, "flame_guard")){
         console.log("DOING FLAME GUARD HOT")
-        doer_copy = applyBuff(doer_copy, "burned", 1)
+        doer_copy = giveCombatantCondition("buff", doer_copy, "burned", 1)
       }
     }
 
@@ -258,16 +280,15 @@ const processAttack = (doer, target, action, combat_log, setCombatLog, do_not_re
 }
 
 const processEffect = (doer, target, action, combat_log, setCombatLog) => {
-  let doer_copy = copyState(doer)
-  let target_copy = copyState(target)
   let combat_log_copy = copyState(combat_log)
   if(actionMissed(action)){
     return {doer, target}
   }
-  console.log("PROC EFF", action)
+  let doer_copy = copyState(doer)
+  let target_copy = copyState(target)
   if(action.effects){
     for(let effect of action.effects){
-      const processed = processActionEffect(effect, doer, target)
+      const processed = processActionEffect(effect, doer_copy, target_copy)
       doer_copy = processed.doer
       target_copy = processed.target
     }
@@ -276,7 +297,8 @@ const processEffect = (doer, target, action, combat_log, setCombatLog) => {
 }
 
 const getBlockValue = (doer, action) => {
-  const block_value = doer.defense + action.value
+  const item_increases = getCombatStatIncreases(doer, "defense")
+  const block_value = doer.defense + action.value + item_increases
   if(doer.buffs && doer.buffs["fortify"] > 0){
     return roundToNearestInt(block_value + (block_value * .33))
   }
@@ -543,5 +565,6 @@ export {
   returnCardGemToCharacter,
   getTradeSelections,
   determineVictoryReward,
-  applyBuff
+  giveCombatantCondition,
+  combatantHasCondition
 }

@@ -58,7 +58,7 @@ const warrior_deck = [
     target_required: true,
     effects: [
       {
-        name: "give_block",
+        name: "give_doer_block",
         value: 2,
         trigger: "on_hit"
       }
@@ -67,8 +67,8 @@ const warrior_deck = [
       blue: {
         number: 1,
         effect: true,
-        effect_name: "increase_give_block_value",
-        attack_effect_name: "give_block",
+        effect_name: "increase_give_doer_block_value",
+        attack_effect_name: "give_doer_block",
         value: 3,
         effect_description: `Increase give block value by 3`
       }
@@ -136,7 +136,7 @@ const warrior_deck = [
     target_required: true,
     effects: [
       {
-        name: "give_block",
+        name: "give_doer_block",
         value: 1,
         trigger: "on_hit"
       },
@@ -154,7 +154,7 @@ const warrior_deck = [
     value: 5,
     effects: [
       {name: "aoe"},
-      {name: "give_block", value: 10, trigger: "on_attack"},
+      {name: "give_doer_block", value: 10, trigger: "on_attack"},
     ],
     gem_augments: {
       blue: {
@@ -192,6 +192,17 @@ const warrior_deck = [
     effects: [
       {name: "give_doer_buff", buff_name: "thorns", value: 1}
     ]
+  },
+  {
+    name: "Rage",
+    type: "effect",
+    target_required: false,
+    effects: [
+      {name: "remove_doer_hp", value: 4},
+      {name: "give_doer_stat", value: 2, stat_name: "attack"},
+      {name: "give_doer_stat", value: 2, stat_name: "defend"}
+    ],
+    accuracy: 100
   }
 ]
 

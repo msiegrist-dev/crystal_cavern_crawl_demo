@@ -3,7 +3,7 @@ import {getIndexOfArrayItemByKey, copyState, shuffleKeyedArray, getRandomNumber,
 import {
   getTurnOrder, getEnemyAction, processAction, drawCards, playCard,
   sendCardsToGraveYard, getTradeSelections, determineVictoryReward,
-  applyBuff
+  giveCombatantCondition
 } from "./lib/combat"
 import {goNextLevel} from "./lib/levels"
 import {getRandomCards} from "./lib/cards"
@@ -62,6 +62,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
     setCombatLog([])
     let copy = copyState(game_state)
     copy.character.buffs = {}
+    copy.character.stat_increases = {}
     const next_level = goNextLevel(copy)
     const is_combat = next_level.level.type === "combat"
     setTurnOrder(is_combat ? getTurnOrder(next_level) : [])
@@ -139,6 +140,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
       }
       console.log("IT IS PLAYER TURN")
       let game_state_copy = copyState(game_state)
+      game_state_copy.character.stat_increases = {}
       if(game_state_copy.character.buffs){
         for(let buff_name of Object.keys(game_state_copy.character.buffs)){
           if(game_state_copy.character.buffs[buff_name] < 1){
@@ -154,7 +156,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
         for(let item of game_state_copy.character.inventory){
           if(Object.keys(item).includes("starting_buffs")){
             for(let buff of item.starting_buffs){
-              game_state_copy.character = applyBuff(game_state_copy.character, buff.name, buff.value)
+              game_state_copy.character = giveCombatantCondition("buff", game_state_copy.character, buff.name, buff.value)
             }
           }
         }
@@ -351,7 +353,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
         </div>
         <h3 className="center_text m-0">It is {turn.key === "player" ? "Player Turn" : "Enemy Turn"}. {message}</h3>
         <h3 className="center_text m-4 p-2"
-          style={{borderBottom: "2px solid #FB8B24"}}
+          style={{borderBottom: combat_log.length > 0 ? "2px solid #FB8B24" : ""}}
         >
           {combat_log[combat_log.length - 1]}</h3>
       </div>

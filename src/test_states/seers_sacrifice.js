@@ -69,7 +69,7 @@ const state = {
                 "target_required": true,
                 "attack_effects": [
                     {
-                        "name": "give_block",
+                        "name": "give_doer_block",
                         "value": 2
                     },
                     {

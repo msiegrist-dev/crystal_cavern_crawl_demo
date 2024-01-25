@@ -1,6 +1,6 @@
 import {useState} from 'react'
 import {copyState} from "../lib/helper_lib"
-import {applyBuff} from "../lib/combat"
+import {giveCombatantCondition} from "../lib/combat"
 
 const TrapFall = ({REQUIRED_EVENT_PROPS}) => {
 
@@ -10,7 +10,7 @@ const TrapFall = ({REQUIRED_EVENT_PROPS}) => {
   const escape = () => {
     setEscaped(true)
     let copy = copyState(game_state)
-    copy.character = applyBuff(copy.character, "slowed", 3)
+    copy.character = giveCombatantCondition("buff", copy.character, "slowed", 3)
     copy.character.hp -= 10
     setGameState(copy)
   }

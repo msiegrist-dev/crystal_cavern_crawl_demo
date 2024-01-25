@@ -51,8 +51,8 @@ const processGemAugment = card => {
     if(augment.effect_name === "increase_card_value"){
       card_copy.value += augment.value
     }
-    if(augment.effect_name === "increase_give_block_value"){
-      const index = getIndexOfArrayItemByName(card.effects, "give_block_value")
+    if(augment.effect_name === "increase_give_doer_block_value"){
+      const index = getIndexOfArrayItemByName(card.effects, "give_doer_block_value")
       card_copy.effects[index].value += augment.value
     }
     if(augment.effect_name === "increase_give_doer_buff"){
