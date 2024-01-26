@@ -8,6 +8,7 @@ const TrapFall = ({REQUIRED_EVENT_PROPS}) => {
   const [escaped, setEscaped] = useState(false)
 
   const escape = () => {
+    if(escaped) return
     setEscaped(true)
     let copy = copyState(game_state)
     copy.character = giveCombatantCondition("buff", copy.character, "slowed", 3)

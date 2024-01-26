@@ -2,7 +2,7 @@ const Item = ({item}) => {
 
   return (
     <div className="grid center_all_items">
-      <img className="w-125px m-4 block" src="sword_icon.jpg" />
+      <img className="w-125px m-4 block" src="sword_icon.png" />
       <h3 className="mt-0 mb-0">{item.name}</h3>
       <h4 className="mt-0 mb-0">{item.rarity}</h4>
       {item.increase_stats &&

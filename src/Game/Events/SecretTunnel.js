@@ -9,12 +9,14 @@ const SecretTunnel = ({REQUIRED_EVENT_PROPS}) => {
   const [entered, setEntered] = useState(false)
 
   const enterTunnel = () => {
+    if(entered) return
     setEntered(true)
     let copy = copyState(game_state)
     copy = giveCharacterGems(copy, "red", 1)
     copy = giveCharacterGems(copy, "blue", 1)
     copy = healCharacter(copy, 10)
     setGameState(copy)
+    setSatisfied(true)
   }
 
   return <div>
@@ -29,9 +31,6 @@ const SecretTunnel = ({REQUIRED_EVENT_PROPS}) => {
         You find an abandoned alchemy lab to rests in.
         Some gems and a health potion are yours for the taking.
       </p>
-    }
-    {!satisfied && entered &&
-      <h2 className="center_text action_text" onClick={(e) => setSatisfied(true)}>Accept</h2>
     }
   </div>
 }

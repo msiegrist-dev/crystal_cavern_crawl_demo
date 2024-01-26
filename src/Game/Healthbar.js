@@ -15,7 +15,7 @@ const Healthbar = ({max_hp, current_hp, block}) => {
   }
 
   const block_style = {
-    backgroundImage: "url('block_icon.jpg')",
+    backgroundImage: "url('shield_icon.png')",
     backgroundSize: "contain",
     backgroundRepeat: "no-repeat",
     color: "cyan",
@@ -27,7 +27,8 @@ const Healthbar = ({max_hp, current_hp, block}) => {
     <div className="grid m-2" style={{gridTemplateColumns: "85% 1fr", height: "35px", width: "300px"}}>
       <div className="center_text p-2" style={health_bar_style}><b>{current_hp} / {max_hp}</b></div>
       {block > 0 &&
-        <div className="center_text" style={block_style}><p className="m-4"><b>{block}</b></p>
+        <div className="center_text" style={block_style}>
+          <p className="m-4"><b>{block}</b></p>
         </div>
       }
     </div>

@@ -20,8 +20,8 @@ const Card = ({
 
     const cards_in_hand = hand.length
     const midway = vw * .5
-    const left_starting_point = midway - (roundToNearestInt(cards_in_hand / 2) * 235)
-    const left = left_starting_point + (index * 175)
+    const left_starting_point = midway - (roundToNearestInt(cards_in_hand / 2) * 300)
+    const left = left_starting_point + (index * 210)
     const min_rotate = hand.length === 2 ? -10 : -20
     const max_rotate = hand.length === 2 ? 10 : 20
     const increment = ((min_rotate * -1) + max_rotate) / (cards_in_hand - 1)
@@ -30,10 +30,10 @@ const Card = ({
     const hand_is_even = isInt(middle)
     const middle_index = !hand_is_even ? rounded_middle - 1 : null
 
-    const top_base = -10
-    const tier_1 = 35
-    const tier_2 = 70
-    const tier_3 = 105
+    const top_base = -20
+    const tier_1 = 25
+    const tier_2 = 65
+    const tier_3 = 100
     const top_tier_map = {
       0: top_base,
       1: tier_1,
@@ -93,49 +93,60 @@ const Card = ({
   const style = {
     width,
     backgroundColor,
-    height: "185px"
+    height: "195px"
   }
 
+  const getTypeIcon = card => {
+    if(card.type === "attack"){
+      return "sword_icon.png"
+    }
+    if(card.type === "defend"){
+      return "shield_icon.png"
+    }
+    return "wand_icon.png"
+  }
+
+  const card_type_icon = <img src={getTypeIcon(card)} style={{height: "25px"}} className='mt-0 p-2 block' />
+
+  const Effect = ({effect}) => {
+    const getEffectShort = () => {
+      const {name, value, stat_name, buff_name, trigger} = effect
+      let str = ``
+      if(trigger) str += `${trigger}: `
+      str += `${name} `
+      if(buff_name) str += `${buff_name} `
+      if(stat_name) str += `${stat_name} `
+      str += `${value}`
+      return str
+    }
+    return <p className="mt-0">{getEffectShort()}</p>
+  }
+  console.log('card', card)
   return (
     <div className="m-4 p-4 game_card grid center_all_items" style={{...style, ...in_hand_style}}>
-      <h3 className="m-0-all">{card.name}</h3>
-      <p className="m-0-all"><b>Type</b> : {formatKeyword(card.type)}</p>
+      <div className="flex p-2">
+        <h3 className="m-0-all">{card.name}</h3>
+        {card_type_icon}
+      </div>
       {card.type === "attack" &&
         <>
           <div className="flex center_all_items">
+            {card_type_icon}
             <p><b>({card.value} * {card.hits}) </b> <i>{card.accuracy}%</i></p>
             <img style={{height: "20px"}} className="block p-4" src="bullseye_icon.png" />
           </div>
         </>
       }
-      {card.type !== "attack" &&
-        <p className="m-0-all">{type} Value : {card_base_value}</p>
+      {card.type === "defend" &&
+        <div className="flex center_all_items">
+          {card_type_icon}
+          <p><b>{card.value}</b></p>
+        </div>
       }
-      {card.attack_effects && card.attack_effects.length > 0 &&
+      {card.effects &&
         <>
-          {card.attack_effects.map((fect) => {
-            let value = fect.value
-            if(value < 1){
-              value = (value * 100) + "%"
-            }
-            return <p key={fect.name}><b>{fect.name}</b> : {value || "true"}</p>
-          })}
-        </>
-      }
-      {card.effect_value &&
-        <p className="m-0-all">Attack Effect Value : {card.effect_value}</p>
-      }
-      {card.type === "effect" &&
-        <>
-          {card.buff_name &&
-            <>
-              <p className="m-0-all">Buff : <b>{card.buff_name}</b></p>
-              {card.can_target &&
-                <p className="m-0-all">Can Target : {card.can_target.map((targ) => targ)}</p>
-              }
-              <p className="m-0-all">{buff_debuff_descriptions[card.buff_name]}</p>
-            </>
-          }
+        <h4 className="center_text mt-0 mb-0">Effects</h4>
+        {card.effects.map((fect) => <Effect effect={fect} />)}
         </>
       }
       {card.gem_augments &&
