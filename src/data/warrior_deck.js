@@ -200,7 +200,7 @@ const warrior_deck = [
     effects: [
       {name: "remove_doer_hp", value: 4},
       {name: "give_doer_stat", value: 2, stat_name: "attack"},
-      {name: "give_doer_stat", value: 2, stat_name: "defend"}
+      {name: "give_doer_stat", value: 2, stat_name: "defense"}
     ],
     accuracy: 100
   }

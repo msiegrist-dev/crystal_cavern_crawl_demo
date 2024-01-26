@@ -1,5 +1,35 @@
-import {displayArmorAsPct} from "./lib/helper_lib"
+import environment from "../data/environment"
+import {displayArmorAsPct, capitalizeFirst} from "./lib/helper_lib"
+
 const TopBar = ({game_state, toggleDeckModal, toggleItemModal}) => {
+
+  const stat_map = {}
+  for(let stat_name of environment.ALL_STATS){
+    stat_map[stat_name] = {
+      value: game_state.character[stat_name],
+      increased: false,
+      increased_value: 0
+    }
+    if(game_state.character.stat_increases){
+      if(game_state.character.stat_increases[stat_name]){
+        stat_map[stat_name].increased = true
+        stat_map[stat_name].increased_value += game_state.character.stat_increases[stat_name]
+        stat_map[stat_name].value += game_state.character.stat_increases[stat_name]
+      }
+    }
+  }
+  console.log("STAT MAP", stat_map)
+  const base_stat_style = {color: "#FFFFFF"}
+  const enhanced_stat_style = {color: "#9ED2EA"}
+
+  const StatRow = ({stat_name}) => {
+    const style = stat_map[stat_name].increased ? enhanced_stat_style : base_stat_style
+    const value = stat_name === "armor" ? displayArmorAsPct({armor: stat_map[stat_name].value}) : stat_map[stat_name].value
+    return <tr>
+      <td style={style}><b>{capitalizeFirst(stat_name)}</b></td>
+      <td style={style}>{value}</td>
+    </tr>
+  }
 
   return <div className="gap-4 m-2 p-4 flex center_all_items w-98 mb-0" style={{borderBottom: "1px solid blue", height: "35px"}}>
     {game_state.character &&
@@ -11,24 +41,20 @@ const TopBar = ({game_state, toggleDeckModal, toggleItemModal}) => {
       <table>
         <tbody>
           <tr>
-            <td><b>Attack</b></td>
-            <td>{game_state.character.attack}</td>
+            <StatRow stat_name="attack" />
           </tr>
           <tr>
-            <td><b>Defense</b></td>
-            <td>{game_state.character.defense}</td>
+            <StatRow stat_name="defense" />
           </tr>
         </tbody>
       </table>
       <table>
         <tbody>
           <tr>
-            <td><b>Armor</b></td>
-            <td>{displayArmorAsPct(game_state.character)}</td>
+            <StatRow stat_name="armor" />
           </tr>
           <tr>
-            <td><b>Speed</b></td>
-            <td>{game_state.character.speed}</td>
+            <StatRow stat_name="speed" />
           </tr>
         </tbody>
       </table>

@@ -13,23 +13,21 @@ const TrapFall = ({REQUIRED_EVENT_PROPS}) => {
     copy.character = giveCombatantCondition("buff", copy.character, "slowed", 3)
     copy.character.hp -= 10
     setGameState(copy)
+    setSatisfied(true)
   }
 
   return <div>
-    <h3 className="center_text">Trap Fall</h3>
-    <p>
+    <h3 className="center_text m-4 p-4">Trap Fall</h3>
+    <p className="m-4 p-4">
       While navigating the narrow passageways, you stumble into a trap.
       You must lift yourself from the pit if you wish to continue.
     </p>
-    <button onClick={(e) => escape()}>Escape</button>
+    <button className="w-200px m-4 p-4 block yellow_action_button" onClick={(e) => escape()}>Escape</button>
     {escaped &&
-      <p>
+      <p className="m-4 p-4">
         You escape the trap, but not without injuries.
         You've sustained some damage and will be slowed in your next combat.
       </p>
-    }
-    {!satisfied && escaped &&
-      <h2 className="center_text action_text" onClick={(e) => setSatisfied(true)}>Continue</h2>
     }
   </div>
 }

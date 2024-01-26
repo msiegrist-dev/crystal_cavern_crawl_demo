@@ -428,3 +428,9 @@ ul {
   max-width: 100vw;
   max-height: 100vh;
 }
+
+.yellow_action_button {
+  background-color: #ffb703;
+  border: 2px groove #fb8500;
+  box-shadow: 2px 3px darkgrey;
+}

@@ -2,9 +2,9 @@ import {useState, useEffect} from 'react'
 import {getIndexOfArrayItemByKey, copyState, shuffleKeyedArray, getRandomNumber, roundToNearestInt} from "./lib/helper_lib"
 import {
   getTurnOrder, getEnemyAction, processAction, drawCards, playCard,
-  sendCardsToGraveYard, getTradeSelections, determineVictoryReward,
-  giveCombatantCondition
+  sendCardsToGraveYard, giveCombatantCondition
 } from "./lib/combat"
+import {getTradeSelections, determineVictoryReward} from "./lib/combat_rewards"
 import {goNextLevel} from "./lib/levels"
 import {getRandomCards} from "./lib/cards"
 import {getRandomItems} from "./lib/items"
