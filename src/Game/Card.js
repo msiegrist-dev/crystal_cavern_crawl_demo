@@ -1,3 +1,4 @@
+import {useState} from 'react'
 import {playCard, addGemToCard, returnCardGemToCharacter} from "./lib/combat"
 import {capitalizeFirst, formatKeyword, roundToNearestInt} from "./lib/helper_lib"
 import buff_debuff_descriptions from "../data/buff_debuff_descriptions"
@@ -8,14 +9,14 @@ const Card = ({
   setDrawPile
 }) => {
 
-  const isInt = num => num % 1 === 0
+  const [hover, setHover] = useState(false)
+
   let vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
-  const type = capitalizeFirst(card.type)
-  const card_base_value = card.type === "effect" ? card.effect_value : card.value
   const width = big_card ? "400px" : "250px"
   const backgroundColor = game_state.character.name.toLowerCase() === "warrior" ? "#C42430" : "white"
 
   let in_hand_style = {}
+  const hover_style = {}
   if(in_combat_hand){
 
     const cards_in_hand = hand.length
@@ -27,7 +28,7 @@ const Card = ({
     const increment = ((min_rotate * -1) + max_rotate) / (cards_in_hand - 1)
     const middle = cards_in_hand / 2
     const rounded_middle = roundToNearestInt(middle)
-    const hand_is_even = isInt(middle)
+    const hand_is_even = Number.isInteger(middle)
     const middle_index = !hand_is_even ? rounded_middle - 1 : null
 
     const top_base = -20
@@ -87,6 +88,11 @@ const Card = ({
       margin: "0px",
       top: top + "px"
     }
+    if(hover){
+      let top_copy = top - 55
+      hover_style.zIndex = "15"
+      hover_style.top = top_copy + "px"
+    }
   }
 
 
@@ -95,6 +101,7 @@ const Card = ({
     backgroundColor,
     height: "205px"
   }
+
 
   const getTypeIcon = card => {
     if(card.type === "attack"){
@@ -123,7 +130,9 @@ const Card = ({
   }
   console.log('card', card)
   return (
-    <div className="m-4 p-4 game_card grid center_all_items" style={{...style, ...in_hand_style}}>
+    <div className="m-4 p-4 game_card grid center_all_items" style={{...style, ...in_hand_style, ...hover_style}}
+      onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}
+    >
       <div className="flex p-2">
         <h3 className="mt-0 mb-0">{card.name}</h3>
         {card_type_icon}
@@ -199,7 +208,7 @@ const Card = ({
         </div>
       }
       {playable &&
-        <button onClick={(e) => {
+        <button className="hov_pointer" onClick={(e) => {
             const requiresTargetting = card => {
               if(!card.target_required && !card.can_target){
                 return false

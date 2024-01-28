@@ -378,6 +378,8 @@ body {
 .game_card {
   border: 2px solid black;
   border-radius: 12px;
+  transition: top .35s ease-out;
+  top: 0;
 }
 
 ul {
