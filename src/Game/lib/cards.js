@@ -30,10 +30,23 @@ const isCardUsingGems = card => {
 }
 
 const processGemAugment = card => {
+
+  const augmentToEffect = aug => {
+    return {
+      name: aug.effect_name,
+      value: aug.value,
+      trigger: "on_attack",
+      buff_name: aug.buff_name,
+      stat_name: aug.stat_name
+    }
+  }
+  const push_to_effect_augments = [
+    "give_doer_block", "give_doer_buff", "give_doer_stat"
+  ]
+
   if(!card.gem_augments || !Object.keys(card.gem_augments).length){
     return card
   }
-
   let card_copy = copyState(card)
 
   for(let gem_name of Object.keys(card.gem_augments)){
@@ -48,16 +61,15 @@ const processGemAugment = card => {
     if(augment.number > card_copy.gem_inventory[gem_name]){
       continue
     }
-    if(augment.effect_name === "increase_card_value"){
-      card_copy.value += augment.value
+    const {effect_name, value} = augment
+    if(effect_name === "increase_card_value"){
+      card_copy.value += value
     }
-    if(augment.effect_name === "increase_give_doer_block_value"){
-      const index = getIndexOfArrayItemByName(card.effects, "give_doer_block_value")
-      card_copy.effects[index].value += augment.value
-    }
-    if(augment.effect_name === "increase_give_doer_buff"){
-      const index = getIndexOfArrayItemByName(card.effects, "give_doer_buff")
-      card_copy.effects[index].value += augment.value
+    if(push_to_effect_augments.includes(effect_name)){
+      if(!card_copy.effects){
+        card_copy.effects = []
+      }
+      card_copy.effects.push(augmentToEffect(augment))
     }
     card_copy.gem_inventory[gem_name] = 0
   }

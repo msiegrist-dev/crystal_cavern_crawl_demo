@@ -93,7 +93,7 @@ const Card = ({
   const style = {
     width,
     backgroundColor,
-    height: "195px"
+    height: "205px"
   }
 
   const getTypeIcon = card => {
@@ -106,7 +106,7 @@ const Card = ({
     return "wand_icon.png"
   }
 
-  const card_type_icon = <img src={getTypeIcon(card)} style={{height: "25px"}} className='mt-0 p-2 block' />
+  const card_type_icon = <img src={getTypeIcon(card)} style={{height: "25px"}} className='mt-0 mb-0 p-2 block' />
 
   const Effect = ({effect}) => {
     const getEffectShort = () => {
@@ -125,7 +125,7 @@ const Card = ({
   return (
     <div className="m-4 p-4 game_card grid center_all_items" style={{...style, ...in_hand_style}}>
       <div className="flex p-2">
-        <h3 className="m-0-all">{card.name}</h3>
+        <h3 className="mt-0 mb-0">{card.name}</h3>
         {card_type_icon}
       </div>
       {card.type === "attack" &&
@@ -213,6 +213,7 @@ const Card = ({
                 return true
               }
             }
+
             if(requiresTargetting(card)){
               setSelectedCard(card)
               setTargetting(true)

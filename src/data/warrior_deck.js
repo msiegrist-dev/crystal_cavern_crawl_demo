@@ -67,10 +67,9 @@ const warrior_deck = [
       blue: {
         number: 1,
         effect: true,
-        effect_name: "increase_give_doer_block_value",
-        attack_effect_name: "give_doer_block",
+        effect_name: "give_doer_block",
         value: 3,
-        effect_description: `Increase give block value by 3`
+        effect_description: `Give 3 block on attack`
       }
     },
     accuracy: 95
@@ -82,14 +81,14 @@ const warrior_deck = [
     effects: [
       {name: "give_doer_buff", buff_name: "fortify", value: 1}
     ],
-    buff_name: "fortify",
     gem_augments: {
       blue: {
         number: 1,
         effect: true,
-        effect_name: "increase_give_doer_buff",
+        effect_name: "give_doer_buff",
+        buff_name: "fortify",
         value: 2,
-        effect_description: `Grants two additional fortify buffs`
+        effect_description: `Give two additional fortify buffs`
       }
     },
     accuracy: 100
@@ -203,6 +202,23 @@ const warrior_deck = [
       {name: "give_doer_stat", value: 2, stat_name: "defense"}
     ],
     accuracy: 100
+  },
+  {
+    name: "Sturdy Style",
+    type: "defend",
+    target_required: false,
+    value: 10,
+    gem_augments: {
+      blue: {number:1, effect: false, required: true},
+      red: {
+        number: 1,
+        effect: true,
+        effect_name: "give_doer_stat",
+        value: 4,
+        stat_name: "attack",
+        effect_description: "Grant 4 attack stat for the turn"
+      }
+    }
   }
 ]
 
