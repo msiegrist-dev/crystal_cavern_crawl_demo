@@ -31,7 +31,7 @@ const TopBar = ({game_state, toggleDeckModal, toggleItemModal}) => {
     </tr>
   }
 
-  return <div className="gap-4 m-2 p-4 flex center_all_items w-98 mb-0" style={{borderBottom: "1px solid blue", height: "35px"}}>
+  return <div className="gap-4 m-2 p-4 flex center_all_items w-98 mb-0 top_bar">
     {game_state.character &&
       <>
       <img src={game_state.character.icon}  className="mb-0 mt-0 block" style={{height: "35px"}}/>

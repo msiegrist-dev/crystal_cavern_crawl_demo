@@ -429,6 +429,8 @@ ul {
   overflow-x: clip;
   max-width: 100vw;
   max-height: 100vh;
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
 .yellow_action_button {
@@ -454,4 +456,13 @@ ul {
     opacity: 1;
     transform: rotateX(360deg);
   }
+}
+
+.combat_parent_div {
+  grid-template-rows: 35px 1fr 350px;
+}
+
+.top_bar {
+  height: 35px;
+  background: rgba(0, 0, 0, 0.55);
 }

@@ -190,7 +190,10 @@ const warrior_deck = [
     value: 2,
     effects: [
       {name: "give_doer_buff", buff_name: "thorns", value: 1}
-    ]
+    ],
+    gem_augments: {
+      blue: {number: 1, effect: false, required: true}
+    }
   },
   {
     name: "Rage",
@@ -209,7 +212,7 @@ const warrior_deck = [
     target_required: false,
     value: 10,
     gem_augments: {
-      blue: {number:1, effect: false, required: true},
+      blue: {number: 1, effect: false, required: true},
       red: {
         number: 1,
         effect: true,
@@ -219,6 +222,15 @@ const warrior_deck = [
         effect_description: "Grant 4 attack stat for the turn"
       }
     }
+  },
+  {
+    name: "Last Resort",
+    type: "defend",
+    target_required: false,
+    value: 7,
+    effects: [
+      {name: "give_doer_buff", value: 2, buff_name: "slowed"}
+    ]
   }
 ]
 

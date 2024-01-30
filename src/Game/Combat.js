@@ -319,8 +319,8 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
   }, [combat_log])
 
   return (
-    <div className="w-98 m-4 p-4 pt-0 mt-0 h-top-bar-minus-remainder grid" onClick={(e) => handleCombatSpaceOnClick(e)}
-      style={{gridTemplateRows: "35px 1fr 350px"}}
+    <div className="w-98 m-4 p-4 pt-0 mt-0 h-top-bar-minus-remainder grid combat_parent_div"
+      onClick={(e) => handleCombatSpaceOnClick(e)}
     >
 
       {combat_modal_open &&

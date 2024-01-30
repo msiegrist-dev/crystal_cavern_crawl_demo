@@ -9,15 +9,22 @@ const App = () => {
 
   const [page, setPage] = useState("main_menu")
   const [game_state, setGameState] = useState(default_game_state)
+  const [background, setBackground] = useState("0.png")
+
   console.log('game_state', game_state)
 
   return (
-    <div className="game_parent_container grid h-vh-100 w-vw-100 m-0">
+    <div className="game_parent_container grid h-vh-100 w-vw-100 m-0"
+      style={{
+        backgroundImage: `url("${background}")`
+      }}
+    >
       {page === "main_menu" &&
-        <div className="grid center_all_items gap-8 w-80 h-vh-50 m-12">
-          <h1>Game Name</h1>
-          <h2 className="action_text" onClick={(e) => setPage("game")}>Start Game</h2>
-          <h2 className="action_text" onClick={(e) => setPage("guide")}>About</h2>
+        <div className="grid center_all_items gap-8 w-80 h-vh-50" style={{margin: "15vh auto"}}>
+          <h1>Seeing Stones</h1>
+          <h2 className="action_text" onClick={(e) => setPage("game")}>New Game</h2>
+          <h2 className="action_text">Load Game</h2>
+          <h2 className="action_text" onClick={(e) => setPage("guide")}>Encylopedia</h2>
         </div>
       }
       {page === "game" &&
