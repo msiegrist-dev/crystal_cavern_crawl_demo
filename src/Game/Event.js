@@ -58,9 +58,9 @@ const Event = ({game_state, setGameState, toggleDeckModal}) => {
       </Suspense>
       <h3 className="center_text">{message}</h3>
       {satisfied &&
-        <h2 className="action_text center_text" onClick={(e) => goNext(game_state)}>
+        <button className="w-200px m-12 p-4 yellow_action_button block" onClick={(e) => goNext(game_state)}>
           Continue
-        </h2>
+        </button>
       }
     </div>
   )

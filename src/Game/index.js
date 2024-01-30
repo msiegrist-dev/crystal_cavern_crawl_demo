@@ -10,7 +10,7 @@ import Item from "./Item"
 
 import {copyState} from "./lib/helper_lib"
 
-const Game = ({setPage, setGameState, game_state}) => {
+const Game = ({setPage, setGameState, game_state, setBackground}) => {
 
 
   const [show_modal, setShowModal] = useState("")
@@ -113,10 +113,10 @@ const Game = ({setPage, setGameState, game_state}) => {
       </Modal>
 
       {game_state.character && game_state.level.number === 0 &&
-        <Level0 game_state={game_state} setGameState={setGameState} />
+        <Level0 game_state={game_state} setGameState={setGameState} setBackground={setBackground} />
       }
       {game_state.character && game_state.level.number >= 1 &&
-        <Level game_state={game_state} setGameState={setGameState} toggleDeckModal={toggleDeckModal}/>
+        <Level game_state={game_state} setGameState={setGameState} toggleDeckModal={toggleDeckModal} setBackground={setBackground}/>
       }
     </>
   )

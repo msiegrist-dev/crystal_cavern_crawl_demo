@@ -19,7 +19,7 @@ import Healthbar from "./Healthbar"
 import CombatStatsTable from "./CombatStatsTable"
 import Buffs from "./Buffs"
 
-const Combat = ({game_state, setGameState, toggleDeckModal}) => {
+const Combat = ({game_state, setGameState, toggleDeckModal, setBackground}) => {
 
   const {enemies} = game_state.level
 
@@ -43,6 +43,12 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
     damage_taken: 0,
     damage_dealt: 0
   })
+
+  const [show_player_attack_animation, setShowPlayerAttackAnimation] = useState(false)
+  const showPlayerAttackAnimation = () => {
+    setShowPlayerAttackAnimation(true)
+    setTimeout(() => setShowPlayerAttackAnimation(false), 1000)
+  }
 
   const openCombatModal = mode => {
     setCombatModalMode(mode)
@@ -95,7 +101,10 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
     if(!selected_card || !targetting || combat_ended){
       return
     }
-    const processed = playCard(selected_card, game_state, [target_key], hand, graveyard, combat_log, setCombatLog, combat_stats, setCombatStats, setMessage, draw_pile)
+    const processed = playCard(
+      selected_card, game_state, [target_key], hand, graveyard, combat_log, setCombatLog,
+      combat_stats, setCombatStats, setMessage, draw_pile, showPlayerAttackAnimation
+    )
     if(processed.error){
       return setMessage(processed.error)
     }
@@ -318,6 +327,14 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
     setTimeout(() => removeAll(display), 1500)
   }, [combat_log])
 
+  useEffect(() => {
+    console.log("SETTING BACKGROUND ON COMBAT MOUNT")
+    setBackground("background.png")
+  }, [])
+
+  const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
+  const player_attack_effect_left = .24 * vw
+
   return (
     <div className="w-98 m-4 p-4 pt-0 mt-0 h-top-bar-minus-remainder grid combat_parent_div"
       onClick={(e) => handleCombatSpaceOnClick(e)}
@@ -379,7 +396,8 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
         <h3 style={{color: "red", position: "absolute", top: "90px", left: "42vw"}}>Please select a target for {selected_card.name}</h3>
       }
 
-      <div className="grid w-vw-100" style={{gridTemplateColumns: "30% 70%", alignItems: "end"}}>
+      <div className="grid w-vw-100" style={{gridTemplateColumns: "30% 1fr", alignItems: "end"}}>
+
         <div className="grid center_all_items">
           <img alt="player character" src={game_state.character.idle} style={{height: "250px"}}/>
           <div className="grid two_col_equal w-80 m-4 p-4">
@@ -388,10 +406,22 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
             </div>
             <Buffs combatant={game_state.character} />
           </div>
+          {show_player_attack_animation &&
+            <img src="slash_effect.gif" className="m-2"
+              style={{
+                position: "absolute",
+                left: player_attack_effect_left,
+                height: "200px"
+              }}
+              />
+          }
         </div>
+
+
         <div className="flex gap-4" style={{justifyContent: "end"}}>
           {enemies.filter((en) => en.hp > 0).map((enemy) => <Enemy key={enemy.key} enemy={enemy} targettingHandler={targettingHandler} />)}
         </div>
+
       </div>
 
       <div className="grid w-vw-98 p-2 h-100" style={{gridTemplateColumns: "125px 1fr 125px"}}>
@@ -406,7 +436,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
             graveyard={graveyard} setHand={setHand} setGraveyard={setGraveyard} setMessage={setMessage}
             combat_log={combat_log} setCombatLog={setCombatLog} combat_stats={combat_stats}
             setCombatStats={setCombatStats} in_combat_hand={true} index={i}
-            draw_pile={draw_pile} setDrawPile={setDrawPile}
+            draw_pile={draw_pile} setDrawPile={setDrawPile} showPlayerAttackAnimation={showPlayerAttackAnimation}
           />)}
         </div>
 

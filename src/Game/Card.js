@@ -6,12 +6,12 @@ const Card = ({
   card, playable, game_state, setTargetting, setGameState, setSelectedCard,
   hand, graveyard, setHand, setGraveyard, setMessage, setCard, combat_log, setCombatLog,
   big_card, combat_stats, setCombatStats, in_combat_hand, index, draw_pile,
-  setDrawPile
+  setDrawPile, showPlayerAttackAnimation
 }) => {
 
   const [hover, setHover] = useState(false)
 
-  let vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
+  const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
   const width = big_card ? "400px" : "250px"
   const backgroundColor = game_state.character.name.toLowerCase() === "warrior" ? "#C42430" : "white"
 
@@ -201,7 +201,11 @@ const Card = ({
             const list = []
             const alt = `one ${gem_name} gem`
             for(let i = 0; i < gem_number; i++){
-              list.push(<img alt={alt} key={i} src={img} style={{height: "25px", width: "25px"}} onClick={(e) => returnCardGemToCharacter(gem_name, card, game_state, hand, setGameState, setHand)}/>)
+              list.push(
+                <img alt={alt} key={i} src={img} style={{height: "25px", width: "25px"}}
+                  onClick={(e) => returnCardGemToCharacter(gem_name, card, game_state, hand, setGameState, setHand)}
+                />
+              )
             }
             return list
           })}
@@ -230,7 +234,7 @@ const Card = ({
             }
 
             const targets = card.type === "defend" || card.type === "effect" ? ["player"] : game_state.level.enemies.map((en) => en.key)
-            const processed = playCard(card, game_state, targets, hand, graveyard, combat_log, setCombatLog, combat_stats, setCombatStats, setMessage, draw_pile)
+            const processed = playCard(card, game_state, targets, hand, graveyard, combat_log, setCombatLog, combat_stats, setCombatStats, setMessage, draw_pile, showPlayerAttackAnimation)
             if(processed.error){
               return setMessage(processed.error)
             }

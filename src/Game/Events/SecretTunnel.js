@@ -20,14 +20,14 @@ const SecretTunnel = ({REQUIRED_EVENT_PROPS}) => {
   }
 
   return <div>
-    <h3 className="center_text">Secret Tunnel</h3>
-    <p>
+    <h3 className="center_text p-4 m-4">Secret Tunnel</h3>
+    <p className="p-4 m-4 center_text">
       You find a secret tunnel and immediately enter it, hoping for hidden loot.
       The tunnel seems to parallel the pathway from where you came.
     </p>
-    <button onClick={(e) => enterTunnel()}>Continue</button>
+    <h2 className="m-4 p-4 action_text center_text" onClick={(e) => enterTunnel()}>Continue</h2>
     {entered &&
-      <p>
+      <p className="p-4 m-4 center_text">
         You find an abandoned alchemy lab to rests in.
         Some gems and a health potion are yours for the taking.
       </p>

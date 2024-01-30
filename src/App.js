@@ -9,7 +9,7 @@ const App = () => {
 
   const [page, setPage] = useState("main_menu")
   const [game_state, setGameState] = useState(default_game_state)
-  const [background, setBackground] = useState("0.png")
+  const [background, setBackground] = useState("background.png")
 
   console.log('game_state', game_state)
 
@@ -29,7 +29,7 @@ const App = () => {
       }
       {page === "game" &&
         <Game setPage={setPage} game_state={game_state}
-          setGameState={setGameState}
+          setGameState={setGameState} setBackground={setBackground}
         />
       }
     </div>

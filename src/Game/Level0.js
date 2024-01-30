@@ -1,3 +1,4 @@
+import {useEffect} from 'react'
 import {goNextLevel} from "./lib/levels"
 import {getRandomGemName, giveCharacterGems} from "./lib/gems"
 import {getRandomStatName, getRandomStatValue, giveCharacterStats} from "./lib/stats"
@@ -6,7 +7,11 @@ import {getRandomCards, addCardToDeck} from "./lib/cards"
 
 import {copyState} from "./lib/helper_lib"
 
-const Level0 = ({game_state, setGameState}) => {
+const Level0 = ({game_state, setGameState, setBackground}) => {
+
+  useEffect(() => {
+    setBackground("background_2.png")
+  }, [])
 
 
   const randomGem = () => {

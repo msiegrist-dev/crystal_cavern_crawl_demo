@@ -6,12 +6,12 @@ import Event from "./Event"
 import TopBar from "./TopBar"
 import {displayArmorAsPct} from "./lib/helper_lib"
 
-const Level = ({game_state, setGameState, setMessage, toggleDeckModal}) => {
+const Level = ({game_state, setGameState, setMessage, toggleDeckModal, setBackground}) => {
 
   return (
     <>
       {game_state.level.type === "combat" &&
-        <Combat game_state={game_state} setGameState={setGameState} toggleDeckModal={toggleDeckModal} setMessage={setMessage} />
+        <Combat game_state={game_state} setGameState={setGameState} toggleDeckModal={toggleDeckModal} setMessage={setMessage} setBackground={setBackground}/>
       }
       {game_state.level.type === "event" &&
         <Event game_state={game_state} setGameState={setGameState} toggleDeckModal={toggleDeckModal} setMessage={setMessage} />

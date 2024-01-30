@@ -377,13 +377,6 @@ const processAction = (game_state, doer, target_keys, action, combat_log, setCom
         game_state_copy.level.enemies[doer_enemy_index] = processed.doer
       }
     }
-    if(combat_log_copy.length > 2){
-      if(combat_log_copy[combat_log_copy.length - 2].includes("did thorns")){
-        const thorns = combat_log_copy[combat_log_copy.length - 2]
-        combat_log_copy[combat_log_copy.length - 2] = combat_log_copy[combat_log_copy.length - 1]
-        combat_log_copy[combat_log_copy.length - 1] = thorns
-      }
-    }
     setCombatLog(combat_log_copy)
     setCombatStats(combat_stats_copy)
   }
@@ -444,7 +437,7 @@ const sendCardsToGraveYard = (hand, cards, graveyard, game_state) => {
 
 
 
-const playCard = (card, game_state, target_keys, hand, graveyard, combat_log, setCombatLog, combat_stats, setCombatStats, setMessage, draw_pile) => {
+const playCard = (card, game_state, target_keys, hand, graveyard, combat_log, setCombatLog, combat_stats, setCombatStats, setMessage, draw_pile, showPlayerAttackAnimation) => {
   let card_copy = copyState(card)
   const requires_gems = doesCardRequireGem(card_copy)
   const using_gems = isCardUsingGems(card_copy)
@@ -460,6 +453,9 @@ const playCard = (card, game_state, target_keys, hand, graveyard, combat_log, se
     card_copy = processGemAugment(card_copy)
   }
   const card_sources = sendCardsToGraveYard(hand, [card_copy], graveyard, game_state)
+  if(card_copy.type === "attack"){
+    showPlayerAttackAnimation()
+  }
   const processed = processAction(
     card_sources.game_state, card_sources.game_state.character, target_keys,
     {...card_copy}, combat_log, setCombatLog,
