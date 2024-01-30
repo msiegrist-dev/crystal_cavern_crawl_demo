@@ -301,6 +301,23 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
     }
   }, [game_state, combat_ended, setGameState])
 
+  useEffect(() => {
+    if(!document){
+      return
+    }
+    const display = document.getElementById("combat_log_display")
+    if(!display){
+      return
+    }
+    display.classList.add("orange_bottom_border")
+    display.classList.add("flipX")
+    const removeAll = display => {
+      display.classList.remove("flipX")
+      display.classList.remove("orange_bottom_border")
+    }
+    setTimeout(() => removeAll(display), 1500)
+  }, [combat_log])
+
   return (
     <div className="w-98 m-4 p-4 pt-0 mt-0 h-top-bar-minus-remainder grid" onClick={(e) => handleCombatSpaceOnClick(e)}
       style={{gridTemplateRows: "35px 1fr 350px"}}
@@ -355,9 +372,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal}) => {
           })}
         </div>
         <h3 className="center_text m-0">It is {turn.key === "player" ? "Player Turn" : "Enemy Turn"}. {message}</h3>
-        <h3 className="center_text m-4 p-2"
-          style={{borderBottom: combat_log.length > 0 ? "2px solid #FB8B24" : ""}}
-        >
+        <h3 id="combat_log_display" className="center_text m-4 p-2">
           {combat_log[combat_log.length - 1]}</h3>
       </div>
       {targetting && selected_card &&

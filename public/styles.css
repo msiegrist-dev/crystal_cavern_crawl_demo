@@ -436,3 +436,22 @@ ul {
   border: 2px groove #fb8500;
   box-shadow: 2px 3px darkgrey;
 }
+
+.orange_bottom_border {
+  border-bottom: 2px solid #FB8B24;
+}
+
+/* flipping class and key frames*/
+.flipX {
+  animation: 1s anim-flipX linear 10ms;
+}
+@keyframes anim-flipX {
+  0% {
+    opacity: 0;
+    transform: rotateX(90deg);
+  }
+  50% {
+    opacity: 1;
+    transform: rotateX(360deg);
+  }
+}
