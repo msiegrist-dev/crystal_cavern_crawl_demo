@@ -18,7 +18,7 @@ const TopBar = ({game_state, toggleDeckModal, toggleItemModal}) => {
       }
     }
   }
-  console.log("STAT MAP", stat_map)
+  
   const base_stat_style = {color: "#FFFFFF"}
   const enhanced_stat_style = {color: "#9ED2EA"}
 

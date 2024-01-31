@@ -128,7 +128,7 @@ const Card = ({
     }
     return <p className="mt-0">{getEffectShort()}</p>
   }
-  console.log('card', card)
+
   return (
     <div className="m-4 p-4 game_card grid center_all_items" style={{...style, ...in_hand_style, ...hover_style}}
       onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}
@@ -155,7 +155,7 @@ const Card = ({
       {card.effects &&
         <>
         <h4 className="center_text mt-0 mb-0">Effects</h4>
-        {card.effects.map((fect) => <Effect effect={fect} />)}
+        {card.effects.map((fect, i) => <Effect key={`${fect}-${i}`} effect={fect} />)}
         </>
       }
       {card.gem_augments &&

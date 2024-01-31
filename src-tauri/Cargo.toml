@@ -1,11 +1,11 @@
 [package]
-name = "crystal crawl dev"
+name = "crystal_crawl_dev"
 version = "0.1.0"
 description = "hashtag indie game dev"
 authors = ["you"]
 license = ""
 repository = ""
-default-run = "app"
+default-run = "crystal_crawl_dev"
 edition = "2021"
 rust-version = "1.60"
 
