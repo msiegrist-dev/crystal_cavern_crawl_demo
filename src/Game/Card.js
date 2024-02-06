@@ -129,8 +129,12 @@ const Card = ({
     return <p className="mt-0">{getEffectShort()}</p>
   }
 
+  let class_string = "m-4 p-4 game_card grid center_all_items"
+  if(in_combat_hand){
+    class_string += ` hov_pointer`
+  }
   return (
-    <div className="m-4 p-4 game_card grid center_all_items" style={{...style, ...in_hand_style, ...hover_style}}
+    <div className={class_string} style={{...style, ...in_hand_style, ...hover_style}}
       onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}
     >
       <div className="flex p-2">

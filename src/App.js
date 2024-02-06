@@ -21,7 +21,7 @@ const App = () => {
     >
       {page === "main_menu" &&
         <div className="grid center_all_items gap-8 w-80 h-vh-50" style={{margin: "15vh auto"}}>
-          <h1>Seeing Stones</h1>
+          <h1>Gems or Jail</h1>
           <h2 className="action_text" onClick={(e) => setPage("game")}>New Game</h2>
           <h2 className="action_text">Load Game</h2>
           <h2 className="action_text" onClick={(e) => setPage("guide")}>Encylopedia</h2>

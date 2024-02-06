@@ -4,35 +4,39 @@ const items = [
     increase_stats: [
       {name: "defense", value: 1, type: "flat"}
     ],
-    rarity: "common"
+    rarity: "common",
+    image: "stout_shield.png"
   },
   {
     name: "Rusty Dagger",
     increase_stats: [
       {name: "attack", value: 1, type: "flat"}
     ],
-    rarity: "common"
+    rarity: "common",
+    image: "rusty_dagger.png"
   },
   {
-    name: "Rope Sandals",
+    name: "Flip Flops",
     increase_stats: [
       {name: "speed", value: 1, type: "flat"}
     ],
     rarity: "common"
   },
   {
-    name: "Spinach",
+    name: "Apple",
     increase_stats: [
       {name: "max_hp", value: 5, type: "flat"}
     ],
-    rarity: "common"
+    rarity: "common",
+    image: "apple.png"
   },
   {
-    name: "Leather Tunic",
+    name: "Heavy Tunic",
     increase_stats: [
       {name: "armor", value: .02, type: "flat"}
     ],
-    rarity: "common"
+    rarity: "common",
+    image: "tunic.png"
   },
   {
     name: "Lightweight Plate",
@@ -42,7 +46,8 @@ const items = [
     decrease_stats: [
       {name: "armor", value: .05, type: "flat"}
     ],
-    rarity: "common"
+    rarity: "common",
+    image: "armor.png"
   },
   {
     name: "Buckler",
@@ -108,7 +113,7 @@ const items = [
     rarity: "uncommon"
   },
   {
-    name: "Jade Rose",
+    name: "Basketball",
     increase_stats: [
       {name: "max_hp", value: 8, type: "flat"},
       {name: "attack", value: 2, type: "flat"},
@@ -116,7 +121,9 @@ const items = [
       {name: "speed", value: .05, type: "flat"},
       {name: "armor", value: .05, type: "flat"},
     ],
-    rarity: "rare"
+    rarity: "rare",
+    image: "basketball.png",
+    description: "...and I took that personally."
   },
   {
     name: "Seer's Crystal Ball",

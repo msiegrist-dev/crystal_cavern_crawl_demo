@@ -1,4 +1,4 @@
-import grublin from "../mobs/grublin"
+import goblin from "../mobs/goblin"
 
 export default {
   name: "Grublin King",
@@ -27,7 +27,7 @@ export default {
       {
         type: "effect",
         effect_name: "summon",
-        value: [grublin, grublin]
+        value: [goblin, goblin]
       }
     ]
   }

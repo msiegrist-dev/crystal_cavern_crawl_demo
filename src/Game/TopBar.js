@@ -18,7 +18,7 @@ const TopBar = ({game_state, toggleDeckModal, toggleItemModal}) => {
       }
     }
   }
-  
+
   const base_stat_style = {color: "#FFFFFF"}
   const enhanced_stat_style = {color: "#9ED2EA"}
 
@@ -58,11 +58,11 @@ const TopBar = ({game_state, toggleDeckModal, toggleItemModal}) => {
           </tr>
         </tbody>
       </table>
-      <div className="grid two_col_60_40">
+      <div className="grid two_col_60_40 gap-2">
         <img alt="red gems" src="gem_red.png" style={{width: "35px", height: "35px"}} className="m-4 block" />
         <p>x{game_state.character.gems.red}</p>
       </div>
-      <div className="grid two_col_60_40">
+      <div className="grid two_col_60_40 gap-2">
         <img alt="blue gems" src="gem_blue.png" style={{width: "35px", height: "35px"}} className="m-4 block" />
         <p>x{game_state.character.gems.blue}</p>
       </div>
