@@ -5,7 +5,8 @@ const items = [
       {name: "defense", value: 1, type: "flat"}
     ],
     rarity: "common",
-    image: "stout_shield.png"
+    image: "stout_shield.png",
+    description: "Reeks of wine. Better than nothing."
   },
   {
     name: "Rusty Dagger",
@@ -13,14 +14,16 @@ const items = [
       {name: "attack", value: 1, type: "flat"}
     ],
     rarity: "common",
-    image: "rusty_dagger.png"
+    image: "rusty_dagger.png",
+    description: "If the blade doesn't get you, the tetanus will."
   },
   {
     name: "Flip Flops",
     increase_stats: [
       {name: "speed", value: 1, type: "flat"}
     ],
-    rarity: "common"
+    rarity: "common",
+    image: "flips.png"
   },
   {
     name: "Apple",
@@ -47,70 +50,79 @@ const items = [
       {name: "armor", value: .05, type: "flat"}
     ],
     rarity: "common",
-    image: "armor.png"
+    image: "lightweight_plate.png"
   },
   {
     name: "Buckler",
     increase_stats: [
       {name: "defense", value: 2, type: "flat"}
     ],
-    rarity: "uncommon"
+    rarity: "uncommon",
+    image: "buckler.png"
   },
   {
     name: "Iron Sword",
     increase_stats: [
       {name: "attack", value: 2, type: "flat"}
     ],
-    rarity: "uncommon"
+    rarity: "uncommon",
+    image: "iron_sword.png"
   },
   {
     name: "Running Shoes",
     increase_stats: [
       {name: "speed", value: 2, type: "flat"}
     ],
-    rarity: "uncommon"
+    rarity: "uncommon",
+    image: "shoes.png"
   },
   {
-    name: "Gallon of Milk",
+    name: "Milk",
     increase_stats: [
       {name: "max_hp", value: 10, type: "flat"}
     ],
-    rarity: "uncommon"
+    rarity: "uncommon",
+    image: "milk.png"
   },
   {
     name: "Chainmail",
     increase_stats: [
       {name: "armor", value: .05, type: "flat"}
     ],
-    rarity: "uncommon"
+    rarity: "uncommon",
+    image: "chainmail.png"
   },
   {
     name: "Starting Pistol",
     increase_stats: [
       {name: "starting_draw", value: 1, type: "flat"}
     ],
-    rarity: "uncommon"
+    rarity: "uncommon",
+    image: "pistol.png"
   },
   {
     name: "Armor of Annoyance",
     starting_buffs: [
       {name: "thorns", value: 2}
     ],
-    rarity: "uncommon"
+    rarity: "uncommon",
+    image: "armor_of_annoyance.png"
   },
   {
     name: "Blood-Colored Glasses",
     starting_buffs: [
       {name: "fervor", value: 2}
     ],
-    rarity: "uncommon"
+    rarity: "uncommon",
+    image: "blood_colored_glasses.png"
   },
   {
     name: "Flaming Rodent Hide",
     starting_buffs: [
       {name: "flame_guard", value: 2}
     ],
-    rarity: "uncommon"
+    rarity: "uncommon",
+    image: "hide.png"
   },
   {
     name: "Basketball",
@@ -130,12 +142,16 @@ const items = [
     increase_stats: [
       {name: "card_draw", value: 1, type: "flat"}
     ],
-    rarity: "rare"
+    rarity: "rare",
+    image: "crystal_ball.png",
+    description: "Rain clouds trapped within a snowglobe."
   },
   {
-    name: "Lucky Grublin's Foot",
+    name: "Lucky Goblin's Foot",
     rarity: "rare",
-    custom_effect: "Draw one card when defeating an enemy."
+    custom_effect: "Draw one card when defeating an enemy.",
+    image: "goblin_foot.png",
+    description: "It worked for Davey Crockett."
   }
 ]
 
