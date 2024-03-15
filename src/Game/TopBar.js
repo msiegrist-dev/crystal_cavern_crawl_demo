@@ -36,7 +36,6 @@ const TopBar = ({game_state, toggleDeckModal, toggleItemModal}) => {
       <>
       <img src={game_state.character.icon}  className="mb-0 mt-0 block" style={{height: "35px"}}/>
       <h3 className="mb-0 mt-0">{game_state.character.name}</h3>
-      <p className="mb-0 mt-0">{game_state.character.sub_name}</p>
       <p className="mt-0 mb-0"><b>HP</b> : {game_state.character.hp} / {game_state.character.max_hp}</p>
       <table>
         <tbody>

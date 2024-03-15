@@ -329,7 +329,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal, setBackground}) => {
 
   useEffect(() => {
     console.log("SETTING BACKGROUND ON COMBAT MOUNT")
-    setBackground("background.png")
+    setBackground("combat_background.png")
   }, [])
 
   const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
@@ -396,15 +396,16 @@ const Combat = ({game_state, setGameState, toggleDeckModal, setBackground}) => {
         <h3 style={{color: "red", position: "absolute", top: "90px", left: "42vw"}}>Please select a target for {selected_card.name}</h3>
       }
 
-      <div className="grid w-vw-100" style={{gridTemplateColumns: "30% 1fr", alignItems: "end"}}>
 
+
+      <div className="grid w-vw-100 h-100" style={{gridTemplateColumns: "30% 1fr", alignItems: "end"}}>
         <div className="grid center_all_items">
           <img alt="player character" src={game_state.character.idle} style={{height: "250px"}}/>
           <div className="grid two_col_equal w-80 m-4 p-4">
-            <div className="span_two_col" style={{height: "100px"}}>
+            <div className="span_two_col">
               <Healthbar max_hp={game_state.character.max_hp} current_hp={game_state.character.hp} block={game_state.character.block}/>
+              <Buffs combatant={game_state.character} />
             </div>
-            <Buffs combatant={game_state.character} />
           </div>
           {show_player_attack_animation &&
             <img src="slash_effect.gif" className="m-2"
@@ -413,18 +414,17 @@ const Combat = ({game_state, setGameState, toggleDeckModal, setBackground}) => {
                 left: player_attack_effect_left,
                 height: "200px"
               }}
-              />
+            />
           }
         </div>
-
-
         <div className="flex gap-4" style={{justifyContent: "end"}}>
           {enemies.filter((en) => en.hp > 0).map((enemy) => <Enemy key={enemy.key} enemy={enemy} targettingHandler={targettingHandler} />)}
         </div>
-
       </div>
 
-      <div className="grid w-vw-98 p-2 h-100" style={{gridTemplateColumns: "125px 1fr 125px"}}>
+
+
+      <div className="grid w-vw-98 p-2" style={{gridTemplateColumns: "125px 1fr 125px"}}>
         <div>
           <h3 className="action_text center_text" onClick={(e) => toggleDeckModal(draw_pile)}>Draw Pile ({draw_pile.length})</h3>
         </div>

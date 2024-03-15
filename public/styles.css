@@ -459,7 +459,7 @@ ul {
 }
 
 .combat_parent_div {
-  grid-template-rows: 35px 1fr 350px;
+  grid-template-rows: 35px 1fr 225px;
 }
 
 .top_bar {

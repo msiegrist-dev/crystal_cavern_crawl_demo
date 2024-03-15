@@ -1,10 +1,10 @@
-import goblin from "../mobs/goblin"
+import groblin from "../mobs/groblin"
 
 export default {
-  name: "Grublin King",
+  name: "Groblin Daddy",
   splash_text: "It is not above the K'Nesh to eat an unrly servant.",
-  combat_detail: "His grublin servants will flock to aid their king. They must all be eliminated.",
-  image_url: "goblin_king.png",
+  combat_detail: "His groblin servants will flock to aid their king. They must all be eliminated.",
+  image_url: "groblin_daddy.png",
   speed: 7,
   attack: 10,
   defense: 7,
@@ -27,7 +27,7 @@ export default {
       {
         type: "effect",
         effect_name: "summon",
-        value: [goblin, goblin]
+        value: [groblin, groblin]
       }
     ]
   }

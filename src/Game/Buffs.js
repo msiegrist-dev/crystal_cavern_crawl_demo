@@ -12,7 +12,7 @@ const Buffs = ({combatant}) => {
 
   const buffs = getBuffs(combatant)
 
-  return <div className="flex">
+  return <div className="flex" style={{height: "50px"}}>
     {getBuffs(combatant).map((buff_name) => {
       return <p key={buff_name}><b>{buff_name}</b> : {combatant.buffs[buff_name]}</p>
     })}

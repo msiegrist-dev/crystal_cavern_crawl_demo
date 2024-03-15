@@ -147,10 +147,10 @@ const items = [
     description: "Rain clouds trapped within a snowglobe."
   },
   {
-    name: "Lucky Goblin's Foot",
+    name: "Lucky groblin's Foot",
     rarity: "rare",
     custom_effect: "Draw one card when defeating an enemy.",
-    image: "goblin_foot.png",
+    image: "groblin_foot.png",
     description: "It worked for Davey Crockett."
   }
 ]

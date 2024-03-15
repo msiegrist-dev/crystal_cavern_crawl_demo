@@ -2,7 +2,7 @@ const spider = {
   name: "Spider",
   splash_text: "The ritzy bitzy spider.",
   combat_detail: "This creeper has a high blocking defense and her attacks will tangle you in her web.",
-  image_url: "spider.gif",
+  image_url: "spider.png",
   speed: 1,
   attack: 2,
   defense: 5,

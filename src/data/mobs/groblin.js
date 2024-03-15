@@ -1,8 +1,8 @@
 export default {
-  name: "Goblin",
+  name: "groblin",
   splash_text: "Tweedley Doofus. Grubby Grublus.",
   combat_detail: "They're fast and they like to smash things. You make as fine a target as any.",
-  image_url: "goblin.png",
+  image_url: "groblin.png",
   speed: 5,
   attack: 5,
   defense: 1,

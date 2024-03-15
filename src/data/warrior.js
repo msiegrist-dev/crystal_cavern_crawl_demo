@@ -23,8 +23,8 @@ const warrior = {
     "Defend",
     "Defend"
   ],
-  idle: "warrior_idle.gif",
-  icon: "warrior_icon.png"
+  idle: "warrior.png",
+  icon: "warrior_head.png"
 }
 
 export default warrior

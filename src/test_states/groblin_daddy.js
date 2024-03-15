@@ -4,9 +4,9 @@ const state = {
         "type": "combat",
         "enemies": [
             {
-                "name": "Grublin King",
+                "name": "groblin daddy",
                 "splash_text": "It is not above the K'Nesh to eat an unrly servant.",
-                "image_url": "goblin_king.png",
+                "image_url": "groblin_daddy.png",
                 "speed": 7,
                 "attack": 10,
                 "defense": 7,
@@ -33,9 +33,9 @@ const state = {
                             "effect_name": "summon",
                             "value": [
                                 {
-                                    "name": "Grublin",
+                                    "name": "groblin",
                                     "splash_text": "Tweedley Doofus. Grubby Grublus.",
-                                    "image_url": "goblin_idle_left.gif",
+                                    "image_url": "groblin_idle_left.gif",
                                     "speed": 5,
                                     "attack": 5,
                                     "defense": 1,
@@ -59,9 +59,9 @@ const state = {
                                     }
                                 },
                                 {
-                                    "name": "Grublin",
+                                    "name": "groblin",
                                     "splash_text": "Tweedley Doofus. Grubby Grublus.",
-                                    "image_url": "goblin_idle_left.gif",
+                                    "image_url": "groblin_idle_left.gif",
                                     "speed": 5,
                                     "attack": 5,
                                     "defense": 1,

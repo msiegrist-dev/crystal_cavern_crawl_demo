@@ -12,7 +12,7 @@ const Card = ({
   const [hover, setHover] = useState(false)
 
   const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
-  const width = big_card ? "400px" : "250px"
+  const width = big_card ? "400px" : "200px"
   const backgroundColor = game_state.character.name.toLowerCase() === "warrior" ? "#C42430" : "white"
 
   let in_hand_style = {}
@@ -99,7 +99,7 @@ const Card = ({
   const style = {
     width,
     backgroundColor,
-    height: "205px"
+    height: "175px"
   }
 
 
