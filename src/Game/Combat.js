@@ -2,7 +2,7 @@ import {useState, useEffect} from 'react'
 import {getIndexOfArrayItemByKey, copyState, shuffleKeyedArray, getRandomNumber, roundToNearestInt} from "./lib/helper_lib"
 import {
   getTurnOrder, getEnemyAction, processAction, drawCards, playCard,
-  sendCardsToGraveYard, giveCombatantCondition
+  sendCardsToGraveYard, giveCombatantCondition, reduceBlockCombatStart
 } from "./lib/combat"
 import {getTradeSelections, determineVictoryReward} from "./lib/combat_rewards"
 import {goNextLevel} from "./lib/levels"
@@ -20,8 +20,6 @@ import CombatStatsTable from "./CombatStatsTable"
 import Buffs from "./Buffs"
 
 const Combat = ({game_state, setGameState, toggleDeckModal, setBackground}) => {
-
-  const {enemies} = game_state.level
 
   const [message, setMessage] = useState("")
   const [turn_order, setTurnOrder] = useState(getTurnOrder(game_state))
@@ -159,9 +157,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal, setBackground}) => {
           game_state_copy.character.buffs[buff_name] -= 1
         }
       }
-      if(game_state_copy.character.block > 5){
-        game_state_copy.character.block = roundToNearestInt(game_state_copy.character.block / 2)
-      }
+      game_state_copy.character.block = reduceBlockCombatStart(game_state_copy.character.block)
       if(turn_number === 1){
         for(let item of game_state_copy.character.inventory){
           if(Object.keys(item).includes("starting_buffs")){
@@ -185,12 +181,17 @@ const Combat = ({game_state, setGameState, toggleDeckModal, setBackground}) => {
         return
       }
       console.log("IT IS ENEMIES TURN")
-      const enemy = enemies.find((ene) => ene.key === turn.key)
+      let enemy = game_state.level.enemies.find((ene) => ene.key === turn.key)
+      const enemy_index = game_state.level.enemies.findIndex((ene) => ene.key === turn.key)
+      let copy = JSON.parse(JSON.stringify(game_state))
+      copy.level.enemies[enemy_index].block = reduceBlockCombatStart(copy.level.enemies[enemy_index].block)
+      setGameState(copy)
       if(enemy.hp <= 0){
         return goNextTurn()
       }
-      const action = getEnemyAction(game_state, enemy)
-      const processed = processAction(game_state, enemy, ["player"], action, combat_log, setCombatLog, combat_stats, setCombatStats, {draw_pile, hand, graveyard})
+      enemy = copy.level.enemies.find((ene) => ene.key === turn.key)
+      const action = getEnemyAction(copy, enemy)
+      const processed = processAction(copy, enemy, ["player"], action, combat_log, setCombatLog, combat_stats, setCombatStats, {draw_pile, hand, graveyard})
       setGameState(processed.game_state)
       setHand(processed.card_state.hand)
       setDrawPile(processed.card_state.draw_pile)
@@ -328,7 +329,6 @@ const Combat = ({game_state, setGameState, toggleDeckModal, setBackground}) => {
   }, [combat_log])
 
   useEffect(() => {
-    console.log("SETTING BACKGROUND ON COMBAT MOUNT")
     setBackground("combat_background.png")
   }, [])
 
@@ -393,7 +393,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal, setBackground}) => {
           {combat_log[combat_log.length - 1]}</h3>
       </div>
       {targetting && selected_card &&
-        <h3 style={{color: "red", position: "absolute", top: "90px", left: "42vw"}}>Please select a target for {selected_card.name}</h3>
+        <h3 style={{color: "F0F2F2", position: "absolute", top: "90px", left: "42vw"}}>Please select a target for {selected_card.name}</h3>
       }
 
 
@@ -418,7 +418,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal, setBackground}) => {
           }
         </div>
         <div className="flex gap-4" style={{justifyContent: "end"}}>
-          {enemies.filter((en) => en.hp > 0).map((enemy) => <Enemy key={enemy.key} enemy={enemy} targettingHandler={targettingHandler} />)}
+          {game_state.level.enemies.filter((en) => en.hp > 0).map((enemy) => <Enemy key={enemy.key} enemy={enemy} targettingHandler={targettingHandler} />)}
         </div>
       </div>
 

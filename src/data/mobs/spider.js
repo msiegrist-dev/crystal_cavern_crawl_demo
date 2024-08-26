@@ -23,7 +23,7 @@ const spider = {
     defend: [
       {
         type: "defend",
-        value: 8
+        value: 5
       }
     ]
   }

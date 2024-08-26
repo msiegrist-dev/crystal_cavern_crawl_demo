@@ -22,7 +22,7 @@ const getTradeSelections = (quantity, trade_for, trade_in, character) => {
   const getPossibleCharEntities = char => {
     let list = []
     if(char.inventory.length > 0){
-      list.push("card")
+      list.push("item")
     }
     if(char.deck.length > 0){
       list.push("card")
@@ -40,7 +40,6 @@ const getTradeSelections = (quantity, trade_for, trade_in, character) => {
   for(let i = 0; i < quantity; i++){
     const trade_for_entity_name = trade_for === "random" ?
       getRandomValueFromList(available_character_entities) : trade_for
-
     let trade_for_entity
     const trade_in_entity = getRandomCharacterEntity(character, trade_in)
     if(trade_for_entity_name === "card"){
@@ -71,7 +70,7 @@ const getTradeSelections = (quantity, trade_for, trade_in, character) => {
 
 const determineVictoryReward = game_state => {
   const value = getRandomNumber100()
-  if(value <= 60){
+  if(value <= 65){
     return getRandomValueFromList(environment.CARD_REWARDS)
   }
   return getRandomValueFromList(environment.ALL_REWARDS)

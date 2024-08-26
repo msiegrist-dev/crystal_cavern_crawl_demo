@@ -89,11 +89,9 @@ const assignRandomKey = (entity, inventory) => {
 
 const handleOdds = odds => {
   const random = getRandomNumber100()
-  console.log("RANDOM NUM FOR ODDS", random)
   let current = 0
   for(let i = 0; i < odds.length; i++){
     const {name, value} = odds[i]
-    console.log("[name, value, current]", [name, value, current])
 
     if(i === 0){
       if(random <= value){

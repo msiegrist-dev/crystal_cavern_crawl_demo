@@ -503,6 +503,7 @@ const returnCardGemToCharacter = (gem, card, game_state, hand, setGameState, set
   setGameState(game_state_copy)
 }
 
+const reduceBlockCombatStart = block => block > 4 ? roundToNearestInt(block / 2) : block
 
 export {
   mapEnemiesForCombat,
@@ -515,5 +516,6 @@ export {
   addGemToCard,
   returnCardGemToCharacter,
   giveCombatantCondition,
-  combatantHasCondition
+  combatantHasCondition,
+  reduceBlockCombatStart
 }

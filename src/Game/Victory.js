@@ -24,8 +24,7 @@ const Victory = ({
     setSelectionMade(true)
   }
 
-  const reward_message = `Select a ${type} ${entity}`
-  console.log(type, entity)
+  const reward_message = `Select a ${entity}`
   const remove_card_message = `Select a card to remove from your deck`
   const use_message = type === "remove" && entity === "card" ? remove_card_message : reward_message
 

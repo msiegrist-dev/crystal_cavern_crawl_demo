@@ -20,11 +20,11 @@ export default {
     defend: [
       {
         type: "defend",
-        value: 6
+        value: 4
       }
     ]
   },
   buffs: {
-    thorns: 10
+    thorns: 7
   }
 }

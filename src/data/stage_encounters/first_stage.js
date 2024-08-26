@@ -8,10 +8,11 @@ import flaming_rodent from "../bosses/flaming_rodent"
 export default {
   mob_sets: [
     [groblin, living_spike, spider],
-    // [spider],
-    // [groblin, spider],
-    // [living_spike, groblin],
-    // [living_spike, living_spike]
+    [spider],
+    [spider, spider],
+    [groblin, spider],
+    [living_spike, groblin],
+    [living_spike, living_spike]
   ],
   bosses: [
     [groblin_daddy],
