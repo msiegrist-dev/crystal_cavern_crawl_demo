@@ -4,6 +4,7 @@ node_modules
 public/*.png
 public/*.gif
 public/*.jpg
+public/*.mp4
 todo
 test.js
 test_notes
