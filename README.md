@@ -1,14 +1,31 @@
-# Need the Assets?
+# Get Started
 
-the assets can be downloaded [here](https://marksiegrist.dev/ccc-assets)
-once downloaded, unzip the folder into /public
+clone the repository
 
-## local web development
+```
+```
+
+enter the new directory and install dependencies
+
+```
+```
+
+download the assets [here](https://marksiegrist.dev/ccc-assets) and unzip into
+/public
+
+# Commands
+
+local web development
 ```
   npm run start
 ```
 
-## local tauri development
+local tauri development
 ```
   npm run tauri dev
 ```
+
+
+# Licensing
+
+This work is licensed under the Apache 2.0 license which can be found in public/LICENSE.txt

@@ -11,3 +11,4 @@ test_notes
 build
 src-tauri/target
 combat-mock-assets.png
+src-tauri/icons
