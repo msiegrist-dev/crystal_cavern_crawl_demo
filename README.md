@@ -10,7 +10,7 @@ enter the new directory and install dependencies
 ```
 ```
 
-download the assets [here](https://marksiegrist.dev/ccc-assets) and unzip into
+download the assets [here](https://marksiegrist.dev/ccc_assets) and unzip into
 /public
 
 # Commands
