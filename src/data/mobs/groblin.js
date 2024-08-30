@@ -1,4 +1,4 @@
-export default {
+const groblin =  {
   name: "groblin",
   splash_text: "Tweedley Doofus. Grubby Grublus.",
   combat_detail: "They're fast and they like to smash things. You make as fine a target as any.",
@@ -25,3 +25,5 @@ export default {
     ]
   }
 }
+
+export default groblin

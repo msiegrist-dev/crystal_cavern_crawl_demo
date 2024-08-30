@@ -2,12 +2,12 @@ import Healthbar from "./Healthbar"
 import Buffs from "./Buffs"
 import {displayArmorAsPct} from "./lib/helper_lib"
 
-export default ({enemy, targettingHandler}) => {
+const Enemy = ({enemy, targettingHandler}) => {
 
   return (
     <div className="p-4" style={{position: "relative", alignItems: "end", gridAutoRows: "min-content", marginTop: "auto"}} key={enemy.key}>
       <img src={enemy.image_url} className="hov_pointer enemy_img m-4 block" style={{height: "180px", width: "auto"}}
-        onClick={(e) => targettingHandler(enemy.key)}
+        onClick={(e) => targettingHandler(enemy.key)} alt={enemy.name}
       />
       <h3 style={{position: "relative"}} className="mt-0 mb-0 center_text popover_message hov_pointer">{enemy.name}</h3>
       <Healthbar max_hp={enemy.max_hp} current_hp={enemy.hp} block={enemy.block}/>
@@ -43,3 +43,5 @@ export default ({enemy, targettingHandler}) => {
     </div>
   )
 }
+
+export default Enemy

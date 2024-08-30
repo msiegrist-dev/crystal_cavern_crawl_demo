@@ -3,7 +3,7 @@ import {getRandomCards, addCardToDeck} from "../lib/cards"
 
 const DamageForCard = ({REQUIRED_EVENT_PROPS}) => {
 
-  const {satisfied, setSatisfied, game_state, setGameState, setMessage} = REQUIRED_EVENT_PROPS
+  const {satisfied, setSatisfied, game_state, setGameState} = REQUIRED_EVENT_PROPS
 
   const accept = () => {
     const game_state_copy = copyState(game_state)

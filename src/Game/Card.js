@@ -1,7 +1,7 @@
 import {useState} from 'react'
 import {playCard, addGemToCard, returnCardGemToCharacter} from "./lib/combat"
-import {capitalizeFirst, formatKeyword, roundToNearestInt} from "./lib/helper_lib"
-import buff_debuff_descriptions from "../data/buff_debuff_descriptions"
+import {roundToNearestInt} from "./lib/helper_lib"
+
 const Card = ({
   card, playable, game_state, setTargetting, setGameState, setSelectedCard,
   hand, graveyard, setHand, setGraveyard, setMessage, setCard, combat_log, setCombatLog,
@@ -113,7 +113,7 @@ const Card = ({
     return "wand_icon.png"
   }
 
-  const card_type_icon = <img src={getTypeIcon(card)} style={{height: "25px"}} className='mt-0 mb-0 p-2 block' />
+  const card_type_icon = <img src={getTypeIcon(card)} style={{height: "25px"}} className='mt-0 mb-0 p-2 block' alt={card.type} />
 
   const Effect = ({effect}) => {
     const getEffectShort = () => {
@@ -146,7 +146,7 @@ const Card = ({
           <div className="flex center_all_items">
             {card_type_icon}
             <p><b>({card.value} * {card.hits}) </b> <i>{card.accuracy}%</i></p>
-            <img style={{height: "20px"}} className="block p-4" src="bullseye_icon.png" />
+            <img style={{height: "20px"}} className="block p-4" src="bullseye_icon.png" alt="bullseye" />
           </div>
         </>
       }

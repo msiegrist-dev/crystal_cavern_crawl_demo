@@ -1,6 +1,6 @@
 import {
   copyState, assignRandomKey, removeItemFromArrayByKey,
-  getIndexOfArrayItemByName, getRandomValueFromList
+  getRandomValueFromList
 } from "./helper_lib"
 import warrior_deck from "../../data/warrior_deck"
 

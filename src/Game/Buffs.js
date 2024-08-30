@@ -10,7 +10,6 @@ const Buffs = ({combatant}) => {
     return Object.keys(combatant.buffs)
   }
 
-  const buffs = getBuffs(combatant)
 
   return <div className="flex" style={{height: "50px"}}>
     {getBuffs(combatant).map((buff_name) => {

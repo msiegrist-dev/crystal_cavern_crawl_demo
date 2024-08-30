@@ -1,5 +1,5 @@
 import {useState, useEffect} from 'react'
-import {getIndexOfArrayItemByKey, copyState, shuffleKeyedArray, getRandomNumber, roundToNearestInt} from "./lib/helper_lib"
+import {getIndexOfArrayItemByKey, copyState, shuffleKeyedArray, getRandomNumber} from "./lib/helper_lib"
 import {
   getTurnOrder, getEnemyAction, processAction, drawCards, playCard,
   sendCardsToGraveYard, giveCombatantCondition, reduceBlockCombatStart
@@ -330,7 +330,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal, setBackground}) => {
 
   useEffect(() => {
     setBackground("combat_background.png")
-  }, [])
+  }, [setBackground])
 
   const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
   const player_attack_effect_left = .24 * vw
@@ -400,7 +400,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal, setBackground}) => {
 
       <div className="grid w-vw-100 h-100" style={{gridTemplateColumns: "30% 1fr", alignItems: "end"}}>
         <div className="grid center_all_items">
-          <img alt="player character" src={game_state.character.idle} style={{height: "250px"}}/>
+          <img alt="player character" src={game_state.character.idle} style={{height: "250px"}} />
           <div className="grid two_col_equal w-80 m-4 p-4">
             <div className="span_two_col">
               <Healthbar max_hp={game_state.character.max_hp} current_hp={game_state.character.hp} block={game_state.character.block}/>
@@ -408,7 +408,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal, setBackground}) => {
             </div>
           </div>
           {show_player_attack_animation &&
-            <img src="slash_effect.gif" className="m-2"
+            <img src="slash_effect.gif" className="m-2" alt="Slash Effect"
               style={{
                 position: "absolute",
                 left: player_attack_effect_left,

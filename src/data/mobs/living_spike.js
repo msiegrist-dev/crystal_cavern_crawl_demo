@@ -1,4 +1,4 @@
-export default {
+const living_spike =  {
   name: "Living Spike",
   splash_text: "What's lacking in brains is made up for in knives.",
   combat_detail: "Spike's pointy exterior deals damage back to attackers.",
@@ -6,8 +6,8 @@ export default {
   speed: 3,
   attack: 2,
   defense: 3,
-  max_hp: 15,
-  armor: .15,
+  max_hp: 12,
+  armor: .10,
   block: 0,
   options: {
     attack: [
@@ -25,6 +25,8 @@ export default {
     ]
   },
   buffs: {
-    thorns: 7
+    thorns: 6
   }
 }
+
+export default living_spike

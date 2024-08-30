@@ -1,6 +1,6 @@
 import groblin from "../mobs/groblin"
 
-export default {
+const groblin_daddy = {
   name: "Groblin Daddy",
   splash_text: "It is not above the K'Nesh to eat an unrly servant.",
   combat_detail: "His groblin servants will flock to aid their king. They must all be eliminated.",
@@ -32,3 +32,6 @@ export default {
     ]
   }
 }
+
+
+export default groblin_daddy

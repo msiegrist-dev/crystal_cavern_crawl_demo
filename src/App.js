@@ -2,9 +2,6 @@ import {useState} from 'react'
 import default_game_state from "./data/default_game_state"
 import Game from "./Game"
 
-import groblin_daddy_state from "./test_states/groblin_daddy"
-import seers_state from "./test_states/seers_sacrifice"
-
 const App = () => {
 
   const [page, setPage] = useState("main_menu")

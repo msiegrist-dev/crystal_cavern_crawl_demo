@@ -34,7 +34,7 @@ const TopBar = ({game_state, toggleDeckModal, toggleItemModal}) => {
   return <div className="gap-4 m-2 p-4 flex center_all_items w-98 mb-0 top_bar">
     {game_state.character &&
       <>
-      <img src={game_state.character.icon}  className="mb-0 mt-0 block" style={{height: "35px"}}/>
+      <img src={game_state.character.icon}  className="mb-0 mt-0 block" style={{height: "35px"}} alt="Warrior"/>
       <h3 className="mb-0 mt-0">{game_state.character.name}</h3>
       <p className="mt-0 mb-0"><b>HP</b> : {game_state.character.hp} / {game_state.character.max_hp}</p>
       <table>

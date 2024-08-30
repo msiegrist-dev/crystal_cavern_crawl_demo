@@ -1,10 +1,5 @@
 import Combat from "./Combat"
-import Modal from "../Modal"
-import Card from "./Card"
-import Item from "./Item"
 import Event from "./Event"
-import TopBar from "./TopBar"
-import {displayArmorAsPct} from "./lib/helper_lib"
 
 const Level = ({game_state, setGameState, setMessage, toggleDeckModal, setBackground}) => {
 

@@ -4,7 +4,7 @@ import {giveCombatantCondition} from "../lib/combat"
 
 const TrapFall = ({REQUIRED_EVENT_PROPS}) => {
 
-  const {satisfied, setSatisfied, game_state, setGameState, setMessage} = REQUIRED_EVENT_PROPS
+  const {setSatisfied, game_state, setGameState} = REQUIRED_EVENT_PROPS
   const [escaped, setEscaped] = useState(false)
 
   const escape = () => {

@@ -29,9 +29,9 @@ const GemCounter = ({game_state, setGameState, color, gem_state, setGemState}) =
     <div>
       <h4 className="center_text">{color}</h4>
       <div className="grid three_col_equal center_all_items">
-        <img src="minus_icon.png" onClick={(e) => remove()} />
+        <img src="minus_icon.png" onClick={(e) => remove()} alt="Remove" />
         {gem_state[color]}
-        <img src="plus_icon.png" onClick={(e) => add()} />
+        <img src="plus_icon.png" onClick={(e) => add()} alt="Add" />
       </div>
     </div>
   )

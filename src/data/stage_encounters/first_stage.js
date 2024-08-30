@@ -5,7 +5,7 @@ import living_spike from "../mobs/living_spike"
 import groblin_daddy from "../bosses/groblin_daddy"
 import flaming_rodent from "../bosses/flaming_rodent"
 
-export default {
+const encounters = {
   mob_sets: [
     [groblin, living_spike, spider],
     [spider],
@@ -19,3 +19,5 @@ export default {
     [flaming_rodent]
   ]
 }
+
+export default encounters

@@ -1,4 +1,4 @@
-export default {
+const flaming_rodent = {
   name: "Flaming Rodent",
   splash_text: "Likely the experiment of a twisted wizard.",
   image_url: "flaming_rodent.jpg",
@@ -30,3 +30,5 @@ export default {
     flame_guard: 12
   }
 }
+
+export default flaming_rodent

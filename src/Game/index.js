@@ -81,7 +81,7 @@ const Game = ({setPage, setGameState, game_state, setBackground}) => {
           <h1 className="center_text m-8 p-4">Select a character</h1>
           <div className="grid three_col_equal w-60 m-8 p-4 gap-4">
             <div className="hov_pointer" onClick={(e) => setCharacter("warrior")}>
-              <img src={warrior.idle} className="m-4 p-4 block"
+              <img src={warrior.idle} className="m-4 p-4 block" alt="Warrior"
                 style={{width: "200px", height: "auto"}}
               />
               <h2 className="action_text center_text">Warrior</h2>

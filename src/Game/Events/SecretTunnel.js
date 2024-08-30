@@ -4,7 +4,7 @@ import {copyState} from "../lib/helper_lib"
 import {healCharacter} from "../lib/stats"
 const SecretTunnel = ({REQUIRED_EVENT_PROPS}) => {
 
-  const {satisfied, setSatisfied, game_state, setGameState, setMessage} = REQUIRED_EVENT_PROPS
+  const {setSatisfied, game_state, setGameState} = REQUIRED_EVENT_PROPS
 
   const [entered, setEntered] = useState(false)
 
