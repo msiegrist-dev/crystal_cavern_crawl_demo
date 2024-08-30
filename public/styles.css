@@ -99,6 +99,10 @@ body {
   grid-gap: 1.5em;
 }
 
+.p-2 {
+  padding: .25em;
+}
+
 .p-4 {
   padding: .5em;
 }

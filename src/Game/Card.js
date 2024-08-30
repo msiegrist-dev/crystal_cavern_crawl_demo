@@ -116,17 +116,37 @@ const Card = ({
   const card_type_icon = <img src={getTypeIcon(card)} style={{height: "25px"}} className='mt-0 mb-0 p-2 block' alt={card.type} />
 
   const Effect = ({effect}) => {
-    const getEffectShort = () => {
+    const getEffectText = () => {
       const {name, value, stat_name, buff_name, trigger} = effect
+      if(name === "block_as_bonus_attack"){
+        return `Block as bonus attack : ${value * 100}%`
+      }
+      let trigger_text = ""
+      if(trigger === "on_hit"){
+        trigger_text = "On Hit"
+      }
+
+      let translated_name = ""
+      const split = name.split("_")
+      if(split.length === 3){
+        const [math, target, affected_value] = split
+        if(target === "doer"){
+          translated_name += "Self: "
+        }
+        let sign = "-"
+        if(math === "give"){
+          sign = "+"
+        }
+        let affected = buff_name || stat_name || affected_value
+        translated_name += `${sign}${value} ${affected}`
+      }
+
       let str = ``
-      if(trigger) str += `${trigger}: `
-      str += `${name} `
-      if(buff_name) str += `${buff_name} `
-      if(stat_name) str += `${stat_name} `
-      str += `${value}`
+      if(trigger_text) str += `${trigger_text}: `
+      str += `${translated_name} `
       return str
     }
-    return <p className="mt-0">{getEffectShort()}</p>
+    return <p className="mt-0">{getEffectText()}</p>
   }
 
   let class_string = "m-4 p-4 game_card grid center_all_items"
@@ -137,29 +157,33 @@ const Card = ({
     <div className={class_string} style={{...style, ...in_hand_style, ...hover_style}}
       onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}
     >
-      <div className="flex p-2">
+      <div className="flex p-2 center_all_items gap-2">
         <h3 className="mt-0 mb-0">{card.name}</h3>
         {card_type_icon}
       </div>
       {card.type === "attack" &&
         <>
           <div className="flex center_all_items">
-            {card_type_icon}
-            <p><b>({card.value} * {card.hits}) </b> <i>{card.accuracy}%</i></p>
-            <img style={{height: "20px"}} className="block p-4" src="bullseye_icon.png" alt="bullseye" />
+            <div className="flex center_all_items">
+              {card_type_icon}
+              <p className="m-0 p-4"><b>({card.value} * {card.hits})</b></p>
+            </div>
+            <div className="flex center_all_items">
+              <p className="m-0 p-4"><b><i>{card.accuracy}%</i></b></p>
+              <img style={{height: "20px"}} className="block p-4" src="bullseye_icon.png" alt="bullseye" />
+            </div>
           </div>
         </>
       }
       {card.type === "defend" &&
         <div className="flex center_all_items">
           {card_type_icon}
-          <p><b>{card.value}</b></p>
+          <p className="m-0 p-4"><b>{card.value}</b></p>
         </div>
       }
       {card.effects &&
         <>
-        <h4 className="center_text mt-0 mb-0">Effects</h4>
-        {card.effects.map((fect, i) => <Effect key={`${fect}-${i}`} effect={fect} />)}
+        {card.effects.map((effect, i) => <Effect key={`${effect}-${i}`} effect={effect} />)}
         </>
       }
       {card.gem_augments &&
@@ -177,7 +201,7 @@ const Card = ({
           }
           const alt = `${gem_name} gem`
           return <div className="w-100" style={{backgroundColor: color(gem_name)}}>
-            <div className="flex center_all_items gap-4 hov_pointer" style={{alignItems: "start", height: "35px"}}
+            <div className="flex center_all_items gap-2 hov_pointer p-2" style={{alignItems: "start"}}
               key={gem_name}
               onClick={(e) => {
                 if(!playable){
@@ -187,10 +211,10 @@ const Card = ({
               }}
             >
               <img alt={alt} key={gem_name} src={img} style={{height: "25px", width: "25px"}} className="block" />
-              {gem_data.number && <h4>x{gem_data.number}</h4>}
-              {gem_data.required && <h4>Required.</h4>}
+              {gem_data.number && <h4 className="m-0">x{gem_data.number}</h4>}
+              {gem_data.required && <h4 className="m-0">Required.</h4>}
               {gem_data.effect &&
-                <p style={{margin: "0"}}>{gem_data.effect_description}</p>
+                <p className="m-0">{gem_data.effect_description}</p>
               }
             </div>
           </div>
