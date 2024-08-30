@@ -3,11 +3,14 @@
 clone the repository
 
 ```
+  git clone https://github.com/msiegrist-dev/crystal_cavern_crawl_demo.git
 ```
 
 enter the new directory and install dependencies
 
 ```
+  cd crystal_cavern_crawl_demo
+  npm install
 ```
 
 download the assets [here](https://marksiegrist.dev/ccc_assets) and unzip into
