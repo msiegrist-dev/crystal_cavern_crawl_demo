@@ -20,7 +20,7 @@ const living_spike =  {
     defend: [
       {
         type: "defend",
-        value: 4
+        value: 3
       }
     ]
   },

@@ -372,14 +372,18 @@ const Combat = ({game_state, setGameState, toggleDeckModal, setBackground}) => {
           </div>
         </Modal>
       }
-      <div className="flex center_all_items gap-8 w-98 m-2 p-4">
-        <h3 className="action_text mt-0 mb-0" onClick={(e) => openCombatModal("combat_log")}>Combat Log</h3>
+      <div className="flex center_all_items gap-8 w-98 m-2 p-12 dark_opaque_bg">
+        <button className="yellow_action_button w-100px"
+          onClick={(e) => openCombatModal("combat_log")}
+        >
+          Combat Log
+        </button>
         <div className="m-4 flex gap-4 center_all_items">
           <h3 className="m-4">Turn {turn_number} : </h3>
           {filterDeadEnemyTurns(turn_order).map((list_turn, index) => {
             const style = {border: "none"}
             if(turn.key === list_turn.key){
-              style.border = "2px solid blue"
+              style.border = "2px solid #85B5E5"
             }
             if(list_turn.key === "player"){
               return <p className="m-2 p-2" style={style}>{index + 1} : Player</p>
@@ -388,7 +392,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal, setBackground}) => {
             return <p className="p-2 m-2" style={style}>{index + 1} : {enemy.name}</p>
           })}
         </div>
-        <h3 className="center_text m-0">It is {turn.key === "player" ? "Player Turn" : "Enemy Turn"}. {message}</h3>
+        <h3 className="center_text m-0">It is {turn.key === "player" ? "Your Turn" : "Enemy Turn"}. {message}</h3>
         <h3 id="combat_log_display" className="center_text m-4 p-2">
           {combat_log[combat_log.length - 1]}</h3>
       </div>
@@ -425,9 +429,11 @@ const Combat = ({game_state, setGameState, toggleDeckModal, setBackground}) => {
 
 
       <div className="grid w-vw-98 p-2" style={{gridTemplateColumns: "125px 1fr 125px"}}>
-        <div>
-          <h3 className="action_text center_text" onClick={(e) => toggleDeckModal(draw_pile)}>Draw Pile ({draw_pile.length})</h3>
-        </div>
+        <button className="yellow_action_button w-100px h-35px"
+          onClick={(e) => toggleDeckModal(draw_pile)}
+        >
+          Draw Pile ({draw_pile.length})
+        </button>
 
         <div className="w-100 m-0" style={{position: "relative"}}>
           {hand.map((card, i) => <Card key={card.key} card={card}
@@ -440,10 +446,14 @@ const Combat = ({game_state, setGameState, toggleDeckModal, setBackground}) => {
           />)}
         </div>
 
-        <div>
-          <h3 className="action_text center_text" onClick={(e) => toggleDeckModal(graveyard)}>Graveyard ({graveyard.length})</h3>
+        <div className="grid gap-2" style={{height: "80px"}}>
+          <button className="yellow_action_button w-100px h-35px"
+            onClick={(e) => toggleDeckModal(graveyard)}
+          >
+            Graveyard ({graveyard.length})
+          </button>
           {player_turn &&
-            <button className="m-4 p-4 block" onClick={goNextTurn}>End Turn</button>
+            <button className="red_button w-100px h-35px" onClick={goNextTurn}>End Turn</button>
           }
         </div>
 
