@@ -1,4 +1,8 @@
 import {useState, useEffect} from 'react'
+
+import default_game_state from "../data/default_game_state"
+import environment from "../data/environment"
+
 import {getIndexOfArrayItemByKey, copyState, shuffleKeyedArray, getRandomNumber} from "./lib/helper_lib"
 import {
   getTurnOrder, getEnemyAction, processAction, drawCards, playCard,
@@ -9,8 +13,8 @@ import {goNextLevel} from "./lib/levels"
 import {getRandomCards} from "./lib/cards"
 import {getRandomItems} from "./lib/items"
 import {getRandomStatName, getRandomStatValue} from "./lib/stats"
-import default_game_state from "../data/default_game_state"
-import environment from "../data/environment"
+
+
 import Card from "./Card"
 import Enemy from "./Enemy"
 import Modal from "../Modal"
@@ -18,6 +22,7 @@ import Victory from "./Victory"
 import Healthbar from "./Healthbar"
 import CombatStatsTable from "./CombatStatsTable"
 import Buffs from "./Buffs"
+import CombatBar from "./CombatBar"
 
 const Combat = ({game_state, setGameState, toggleDeckModal, setBackground}) => {
 
@@ -114,19 +119,6 @@ const Combat = ({game_state, setGameState, toggleDeckModal, setBackground}) => {
     setSelectedCard(null)
   }
 
-  const filterDeadEnemyTurns = turn_order => {
-    return turn_order.filter((turn) => {
-      if(turn.key === "player"){
-        return true
-      }
-      const enemy = game_state.level.enemies.find((en) => en.key === turn.key)
-      if(enemy.hp <= 0){
-        return false
-      }
-      return true
-    })
-  }
-
   const handleCombatSpaceOnClick = e => {
     if(!targetting){
       return
@@ -182,13 +174,13 @@ const Combat = ({game_state, setGameState, toggleDeckModal, setBackground}) => {
       }
       console.log("IT IS ENEMIES TURN")
       let enemy = game_state.level.enemies.find((ene) => ene.key === turn.key)
+      if(enemy.hp <= 0){
+        return goNextTurn()
+      }
       const enemy_index = game_state.level.enemies.findIndex((ene) => ene.key === turn.key)
       let copy = JSON.parse(JSON.stringify(game_state))
       copy.level.enemies[enemy_index].block = reduceBlockCombatStart(copy.level.enemies[enemy_index].block)
       setGameState(copy)
-      if(enemy.hp <= 0){
-        return goNextTurn()
-      }
       enemy = copy.level.enemies.find((ene) => ene.key === turn.key)
       const action = getEnemyAction(copy, enemy)
       const processed = processAction(copy, enemy, ["player"], action, combat_log, setCombatLog, combat_stats, setCombatStats, {draw_pile, hand, graveyard})
@@ -372,34 +364,15 @@ const Combat = ({game_state, setGameState, toggleDeckModal, setBackground}) => {
           </div>
         </Modal>
       }
-      <div className="flex center_all_items gap-8 w-98 m-2 p-12 dark_opaque_bg">
-        <button className="yellow_action_button w-100px"
-          onClick={(e) => openCombatModal("combat_log")}
-        >
-          Combat Log
-        </button>
-        <div className="m-4 flex gap-4 center_all_items">
-          <h3 className="m-4">Turn {turn_number} : </h3>
-          {filterDeadEnemyTurns(turn_order).map((list_turn, index) => {
-            const style = {border: "none"}
-            if(turn.key === list_turn.key){
-              style.border = "2px solid #85B5E5"
-            }
-            if(list_turn.key === "player"){
-              return <p className="m-2 p-2" style={style}>{index + 1} : Player</p>
-            }
-            const enemy = game_state.level.enemies.find((en) => en.key === list_turn.key)
-            return <p className="p-2 m-2" style={style}>{index + 1} : {enemy.name}</p>
-          })}
-        </div>
-        <h3 className="center_text m-0">It is {turn.key === "player" ? "Your Turn" : "Enemy Turn"}. {message}</h3>
-        <h3 id="combat_log_display" className="center_text m-4 p-2">
-          {combat_log[combat_log.length - 1]}</h3>
-      </div>
+
+      <CombatBar openCombatModal={openCombatModal} turn_order={turn_order} game_state={game_state}
+        turn={turn} combat_log={combat_log} turn_number={turn_number} message={message}
+      />
+
+
       {targetting && selected_card &&
         <h3 style={{color: "F0F2F2", position: "absolute", top: "90px", left: "42vw"}}>Please select a target for {selected_card.name}</h3>
       }
-
 
 
       <div className="grid w-vw-100 h-100" style={{gridTemplateColumns: "30% 1fr", alignItems: "end"}}>
