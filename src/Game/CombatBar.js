@@ -19,6 +19,13 @@ const CombatBar = ({openCombatModal, turn_order, game_state, turn, combat_log, t
     >
       Combat Log
     </button>
+    {process.env.NODE_ENV === "development" &&
+      <button className="yellow_action_button w-100px"
+        onClick={(e) => navigator.clipboard.writeText(JSON.stringify(game_state))}
+      >
+        Game State
+      </button>
+    }
     <div className="m-4 flex gap-4 center_all_items">
       <h3 className="m-4">Turn {turn_number} : </h3>
       {filterDeadEnemyTurns(turn_order).map((list_turn, index) => {
