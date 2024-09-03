@@ -15,7 +15,9 @@ const Item = ({item}) => {
       {item.increase_stats &&
         <>
         {item.increase_stats.map((stat) => {
-          return <p key={stat.name} className="mt-0 mb-0">{stat.name} +{stat.value}</p>
+          let display_value = stat.value
+          if(stat.name === "armor") display_value = (display_value * 100) + "%"
+          return <p key={stat.name} className="mt-0 mb-0">{stat.name} +{display_value}</p>
         })}
         </>
       }

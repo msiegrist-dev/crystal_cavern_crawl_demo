@@ -116,11 +116,14 @@ const Card = ({
   const card_type_icon = <img src={getTypeIcon(card)} style={{height: "25px"}} className='mt-0 mb-0 p-2 block' alt={card.type} />
 
   const Effect = ({effect}) => {
+
     const getEffectText = () => {
       const {name, value, stat_name, buff_name, trigger} = effect
-      if(name === "block_as_bonus_attack"){
-        return `Block as bonus attack : ${value * 100}%`
-      }
+
+      if(name === "aoe") return `Attack hits all enemies`
+      if(name === "block_as_bonus_attack") return `Block as bonus attack : ${value * 100}%`
+      if(name === "armor_piercing") return `Ignores enemy armor.`
+      
       let trigger_text = ""
       if(trigger === "on_hit"){
         trigger_text = "On Hit"

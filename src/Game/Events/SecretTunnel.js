@@ -28,7 +28,7 @@ const SecretTunnel = ({REQUIRED_EVENT_PROPS}) => {
     <h2 className="m-4 p-4 action_text center_text" onClick={(e) => enterTunnel()}>Continue</h2>
     {entered &&
       <p className="p-4 m-4 center_text">
-        You find an abandoned alchemy lab to rests in.
+        You find an abandoned alchemy lab to rest in.
         Some gems and a health potion are yours for the taking.
       </p>
     }

@@ -49,7 +49,7 @@ const processActionEffect = (effect, doer, target) => {
   let doer_copy = copyState(doer)
   let target_copy = copyState(target)
   if(name === "give_doer_block"){
-    doer_copy.block += getBlockValue(doer_copy, {value})
+    doer_copy.block += getBlockValue(doer_copy, {value}, false)
   }
   if(name === "give_doer_buff"){
     doer_copy = giveCombatantCondition("buff", doer_copy, buff_name, value)
@@ -294,9 +294,13 @@ const processEffect = (doer, target, action, combat_log, setCombatLog) => {
   return {doer: doer_copy, target: target_copy, combat_log: combat_log_copy}
 }
 
-const getBlockValue = (doer, action) => {
+const getBlockValue = (doer, action, can_be_increased) => {
+  let block_value = action.value
+  if(!can_be_increased){
+    return block_value
+  }
   const item_increases = getCombatStatIncreases(doer, "defense")
-  const block_value = doer.defense + action.value + item_increases
+  block_value += doer.defense + item_increases
   if(doer.buffs && doer.buffs["fortify"] > 0){
     return roundToNearestInt(block_value + (block_value * .33))
   }
@@ -335,12 +339,12 @@ const processAction = (game_state, doer, target_keys, action, combat_log, setCom
             game_state_copy.level.enemies[target_enemy_index] = processed.target
           }
         }
-        const block_value = getBlockValue(game_state_copy.character, action)
+        const block_value = getBlockValue(game_state_copy.character, action, true)
         game_state_copy.character.block += block_value
         combat_log_copy = combat_log_copy.concat([`${game_state.character.name} blocked for ${block_value}`])
       }
       if(!player_action){
-        const block_value = getBlockValue(game_state_copy.level.enemies[doer_enemy_index], action)
+        const block_value = getBlockValue(game_state_copy.level.enemies[doer_enemy_index], action, true)
         game_state_copy.level.enemies[doer_enemy_index].block += block_value
         combat_log_copy = combat_log_copy.concat([`${game_state_copy.level.enemies[doer_enemy_index].name} blocked for ${block_value}`])
       }

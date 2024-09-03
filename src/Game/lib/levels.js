@@ -4,18 +4,18 @@ import first_stage from "../../data/stage_encounters/first_stage"
 import {getRandomValueFromList, copyState, handleOdds} from "./helper_lib"
 import {mapEnemiesForCombat} from "./combat"
 
-const generateCombatLevel = number => {
+const generateCombatLevel = level => {
   //bosses can be faced every 5 levels
-  if(number % 5 === 0){
+  if(level % 5 === 0){
       return mapEnemiesForCombat(getRandomValueFromList(first_stage.bosses))
   }
-  if(number >= 1 && number <= 10){
+  if(level >= 1 && level <= 10){
     return mapEnemiesForCombat(getRandomValueFromList(first_stage.mob_sets))
   }
 }
 
-const generateEvent = number => {
-  if(number < 15){
+const generateEvent = level => {
+  if(level < 15){
     return getRandomValueFromList(environment.BASE_EVENTS)
   }
   const odds = [
@@ -34,6 +34,13 @@ const getRandomLevel = number => {
     {name: "combat", value: 75},
     {name: "event", value: 25}
   ]
+  if(number % 5 === 0){
+    return {
+      number,
+      type: "combat",
+      enemies: generateCombatLevel(number)
+    }
+  }
   const level_type = handleOdds(level_type_odds)
   if(level_type === "combat"){
     return {
