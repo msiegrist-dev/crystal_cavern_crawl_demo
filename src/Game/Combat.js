@@ -185,9 +185,11 @@ const Combat = ({game_state, setGameState, toggleDeckModal, setBackground}) => {
       const action = getEnemyAction(copy, enemy)
       const processed = processAction(copy, enemy, ["player"], action, combat_log, setCombatLog, combat_stats, setCombatStats, {draw_pile, hand, graveyard})
       setGameState(processed.game_state)
-      setHand(processed.card_state.hand)
-      setDrawPile(processed.card_state.draw_pile)
-      setGraveyard(processed.card_state.graveyard)
+      if(processed.card_state){
+        setHand(processed.card_state.hand)
+        setDrawPile(processed.card_state.draw_pile)
+        setGraveyard(processed.card_state.graveyard)
+      }
       setTimeout(() => goNextTurn(), 3000)
     }
 

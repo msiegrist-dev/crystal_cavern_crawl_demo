@@ -103,7 +103,6 @@ const mapEnemiesForCombat = (new_enemies, game_state) => {
 const getTurnOrder = game_state => {
   let player_speed = game_state.character.speed
   if(combatantHasCondition("buff", game_state.character, "slowed")){
-    console.log("applying slow debuff to turn calc")
     player_speed = roundToNearestInt(player_speed / 2)
   }
   const speed_keys = [
@@ -142,9 +141,9 @@ const getTurnOrder = game_state => {
 
 const getEnemyAction = (game_state, enemy) => {
 
-  if(enemy.name === "Grublin King"){
-    const grublins = game_state.level.enemies.filter((en) => en.name === "Grublin" && en.hp > 0)
-    if(grublins.length < 2){
+  if(enemy.name === "Groblin Daddy"){
+    const groblins = game_state.level.enemies.filter((en) => en.name === "Groblin" && en.hp > 0)
+    if(groblins.length < 2){
       return enemy.options.effect.find((fect) => fect.effect_name === "summon")
     }
   }
@@ -313,7 +312,10 @@ const processAction = (game_state, doer, target_keys, action, combat_log, setCom
   if(action.type === "effect" && action.effect_name === "summon"){
     game_state_copy.level.enemies = game_state_copy.level.enemies.concat(mapEnemiesForCombat(action.value, game_state_copy))
     combat_log_copy = combat_log_copy.concat([`${doer.name} summoned new enemies to combat.`])
-    return game_state_copy
+    return {
+      game_state: game_state_copy,
+      card_state: card_state_copy
+    }
   }
 
   for(let target_key of target_keys){
@@ -449,16 +451,24 @@ const playCard = (card, game_state, target_keys, hand, graveyard, combat_log, se
       return {error: "Card requires a gem to play."}
     }
   }
+  let augmented_copy = card_copy
   if(using_gems){
-    card_copy = processGemAugment(card_copy)
+    augmented_copy = processGemAugment(card_copy)
   }
-  const card_sources = sendCardsToGraveYard(hand, [card_copy], graveyard, game_state)
+  const card_sources = sendCardsToGraveYard(hand,
+    [{
+      ...card_copy,
+      gem_augments: augmented_copy.gem_augments,
+      gem_inventory: augmented_copy.gem_inventory
+    }],
+    graveyard, game_state
+  )
   if(card_copy.type === "attack"){
     showPlayerAttackAnimation()
   }
   const processed = processAction(
     card_sources.game_state, card_sources.game_state.character, target_keys,
-    {...card_copy}, combat_log, setCombatLog,
+    {...augmented_copy}, combat_log, setCombatLog,
     combat_stats, setCombatStats,
     {hand: card_sources.hand, graveyard: card_sources.graveyard, draw_pile: draw_pile}
   )

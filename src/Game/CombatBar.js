@@ -21,7 +21,7 @@ const CombatBar = ({openCombatModal, turn_order, game_state, turn, combat_log, t
     </button>
     {process.env.NODE_ENV === "development" &&
       <button className="yellow_action_button w-100px"
-        onClick={(e) => navigator.clipboard.writeText(JSON.stringify(game_state))}
+        onClick={(e) => navigator.clipboard.writeText(JSON.stringify(game_state, null, "\t"))}
       >
         Game State
       </button>

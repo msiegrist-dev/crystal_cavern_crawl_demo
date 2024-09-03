@@ -170,7 +170,7 @@ const Card = ({
             </div>
             <div className="flex center_all_items">
               <p className="m-0 p-4"><b><i>{card.accuracy}%</i></b></p>
-              <img style={{height: "20px"}} className="block p-4" src="bullseye_icon.png" alt="bullseye" />
+              <img style={{height: "20px"}} className="block p-4" src="bullseye.png" alt="bullseye" />
             </div>
           </div>
         </>

@@ -42,6 +42,7 @@ const getTradeSelections = (quantity, trade_for, trade_in, character) => {
       getRandomValueFromList(available_character_entities) : trade_for
     let trade_for_entity
     const trade_in_entity = getRandomCharacterEntity(character, trade_in)
+    console.log("TRADE IN ENTITY", trade_in_entity)
     if(trade_for_entity_name === "card"){
       trade_for_entity = getRandomCards(1, "warrior")[0]
     }

@@ -1,5 +1,5 @@
 const groblin =  {
-  name: "groblin",
+  name: "Groblin",
   splash_text: "Tweedley Doofus. Grubby Grublus.",
   combat_detail: "They're fast and they like to smash things. You make as fine a target as any.",
   image_url: "groblin.png",
