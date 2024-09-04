@@ -5,7 +5,8 @@ const default_game_state =  {
   },
   character: null,
   difficulty: 0,
-  score: 0
+  score: 0,
+  bosses_faced: []
 }
 
 export default default_game_state

@@ -1,6 +1,6 @@
 const flaming_rodent = {
   name: "Flaming Rodent",
-  splash_text: "Likely the experiment of a twisted wizard.",
+  splash_text: "The experiment of a twisted wizard.",
   image_url: "flaming_rodent.gif",
   speed: 10,
   attack: 10,

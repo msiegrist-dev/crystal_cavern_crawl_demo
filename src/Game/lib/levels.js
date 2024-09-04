@@ -4,10 +4,10 @@ import first_stage from "../../data/stage_encounters/first_stage"
 import {getRandomValueFromList, copyState, handleOdds} from "./helper_lib"
 import {mapEnemiesForCombat} from "./combat"
 
-const generateCombatLevel = level => {
-  //bosses can be faced every 5 levels
+const generateCombatLevel = (level, game_state) => {
   if(level % 5 === 0){
-      return mapEnemiesForCombat(getRandomValueFromList(first_stage.bosses))
+    const boss_pool = first_stage.bosses.filter((arr) => !game_state.bosses_faced.includes(arr[0].name))
+    return mapEnemiesForCombat(getRandomValueFromList(boss_pool))
   }
   if(level >= 1 && level <= 10){
     return mapEnemiesForCombat(getRandomValueFromList(first_stage.mob_sets))
@@ -29,7 +29,7 @@ const generateEvent = level => {
   return getRandomValueFromList(environment.LATE_EVENTS)
 }
 
-const getRandomLevel = number => {
+const getRandomLevel = (number, game_state) => {
   const level_type_odds = [
     {name: "combat", value: 75},
     {name: "event", value: 25}
@@ -38,7 +38,8 @@ const getRandomLevel = number => {
     return {
       number,
       type: "combat",
-      enemies: generateCombatLevel(number)
+      enemies: generateCombatLevel(number, game_state),
+      enemy_type: "boss"
     }
   }
   const level_type = handleOdds(level_type_odds)
@@ -64,7 +65,11 @@ const goNextLevel = game_state => {
   if(next_level > 1){
     game_state_copy.score += 50
   }
-  game_state_copy.level = getRandomLevel(next_level)
+  const new_level = getRandomLevel(next_level, game_state_copy)
+  game_state_copy.level = new_level
+  if(new_level.enemy_type === "boss"){
+    game_state_copy.bosses_faced.push(new_level.enemies[0].name)
+  }
   return game_state_copy
 }
 
