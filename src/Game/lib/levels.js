@@ -5,6 +5,9 @@ import {getRandomValueFromList, copyState, handleOdds} from "./helper_lib"
 import {mapEnemiesForCombat} from "./combat"
 
 const generateCombatLevel = (level, game_state) => {
+  if(level === 11){
+    return first_stage.mob_sets[0]
+  }
   if(level % 5 === 0){
     const boss_pool = first_stage.bosses.filter((arr) => !game_state.bosses_faced.includes(arr[0].name))
     return mapEnemiesForCombat(getRandomValueFromList(boss_pool))

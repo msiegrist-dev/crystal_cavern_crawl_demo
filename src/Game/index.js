@@ -7,6 +7,7 @@ import TopBar from "./TopBar"
 import Modal from "../Modal"
 import Card from "./Card"
 import Item from "./Item"
+import End from "./End"
 
 import {copyState} from "./lib/helper_lib"
 
@@ -72,6 +73,8 @@ const Game = ({setPage, setGameState, game_state, setBackground}) => {
     setShowModal(true)
   }
 
+  const end_condition = game_state.level?.number === 11 ? true : false
+
 
   return (
     <>
@@ -105,18 +108,21 @@ const Game = ({setPage, setGameState, game_state, setBackground}) => {
         }
         {modal_mode === "items" &&
           <div className="grid eq_four_col">
-            {game_state.character.inventory.map((item, i) => {
+            {game_state.character?.inventory.map((item, i) => {
               return <Item key={i} item={item} />
             })}
           </div>
         }
       </Modal>
 
-      {game_state.character && game_state.level.number === 0 &&
+      {game_state.character && game_state.level.number === 0 && !end_condition &&
         <Level0 game_state={game_state} setGameState={setGameState} setBackground={setBackground} />
       }
-      {game_state.character && game_state.level.number >= 1 &&
+      {game_state.character && game_state.level.number >= 1 && !end_condition &&
         <Level game_state={game_state} setGameState={setGameState} toggleDeckModal={toggleDeckModal} setBackground={setBackground}/>
+      }
+      {end_condition &&
+        <End game_state={game_state} setGameState={setGameState} setPage={setPage}/>
       }
     </>
   )

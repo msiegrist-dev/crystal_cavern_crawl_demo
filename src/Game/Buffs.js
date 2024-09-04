@@ -7,7 +7,8 @@ const Buffs = ({combatant}) => {
     if(!Object.keys(combatant.buffs).length){
       return []
     }
-    return Object.keys(combatant.buffs)
+    const keys = Object.keys(combatant.buffs)
+    return keys.filter((k) => combatant.buffs[k] > 0)
   }
 
 

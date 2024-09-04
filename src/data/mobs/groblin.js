@@ -6,7 +6,7 @@ const groblin =  {
   speed: 5,
   attack: 5,
   defense: 1,
-  max_hp: 10,
+  max_hp: 12,
   armor: .05,
   block: 0,
   options: {
