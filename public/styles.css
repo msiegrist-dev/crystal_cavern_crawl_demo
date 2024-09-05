@@ -491,3 +491,16 @@ ul {
   border: 2px groove #970F08;
   box-shadow: 2px 3px darkgrey;
 }
+
+.buff_image {
+  height: 35px;
+  width: auto;
+}
+
+.pt-0 {
+  padding-top: 0;
+}
+
+.m-0-auto {
+  margin: 0 auto;
+}

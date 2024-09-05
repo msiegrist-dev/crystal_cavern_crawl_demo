@@ -130,7 +130,7 @@ const items = [
       {name: "max_hp", value: 8, type: "flat"},
       {name: "attack", value: 2, type: "flat"},
       {name: "defense", value: 2, type: "flat"},
-      {name: "speed", value: .05, type: "flat"},
+      {name: "speed", value: 1, type: "flat"},
       {name: "armor", value: .05, type: "flat"},
     ],
     rarity: "rare",

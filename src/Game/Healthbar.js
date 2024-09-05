@@ -69,7 +69,7 @@ const Healthbar = ({max_hp, current_hp, block}) => {
   }
 
   return (
-    <div className="grid m-2" style={{gridTemplateColumns: "85% 1fr", height: "35px", width: "300px"}}>
+    <div className="grid m-0-auto" style={{gridTemplateColumns: "85% 1fr", height: "35px", width: "300px"}}>
       <animated.div className="center_text p-2" style={health_bar_style}><b>{current_hp} / {max_hp}</b></animated.div>
       <animated.div style={block_style}>
         <p className="m-4 center_text"><b>{block}</b></p>
