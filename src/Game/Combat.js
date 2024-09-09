@@ -329,6 +329,20 @@ const Combat = ({game_state, setGameState, toggleDeckModal, setBackground}) => {
   const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
   const player_attack_effect_left = .24 * vw
 
+  const getEnemiesToRender = enemies => {
+    const getEnemyForPosition = position => {
+      const pool = enemies.filter((e) => e.position == position)
+      if(pool.length === 1) return pool[0]
+      const alive = pool.find((e) => e.hp > 0)
+      if(alive) return alive
+      return pool[0]
+    }
+
+    let positions_to_fill = enemies.map((e) => e.position)
+    positions_to_fill = positions_to_fill.filter((num, i) => positions_to_fill.indexOf(num) === i).sort()
+    return positions_to_fill.map((position) => getEnemyForPosition(position))
+  }
+
   return (
     <div className="w-98 m-4 p-4 pt-0 mt-0 h-top-bar-minus-remainder grid combat_parent_div"
       onClick={(e) => handleCombatSpaceOnClick(e)}
@@ -378,6 +392,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal, setBackground}) => {
 
 
       <div className="grid w-vw-100 h-100" style={{gridTemplateColumns: "30% 1fr", alignItems: "end"}}>
+
         <div className="grid center_all_items">
           <img alt="player character" src={game_state.character.idle} style={{height: "250px"}} />
           <div className="grid two_col_equal w-80 m-4 p-4">
@@ -396,8 +411,9 @@ const Combat = ({game_state, setGameState, toggleDeckModal, setBackground}) => {
             />
           }
         </div>
+
         <div className="flex gap-4" style={{justifyContent: "end"}}>
-          {game_state.level.enemies.filter((en) => en.hp > 0).map((enemy) => <Enemy key={enemy.key} enemy={enemy} targettingHandler={targettingHandler} />)}
+          {getEnemiesToRender(game_state.level.enemies).map((enemy) => <Enemy key={enemy.key} enemy={enemy} targettingHandler={targettingHandler} />)}
         </div>
       </div>
 

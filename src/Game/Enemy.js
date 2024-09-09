@@ -4,8 +4,11 @@ import {displayArmorAsPct} from "./lib/helper_lib"
 
 const Enemy = ({enemy, targettingHandler}) => {
 
+  const dead = enemy.hp <= 0
+  const visibility = dead ? "hidden" : "visible"
+
   return (
-    <div className="p-4" style={{position: "relative", alignItems: "end", gridAutoRows: "min-content", marginTop: "auto"}} key={enemy.key}>
+    <div className="p-4" style={{position: "relative", alignItems: "end", gridAutoRows: "min-content", marginTop: "auto", visibility}} key={enemy.key}>
       <img src={enemy.image_url} className="hov_pointer enemy_img m-4 block" style={{height: "180px", width: "auto"}}
         onClick={(e) => targettingHandler(enemy.key)} alt={enemy.name}
       />

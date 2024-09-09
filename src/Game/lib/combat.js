@@ -85,19 +85,47 @@ const actionHasAttackEffect = (card, name) => {
   return card.effects.find((fect) => fect.name === name)
 }
 
-const mapEnemiesForCombat = (new_enemies, game_state) => {
-  let start = 0
-  if(game_state){
-    const keys = game_state.level.enemies.map((en => Number(en.key))).sort()
-    start = keys[keys.length - 1] + 1
+const mapEnemiesForCombat = (enemies, game_state) => {
+  const current_enemies = game_state.level?.enemies
+  const new_enemies = []
+
+  let key = 0
+  if(current_enemies){
+    const keys = current_enemies.map((e) => e.key).sort()
+    key = keys[keys.length - 1] + 1
   }
-  return new_enemies.map((en, i) => {
-    return {
-      ...en,
-      key: i + start,
-      hp: en.max_hp
+
+  for(let enemy of enemies){
+    let position
+    if(enemy.name === "Groblin Daddy") position = 3
+    for(let i = 0; i < 4; i++){
+      if(enemy.name === "Groblin Daddy") break
+      const applied = new_enemies.find((e) => e.position === i)
+      if(applied) continue
+      if(!current_enemies){
+        position = i
+        break
+      }
+      if(current_enemies){
+        const alive_at_pos = current_enemies.find((e) => e.position === i && e.hp > 0)
+        if(alive_at_pos) continue
+        position = i
+        break
+      }
     }
-  })
+    if(!position){
+      console.log("could not determine a position for enemy ", enemy)
+    }
+    new_enemies.push({
+      ...enemy,
+      position,
+      key,
+      hp: enemy.max_hp
+    })
+    key += 1
+  }
+
+  return new_enemies
 }
 
 const getTurnOrder = game_state => {

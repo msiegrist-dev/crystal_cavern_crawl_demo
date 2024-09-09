@@ -6,14 +6,14 @@ import {mapEnemiesForCombat} from "./combat"
 
 const generateCombatLevel = (level, game_state) => {
   if(level === 11){
-    return first_stage.mob_sets[0]
+    return mapEnemiesForCombat(first_stage.mob_sets[0], game_state)
   }
   if(level % 5 === 0){
     const boss_pool = first_stage.bosses.filter((arr) => !game_state.bosses_faced.includes(arr[0].name))
-    return mapEnemiesForCombat(getRandomValueFromList(boss_pool))
+    return mapEnemiesForCombat(getRandomValueFromList(boss_pool), game_state)
   }
   if(level >= 1 && level <= 10){
-    return mapEnemiesForCombat(getRandomValueFromList(first_stage.mob_sets))
+    return mapEnemiesForCombat(getRandomValueFromList(first_stage.mob_sets), game_state)
   }
 }
 
@@ -50,7 +50,7 @@ const getRandomLevel = (number, game_state) => {
     return {
       number,
       type: level_type,
-      enemies: generateCombatLevel(number)
+      enemies: generateCombatLevel(number, game_state)
     }
   }
   if(level_type === "event"){
