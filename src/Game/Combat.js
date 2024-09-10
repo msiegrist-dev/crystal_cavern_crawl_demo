@@ -180,7 +180,6 @@ const Combat = ({game_state, setGameState, toggleDeckModal, setBackground}) => {
       const enemy_index = game_state.level.enemies.findIndex((ene) => ene.key === turn.key)
       let copy = JSON.parse(JSON.stringify(game_state))
       copy.level.enemies[enemy_index].block = reduceBlockCombatStart(copy.level.enemies[enemy_index].block)
-      setGameState(copy)
       enemy = copy.level.enemies.find((ene) => ene.key === turn.key)
       const action = getEnemyAction(copy, enemy)
       const processed = processAction(copy, enemy, ["player"], action, combat_log, setCombatLog, combat_stats, setCombatStats, {draw_pile, hand, graveyard})

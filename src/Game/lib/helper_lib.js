@@ -87,11 +87,11 @@ const assignRandomKey = (entity, inventory) => {
   return entity_copy
 }
 
-const handleOdds = odds => {
+const handleOdds = outcomes => {
   const random = getRandomNumber100()
   let current = 0
-  for(let i = 0; i < odds.length; i++){
-    const {name, value} = odds[i]
+  for(let i = 0; i < outcomes.length; i++){
+    const {name, value} = outcomes[i]
 
     if(i === 0){
       if(random <= value){
@@ -99,7 +99,7 @@ const handleOdds = odds => {
       }
     }
 
-    if(i === (odds.length - 1)){
+    if(i === (outcomes.length - 1)){
       if(random > current){
         return name
       }
@@ -110,7 +110,7 @@ const handleOdds = odds => {
     }
     current += value
   }
-  throw new Error("HANDLE ODDS DIDNT RETURN SHIT")
+  throw new Error("handle odds did not return a value")
 }
 
 export {

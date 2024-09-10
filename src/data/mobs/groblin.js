@@ -23,7 +23,17 @@ const groblin =  {
         value: 4
       }
     ]
-  }
+  },
+  override_odds: [
+    {
+      name: "attack",
+      value: 90
+    },
+    {
+      name: "defend",
+      value: 10
+    }
+  ]
 }
 
 export default groblin

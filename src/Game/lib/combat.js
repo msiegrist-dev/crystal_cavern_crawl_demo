@@ -176,14 +176,15 @@ const getEnemyAction = (game_state, enemy) => {
     }
   }
   const base_odds = [
-    {name: "attack", value: 50}, {name: "defend", value: 50}
+    {name: "attack", value: 55}, {name: "defend", value: 45}
   ]
   const has_block_odds = [
-    {name: "attack", value: 80}, {name: "defend", value: 20}
+    {name: "attack", value: 85}, {name: "defend", value: 15}
   ]
-  const use_odds = enemy.block >= 5 ? has_block_odds : base_odds
-  const list = handleOdds(use_odds)
-  return getRandomValueFromList(enemy.options[list])
+  let use_odds = enemy.block >= 4 ? has_block_odds : base_odds
+  if(enemy.override_odds) use_odds = enemy.override_odds
+
+  return getRandomValueFromList(enemy.options[handleOdds(use_odds)])
 }
 
 const getAttackValue = (doer, action, is_thorns_attack) => {
