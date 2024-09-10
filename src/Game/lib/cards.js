@@ -83,8 +83,8 @@ const doesCardHaveRequiredGems = card => {
     if(!augment.required){
       continue
     }
-    const inventory = card.gem_inventory[gem_name]
-    if(inventory < augment.required){
+    const inventory = card.gem_inventory[gem_name] || 0
+    if(inventory < augment.number){
       return false
     }
   }

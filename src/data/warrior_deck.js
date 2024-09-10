@@ -178,7 +178,8 @@ const warrior_deck = [
     gem_augments: {
       red: {
         number: 1,
-        required: true
+        required: true,
+        effect: false
       }
     },
     target_required: true
