@@ -13,6 +13,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "test_all": "react-scripts test --watchAll=false",
     "eject": "react-scripts eject",
     "tauri": "tauri"
   },

@@ -20,8 +20,8 @@ const shuffleKeyedArray = array => {
   return shuffled
 }
 
-const roundToNearestInt = (number) => {
-  if(Number.isInteger(number)){
+const roundToNearestInt = number => {
+  if(Number.isInteger(Number(number))){
     return number
   }
   const round_number = Number(number.toFixed(2))
@@ -73,6 +73,9 @@ const removeItemFromArrayByKey = (array, key) => {
       index = i
     }
   }
+  if(index === undefined){
+    return array
+  }
   return array.slice(0, index).concat(array.slice(index + 1, array.length))
 }
 
@@ -110,7 +113,7 @@ const handleOdds = outcomes => {
     }
     current += value
   }
-  throw new Error("handle odds did not return a value")
+  return null
 }
 
 export {
