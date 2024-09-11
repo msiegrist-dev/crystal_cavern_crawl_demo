@@ -71,7 +71,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal, setBackground}) => {
     setCombatLog([])
     let copy = copyState(game_state)
     copy.character.buffs = {}
-    copy.character.stat_increases = {}
+    copy.character.flat_stat_increases = {}
     const next_level = goNextLevel(copy)
     const is_combat = next_level.level.type === "combat"
     setTurnOrder(is_combat ? getTurnOrder(next_level) : [])
@@ -140,7 +140,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal, setBackground}) => {
       }
       console.log("IT IS PLAYER TURN")
       let game_state_copy = copyState(game_state)
-      game_state_copy.character.stat_increases = {}
+      game_state_copy.character.flat_stat_increases = {}
       if(game_state_copy.character.buffs){
         for(let buff_name of Object.keys(game_state_copy.character.buffs)){
           if(game_state_copy.character.buffs[buff_name] < 1){

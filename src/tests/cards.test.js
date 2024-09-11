@@ -16,7 +16,15 @@ test("Immovable Force does require a gem to play", () => {
   expect(doesCardRequireGem(getCard("Immovable Force"))).toBe(true)
 })
 
-test("Immovable Force cannot be played with only one gem", () => {
+test("Immovable Force cannot be played with only one blue gem", () => {
+  const card = getCard("Immovable Force")
+  card.gem_inventory = {
+    blue: 1
+  }
+  expect(doesCardHaveRequiredGems(card)).toBe(false)
+})
+
+test("Immovable Force cannot be played with only one red gem", () => {
   const card = getCard("Immovable Force")
   card.gem_inventory = {
     blue: 1

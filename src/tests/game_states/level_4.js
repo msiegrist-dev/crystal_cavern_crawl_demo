@@ -75,7 +75,7 @@ const game_state = {
 		"buffs": {
 			"slowed": 1
 		},
-		"stat_increases": {},
+		"flat_stat_increases": {},
 		"starting_deck": [
 			"Attack",
 			"Attack",

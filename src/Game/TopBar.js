@@ -10,11 +10,11 @@ const TopBar = ({game_state, toggleDeckModal, toggleItemModal}) => {
       increased: false,
       increased_value: 0
     }
-    if(game_state.character.stat_increases){
-      if(game_state.character.stat_increases[stat_name]){
+    if(game_state.character.flat_stat_increases){
+      if(game_state.character.flat_stat_increases[stat_name]){
         stat_map[stat_name].increased = true
-        stat_map[stat_name].increased_value += game_state.character.stat_increases[stat_name]
-        stat_map[stat_name].value += game_state.character.stat_increases[stat_name]
+        stat_map[stat_name].increased_value += game_state.character.flat_stat_increases[stat_name]
+        stat_map[stat_name].value += game_state.character.flat_stat_increases[stat_name]
       }
     }
   }

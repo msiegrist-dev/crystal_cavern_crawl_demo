@@ -7,7 +7,7 @@ import {
 import {hasItem} from "./items"
 import {doesCardRequireGem, isCardUsingGems, processGemAugment, doesCardHaveRequiredGems} from "./cards"
 
-const getConditionFieldName = type => type === "buff" ? "buffs" : "stat_increases"
+const getConditionFieldName = type => type === "buff" ? "buffs" : "flat_stat_increases"
 
 const giveCombatantCondition = (type, combatant, name, value) => {
   const field_name = getConditionFieldName(type)
@@ -39,7 +39,7 @@ const combatantHasCondition = (type, combatant, name) => {
 const getCombatStatIncreases = (combatant, stat_name) => {
   let value = 0
   if(combatantHasCondition("stat", combatant, stat_name)){
-    value += combatant.stat_increases[stat_name]
+    value += combatant.flat_stat_increases[stat_name]
   }
   return value
 }
@@ -188,13 +188,17 @@ const getEnemyAction = (game_state, enemy) => {
 }
 
 const getAttackValue = (doer, action, is_thorns_attack) => {
+  let {value} = action
   if(is_thorns_attack){
-    return action.value
+    return value
   }
-  const has_fervor = combatantHasCondition("buff", doer, "fervor")
-  let value = has_fervor ? roundToNearestInt(increaseByPercent(action.value, 25)) : action.value
   if(action.do_not_process_attack_modifiers){
     return value
+  }
+
+  const has_fervor = combatantHasCondition("buff", doer, "fervor")
+  if(has_fervor){
+    value = roundToNearestInt(increaseByPercent(action.value, 25))
   }
   const block_as_bonus_attack = actionHasAttackEffect(action, "block_as_bonus_attack")
   if(block_as_bonus_attack){
@@ -203,10 +207,21 @@ const getAttackValue = (doer, action, is_thorns_attack) => {
   const block_as_attack = actionHasAttackEffect(action, "block_as_attack")
   if(block_as_attack){
     value = roundToNearestInt(doer.block * block_as_attack.value)
+    if(has_fervor){
+      value = roundToNearestInt(increaseByPercent(value, 25))
+    }
   }
-  const attack_stat = has_fervor ? roundToNearestInt(increaseByPercent(doer.attack, 25)) : doer.attack
+
+  let attack_stat = doer.attack
   const combat_increases = getCombatStatIncreases(doer, "attack")
-  let final = value + attack_stat + combat_increases
+  if(combat_increases){
+    attack_stat += combat_increases
+  }
+  if(has_fervor){
+    attack_stat = roundToNearestInt(increaseByPercent(attack_stat, 25))
+  }
+
+  let final = value + attack_stat
   if(combatantHasCondition("buff", doer, "burned")){
     final = roundToNearestInt(final * .75)
   }
@@ -328,8 +343,12 @@ const getBlockValue = (doer, action, can_be_increased) => {
   if(!can_be_increased){
     return block_value
   }
+  let defense_stat = doer.defense
   const item_increases = getCombatStatIncreases(doer, "defense")
-  block_value += doer.defense + item_increases
+  if(item_increases){
+    defense_stat += item_increases
+  }
+  block_value += defense_stat
   if(doer.buffs && doer.buffs["fortify"] > 0){
     return roundToNearestInt(block_value + (block_value * .33))
   }
@@ -549,6 +568,9 @@ const returnCardGemToCharacter = (gem, card, game_state, hand, setGameState, set
 const reduceBlockCombatStart = block => block > 4 ? roundToNearestInt(block / 2) : block
 
 export {
+  getBlockValue,
+  getRemainingBlock,
+  getAttackValue,
   mapEnemiesForCombat,
   getTurnOrder,
   getEnemyAction,
