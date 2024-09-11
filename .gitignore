@@ -12,3 +12,4 @@ build
 src-tauri/target
 combat-mock-assets.png
 src-tauri/icons
+coverage/
