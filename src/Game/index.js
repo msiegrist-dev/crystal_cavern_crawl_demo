@@ -6,7 +6,7 @@ import Level from "./Level"
 import TopBar from "./TopBar"
 import Modal from "../Modal"
 import Card from "./Card"
-import Item from "./Item"
+import Inventory from "./Inventory"
 import End from "./End"
 
 import {copyState} from "./lib/helper_lib"
@@ -102,16 +102,12 @@ const Game = ({setPage, setGameState, game_state, setBackground}) => {
 
       <Modal show_modal={show_modal} setShowModal={setShowModal}>
         {modal_mode === "deck" &&
-          <div className="grid eq_four_col">
+          <div className="grid eq_four_col overflow-y-scroll">
             {modal_deck.map((card) => <Card key={card.key} card={card} game_state={game_state} playable={false}/>)}
           </div>
         }
         {modal_mode === "items" &&
-          <div className="grid eq_four_col">
-            {game_state.character?.inventory.map((item, i) => {
-              return <Item key={i} item={item} />
-            })}
-          </div>
+          <Inventory inventory={game_state.character?.inventory} />
         }
       </Modal>
 

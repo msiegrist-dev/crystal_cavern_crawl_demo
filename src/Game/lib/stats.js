@@ -35,5 +35,5 @@ export {
   giveCharacterStats,
   getRandomStatName,
   getRandomStatValue,
-  healCharacter
+  healCharacter,
 }

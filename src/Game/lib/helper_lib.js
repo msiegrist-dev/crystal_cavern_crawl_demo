@@ -116,6 +116,25 @@ const handleOdds = outcomes => {
   return null
 }
 
+const getRarityTextColor = rarity => {
+  let rarity_text_color = "white"
+  if(rarity === "uncommon") rarity_text_color = "#96BD59"
+  if(rarity === "rare") rarity_text_color = "#C42430"
+  return rarity_text_color
+}
+
+const formatStatName = stat_name => {
+  if(stat_name === "max_hp") return "Max HP"
+  if(stat_name === "card_draw") return "Card Draw"
+  if(stat_name === "starting_draw") return "Starting Card Draw"
+  return capitalizeFirst(stat_name)
+}
+
+const formatBuffName = name => {
+  if(name === "flame_guard") return "Flame Guard"
+  return capitalizeFirst(name)
+}
+
 export {
   getRandomNumber100,
   getRandomNumber,
@@ -131,5 +150,8 @@ export {
   assignRandomKey,
   handleOdds,
   increaseByPercent,
-  getIndexOfArrayItemByName
+  getIndexOfArrayItemByName,
+  getRarityTextColor,
+  formatStatName,
+  formatBuffName
 }

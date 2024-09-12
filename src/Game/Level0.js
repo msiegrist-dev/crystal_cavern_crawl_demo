@@ -10,7 +10,7 @@ import {copyState} from "./lib/helper_lib"
 const Level0 = ({game_state, setGameState, setBackground}) => {
 
   useEffect(() => {
-    setBackground("background_2.png")
+    setBackground("newbg.png")
   }, [setBackground])
 
 

@@ -15,7 +15,8 @@ const Buffs = ({combatant}) => {
     thorns: "barbed.png",
     slowed: "ball_chain.png",
     fortify: "fortify.png",
-    burned: "burn.png"
+    burned: "burn.png",
+    fervor: "fervor.png"
   }
 
   const buff_descriptions = {
@@ -23,10 +24,9 @@ const Buffs = ({combatant}) => {
     slowed: "Speed is halved when calculating the turn order.",
     fortify: "Block values which can be increased have their final values increased by 33%.",
     burned: "Final attack value is reduced by 25%.",
-    fervor: "Increases base card attack and base attack stat values.",
+    fervor: "Increases card attack value and base attack stat value by 25%.",
     flame_guard: "Attacker is given a turn of the 'burned' debuff.",
   }
-
 
   return <div className="flex m-0-auto" style={{height: "35px", width: "300px"}}>
     {getBuffs(combatant).map((buff_name) => {

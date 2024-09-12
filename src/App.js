@@ -6,7 +6,7 @@ const App = () => {
 
   const [page, setPage] = useState("main_menu")
   const [game_state, setGameState] = useState(default_game_state)
-  const [background, setBackground] = useState("background.png")
+  const [background, setBackground] = useState("newbg.png")
 
   console.log('game_state', game_state)
 

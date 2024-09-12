@@ -94,7 +94,7 @@ const Victory = ({
                 <Card card={select_entity} playable={false} game_state={game_state} big_card={true}/>
               }
               {entity === "item" &&
-                <Item item={select_entity} />
+                <Item item={select_entity} setDisplayItem={() => null}/>
               }
               {entity === "gem" &&
                 <div>
