@@ -1,9 +1,11 @@
 import items from "../data/items"
 
-import {getAttackValue, getRemainingBlock, getBlockValue, processAction} from "../Game/lib/combat"
+import {getAttackValue, getRemainingBlock, getBlockValue, processAction, getTurnOrder, getEnemyAction} from "../Game/lib/combat"
 import {giveCharacterItem} from "../Game/lib/items"
 
 import groblin_foot_state from "./game_states/groblin_foot"
+
+import groblin_daddy from "../data/bosses/groblin_daddy"
 
 const default_entity = {
   attack: 1,
@@ -281,4 +283,123 @@ test("defeating an enemy while you have Lucky Groblin's Foot will draw a card if
   )
 
   expect(processed_action.card_state.hand.length).toBe(1)
+})
+
+test("getTurnOrders returns enemies ranked by speed 1", () => {
+  const state = {
+    character: {
+      speed: 3
+    },
+    level: {
+      enemies: [
+        {key: 6, speed: 2, hp: 2},
+        {key: 4, speed: 1, hp: 2}
+      ]
+    }
+  }
+  expect(getTurnOrder(state)).toEqual([
+    {key: "player", speed: 3},
+    {key: 6, speed: 2},
+    {key: 4, speed: 1}
+  ])
+})
+
+test("getTurnOrders returns enemies ranked by speed 2", () => {
+  const state = {
+    character: {
+      speed: 1
+    },
+    level: {
+      enemies: [
+        {key: 6, speed: 4, hp: 2},
+        {key: 4, speed: 8, hp: 4}
+      ]
+    }
+  }
+  expect(getTurnOrder(state)).toEqual([
+    {key: 4, speed: 8},
+    {key: 6, speed: 4},
+    {key: "player", speed: 1},
+  ])
+})
+
+test("getTurnOrders returns all enemies when shuffling like speed entities", () => {
+  const state = {
+    character: {
+      speed: 2
+    },
+    level: {
+      enemies: [
+        {key: 6, speed: 2, hp: 2},
+        {key: 4, speed: 2, hp: 4}
+      ]
+    }
+  }
+  const turn_order = getTurnOrder(state)
+  const player = turn_order.find((t) => t.key === "player")
+  const six = turn_order.find((t) => t.key === 6)
+  const four = turn_order.find((t) => t.key === 4)
+  const isPass = () => {
+    if(turn_order.length !== 3) return false
+    if(!player) return false
+    if(!six) return false
+    if(!four) return false
+    return true
+  }
+
+  expect(isPass()).toBe(true)
+})
+
+test("getEnemyAction returns a summon effect if daddy and 0 groblins", () => {
+  const state = {
+    level: {
+      enemies: [
+        {...groblin_daddy, key: 3},
+      ]
+    }
+  }
+  expect(getEnemyAction(state, groblin_daddy)).toBe(groblin_daddy.options.effect[0])
+})
+
+test("getEnemyAction does not return a summon effect if daddy and 2 groblins", () => {
+  const state = {
+    level: {
+      enemies: [
+        {...groblin_daddy, key: 3},
+        {name: "Groblin", hp: 2},
+        {name: "Groblin", hp: 1}
+      ]
+    }
+  }
+
+  const action = getEnemyAction(state, groblin_daddy)
+  const effect = action.type === "effect"
+
+  expect(effect).toBe(false)
+})
+
+test("getEnemyAction always retursn an action", () => {
+  const state = {
+    level: {
+      enemies: [
+        {...groblin_daddy, key: 3},
+        {name: "Groblin", hp: 2},
+        {name: "Groblin", hp: 1}
+      ]
+    }
+  }
+
+  const actions = []
+  for(let i = 0; i < 500; i++){
+    actions.push(getEnemyAction(state, groblin_daddy))
+  }
+  const not_an_action = actions.filter((a) => {
+    if(!a) return true
+    if(!a.type) true
+    if(a.type !== "attack" && a.type !== "defend" && a.type !== "effect") return true
+    return false
+  })
+
+  expect(not_an_action).toEqual([])
+
 })
