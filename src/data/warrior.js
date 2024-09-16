@@ -7,8 +7,8 @@ const warrior = {
   max_hp: 120,
   hp: 120,
   armor: .15,
-  starting_draw: 4,
-  card_draw: 4,
+  starting_draw: 0,
+  card_draw: 0,
   block: 0,
   inventory: [],
   gems: {

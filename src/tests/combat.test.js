@@ -1,7 +1,9 @@
 import items from "../data/items"
 
-import {getAttackValue, getRemainingBlock, getBlockValue} from "../Game/lib/combat"
+import {getAttackValue, getRemainingBlock, getBlockValue, processAction} from "../Game/lib/combat"
 import {giveCharacterItem} from "../Game/lib/items"
+
+import groblin_foot_state from "./game_states/groblin_foot"
 
 const default_entity = {
   attack: 1,
@@ -267,4 +269,16 @@ test("items add to base defense stat which is added to block action value", () =
       true
     )
   ).toBe(3)
+})
+
+test("defeating an enemy while you have Lucky Groblin's Foot will draw a card if you have one", () => {
+
+  const processed_action = processAction(
+    groblin_foot_state, groblin_foot_state.character, [0],
+    {type: "attack", value: 300, hits: 1}, [], () => true,
+    {enemies_killed: 0}, () => true,
+    {hand: [], graveyard: [], draw_pile: [{type:" attack", value: 12}]}
+  )
+
+  expect(processed_action.card_state.hand.length).toBe(1)
 })

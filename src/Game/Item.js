@@ -12,7 +12,7 @@ const Item = ({item, setDisplayItem}) => {
 
   return (
     <div className="grid center_all_items hov_pointer"
-      style={{maxWidth: "150px"}}
+      style={{maxWidth: "150px", height: "120px"}}
       onMouseOver={(e) => setDisplayItem(item)}
       onMouseOut={(e) => setDisplayItem(null)}
     >

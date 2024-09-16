@@ -38,15 +38,7 @@ const environment = {
   THORNS_ATTACK_PLAYER: {
     type: "attack", value: 3, hits: 1, accuracy: 100, do_not_process_attack_modifiers: true, is_thorns: true
   },
-  effects: [
-    "give_doer_buff",
-    "give_doer_stat",
-    "give_doer_block",
-    "remove_doer_hp",
-    "block_as_attack",
-    "armor_piercing",
-    "increase_card_value"
-  ]
+  DEFAULT_DRAW: 4
 }
 
 export default environment

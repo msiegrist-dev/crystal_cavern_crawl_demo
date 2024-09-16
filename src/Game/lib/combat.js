@@ -413,13 +413,12 @@ const processAction = (game_state, doer, target_keys, action, combat_log, setCom
       if(action.type === "effect"){
         combat_log_copy = combat_log_copy.concat(`${processed.doer.name} used ${action.name}`)
       }
-
       if(target_enemy_index >= 0){
         game_state_copy.level.enemies[target_enemy_index] = processed.target
         if(processed.target.hp <= 0){
           combat_log_copy = combat_log_copy.concat(`${processed.doer.name} has defeated ${processed.target.name}`)
           combat_stats_copy.enemies_killed += 1
-          if(hasItem(game_state_copy.character, "Lucky Grublin's Foot")){
+          if(hasItem(game_state_copy.character, "Lucky Groblin's Foot")){
             const processed_cards = drawCards(card_state.draw_pile, card_state.graveyard, card_state.hand, 1)
             card_state_copy.draw_pile = processed_cards.draw_pile
             card_state_copy.hand = processed_cards.hand

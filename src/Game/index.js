@@ -10,6 +10,7 @@ import Inventory from "./Inventory"
 import End from "./End"
 
 import {copyState} from "./lib/helper_lib"
+import {giveCharacterItem} from "./lib/items"
 
 const Game = ({setPage, setGameState, game_state, setBackground}) => {
 
@@ -30,12 +31,12 @@ const Game = ({setPage, setGameState, game_state, setBackground}) => {
       }),
       key: "player",
       base_stats: {
-        speed: 4,
-        attack: 2,
-        defense: 2,
-        max_hp: 120,
-        hp: 120,
-        armor: .15
+        speed: warrior.speed,
+        attack: warrior.attack,
+        defense: warrior.defend,
+        max_hp: warrior.max_hp,
+        hp: warrior.hp,
+        armor: warrior.armor
       },
       flat_stat_increases: {
         speed: 0,
@@ -51,6 +52,12 @@ const Game = ({setPage, setGameState, game_state, setBackground}) => {
   const setCharacter = character => {
     let game_state_copy = copyState(game_state)
     game_state_copy.character = starting_char_map[character]
+    const starting_items = game_state_copy.character.inventory
+    game_state_copy.character.inventory = []
+    starting_items.forEach((it) => {
+      const given = giveCharacterItem(game_state_copy, it)
+      game_state_copy.character = given.character
+    })
     setGameState(game_state_copy)
   }
 

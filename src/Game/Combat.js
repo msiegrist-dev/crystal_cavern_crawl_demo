@@ -161,7 +161,10 @@ const Combat = ({game_state, setGameState, toggleDeckModal, setBackground}) => {
       }
       setGameState(game_state_copy)
       const {card_draw, starting_draw} = game_state_copy.character
-      const use_draw = turn_number === 1 ? starting_draw : card_draw
+      const default_draw = environment.DEFAULT_DRAW
+      let use_draw = default_draw + card_draw
+      if(turn_number === 1) use_draw += starting_draw
+
       const draw = drawCards(draw_pile, graveyard, hand, use_draw)
       setGraveyard(draw.graveyard)
       setDrawPile(draw.draw_pile)
