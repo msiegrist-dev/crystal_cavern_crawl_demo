@@ -27,9 +27,7 @@ const environment = {
     "damage_for_card",
     "item_stash",
     "secret_tunnel",
-    "trap_fall"
-  ],
-  LATE_EVENTS: [
+    "trap_fall",
     "seers_sacrifice"
   ],
   THORNS_ATTACK_ENEMY: {

@@ -1,6 +1,9 @@
 import items from "../data/items"
 
-import {getAttackValue, getRemainingBlock, getBlockValue, processAction, getTurnOrder, getEnemyAction} from "../Game/lib/combat"
+import {
+  getAttackValue, getRemainingBlock, getBlockValue, processAction, getTurnOrder,
+  getEnemyAction, drawCards, sendCardsToGraveYard, processEffect
+} from "../Game/lib/combat"
 import {giveCharacterItem} from "../Game/lib/items"
 
 import groblin_foot_state from "./game_states/groblin_foot"
@@ -361,37 +364,25 @@ test("getEnemyAction returns a summon effect if daddy and 0 groblins", () => {
   expect(getEnemyAction(state, groblin_daddy)).toBe(groblin_daddy.options.effect[0])
 })
 
-test("getEnemyAction does not return a summon effect if daddy and 2 groblins", () => {
-  const state = {
-    level: {
-      enemies: [
-        {...groblin_daddy, key: 3},
-        {name: "Groblin", hp: 2},
-        {name: "Groblin", hp: 1}
-      ]
-    }
+const summoned_daddy_state = {
+  level: {
+    enemies: [
+      {...groblin_daddy, key: 3},
+      {name: "Groblin", hp: 2},
+      {name: "Groblin", hp: 1}
+    ]
   }
-
-  const action = getEnemyAction(state, groblin_daddy)
+}
+test("getEnemyAction does not return a summon effect if daddy and 2 groblins", () => {
+  const action = getEnemyAction(summoned_daddy_state, groblin_daddy)
   const effect = action.type === "effect"
-
   expect(effect).toBe(false)
 })
 
-test("getEnemyAction always retursn an action", () => {
-  const state = {
-    level: {
-      enemies: [
-        {...groblin_daddy, key: 3},
-        {name: "Groblin", hp: 2},
-        {name: "Groblin", hp: 1}
-      ]
-    }
-  }
-
+test("getEnemyAction always returns an action", () => {
   const actions = []
   for(let i = 0; i < 500; i++){
-    actions.push(getEnemyAction(state, groblin_daddy))
+    actions.push(getEnemyAction(summoned_daddy_state, groblin_daddy))
   }
   const not_an_action = actions.filter((a) => {
     if(!a) return true
@@ -401,5 +392,180 @@ test("getEnemyAction always retursn an action", () => {
   })
 
   expect(not_an_action).toEqual([])
+})
 
+const attack_card = {type: "attack", value: 1}
+test("drawCards returns 4 cards from draw pile", () => {
+  const hand = []
+  const draw_pile = [
+    {...attack_card, key: 1},
+    {...attack_card, key: 2},
+    {...attack_card, key: 3},
+    {...attack_card, key: 4},
+  ]
+  const graveyard = []
+
+  const card_state = drawCards(draw_pile, graveyard, hand, 3)
+  expect(card_state.draw_pile.length).toBe(1)
+  expect(card_state.hand.length).toBe(3)
+
+  const keys = [
+    ...card_state.hand.map((c) => c.key),
+    card_state.draw_pile[0].key
+  ]
+  let unique = true
+  for(let i = 0; i < keys.length; i++){
+    if(keys.indexOf(keys[i]) !== i){
+      unique = false
+      break
+    }
+  }
+  expect(unique).toBe(true)
+})
+
+test("drawCards can shuffle graveyard into draw_pile to obtain more cards", () => {
+  const hand = []
+  const draw_pile = [
+    {...attack_card, key: 1},
+  ]
+  const graveyard = [
+    {...attack_card, key: 2},
+    {...attack_card, key: 3},
+    {...attack_card, key: 4},
+  ]
+
+  const card_state = drawCards(draw_pile, graveyard, hand, 4)
+  expect(card_state.draw_pile.length).toBe(0)
+  expect(card_state.hand.length).toBe(4)
+
+  const keys = card_state.hand.map((c) => c.key)
+  let unique = true
+  for(let i = 0; i < keys.length; i++){
+    if(keys.indexOf(keys[i]) !== i){
+      unique = false
+      break
+    }
+  }
+  expect(unique).toBe(true)
+})
+
+const send_cards_hand = [
+  {...attack_card, key: 1, gem_inventory: {red: 0, blue: 0}},
+  {...attack_card, key: 7, gem_inventory: {red: 2, blue: 3}}
+]
+const send_cards_graveyard = [
+  {...attack_card, key: 2},
+  {...attack_card, key: 3},
+  {...attack_card, key: 4},
+]
+
+test("sendCardsToGraveYard removes card from hand and adds it to the graveyard", () => {
+  const game_state = {foo: "bar"}
+
+  const sent = sendCardsToGraveYard(
+    [...send_cards_hand], [send_cards_hand[0]],
+    [...send_cards_graveyard], game_state
+  )
+
+  expect(sent.game_state).toEqual(game_state)
+  expect(sent.graveyard.length).toBe(4)
+  expect(sent.hand.length).toBe(1)
+
+  const in_hand = sent.hand.find((c) => c.key === 1)
+  expect(in_hand).toBe(undefined)
+
+  const in_grave = sent.graveyard.findIndex((c) => c.key === 1)
+  expect(in_grave).toBeGreaterThan(-1)
+})
+
+test("sendCardsToGraveyard returns any gems in card inventory to player", () => {
+  const game_state = {
+    character: {
+      name: "warrior",
+      gems: {
+        red: 0,
+        blue: 0
+      }
+    }
+  }
+
+  const sent = sendCardsToGraveYard(
+    [...send_cards_hand], [send_cards_hand[1]],
+    [...send_cards_graveyard], game_state
+  )
+
+  expect(sent.game_state).toEqual({
+    character: {
+      name: "warrior",
+      gems: {
+        red: 2,
+        blue: 3
+      }
+    }
+  })
+  expect(sent.graveyard.length).toBe(4)
+  expect(sent.hand.length).toBe(1)
+
+  const in_hand = sent.hand.find((c) => c.key === 7)
+  expect(in_hand).toBe(undefined)
+
+  const in_grave = sent.graveyard.findIndex((c) => c.key === 7)
+  expect(in_grave).toBeGreaterThan(-1)
+})
+
+test("effect type actions will trigger all their effects", () => {
+  const doer = {...default_entity}
+  const target = {...default_entity}
+
+  const action = {
+    type: "effect",
+    effects: [
+      {
+        name: "give_doer_block",
+        value: 2
+      },
+      {
+        name: "give_doer_buff",
+        value: 2,
+        buff_name: "fervor"
+      },
+      {
+        name: "give_target_buff",
+        value: 2,
+        buff_name: "slowed"
+      },
+      {
+        name: "give_doer_stat",
+        value: 5,
+        stat_name: "attack"
+      },
+      {
+        name: "remove_doer_hp",
+        value: 5
+      }
+    ]
+  }
+
+  expect(processEffect(doer, target, action, [], () => true))
+  .toEqual({
+    doer: {
+      ...default_entity,
+      block: 2,
+      attack: 1,
+      buffs: {
+        fervor: 2
+      },
+      hp: 95,
+      flat_stat_increases: {
+        attack: 5
+      }
+    },
+    target: {
+      ...default_entity,
+      buffs: {
+        slowed: 2
+      }
+    },
+    combat_log: []
+  })
 })

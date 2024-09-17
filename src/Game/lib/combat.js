@@ -113,9 +113,6 @@ const mapEnemiesForCombat = (enemies, game_state) => {
         break
       }
     }
-    if(!position){
-      console.log("could not determine a position for enemy ", enemy)
-    }
     new_enemies.push({
       ...enemy,
       position,
@@ -581,5 +578,6 @@ export {
   returnCardGemToCharacter,
   giveCombatantCondition,
   combatantHasCondition,
-  reduceBlockCombatStart
+  reduceBlockCombatStart,
+  processEffect
 }

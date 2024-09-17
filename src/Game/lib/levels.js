@@ -4,8 +4,8 @@ import first_stage from "../../data/stage_encounters/first_stage"
 import {getRandomValueFromList, copyState, handleOdds} from "./helper_lib"
 import {mapEnemiesForCombat} from "./combat"
 
-const generateCombatLevel = (level, game_state) => {
-  if(level === 11){
+const generateCombatLevelEnemies = (level, game_state) => {
+  if(level >= 11){
     return mapEnemiesForCombat(first_stage.mob_sets[0], game_state)
   }
   if(level % 5 === 0){
@@ -17,31 +17,18 @@ const generateCombatLevel = (level, game_state) => {
   }
 }
 
-const generateEvent = level => {
-  if(level < 15){
-    return getRandomValueFromList(environment.BASE_EVENTS)
-  }
-  const odds = [
-    {name: "all", value: 85},
-    {name: "late", value: 15}
-  ]
-  const result = handleOdds(odds)
-  if(result === "all"){
-    return getRandomValueFromList(environment.BASE_EVENTS.concat(environment.LATE_EVENTS))
-  }
-  return getRandomValueFromList(environment.LATE_EVENTS)
-}
+const generateEvent = () => getRandomValueFromList(environment.BASE_EVENTS)
 
 const getRandomLevel = (number, game_state) => {
   const level_type_odds = [
-    {name: "combat", value: 75},
-    {name: "event", value: 25}
+    {name: "combat", value: 80},
+    {name: "event", value: 20}
   ]
   if(number % 5 === 0){
     return {
       number,
       type: "combat",
-      enemies: generateCombatLevel(number, game_state),
+      enemies: generateCombatLevelEnemies(number, game_state),
       enemy_type: "boss"
     }
   }
@@ -50,7 +37,7 @@ const getRandomLevel = (number, game_state) => {
     return {
       number,
       type: level_type,
-      enemies: generateCombatLevel(number, game_state)
+      enemies: generateCombatLevelEnemies(number, game_state)
     }
   }
   if(level_type === "event"){
@@ -79,5 +66,6 @@ const goNextLevel = game_state => {
 export {
   goNextLevel,
   getRandomLevel,
-  generateCombatLevel
+  generateCombatLevelEnemies,
+  generateEvent
 }
