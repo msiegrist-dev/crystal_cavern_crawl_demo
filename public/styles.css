@@ -408,14 +408,14 @@ ul {
 .popover_content {
   visibility: hidden;
   position: absolute;
-  left: -150px;
+  left: 0px;
   transform: translate(0, 10px);
   background-color: #bfbfbf;
   padding: 1.5rem;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
-  width: auto;
+  width: 350px;
 }
-.popover_content:before {
+/* .popover_content:before {
   position: absolute;
   z-index: -1;
   content: "";
@@ -427,7 +427,7 @@ ul {
   transition-duration: 0.3s;
   transition-property: transform;
   border-radius: 12px;
-}
+} */
 .popover_message:hover ~ .popover_content {
   z-index: 10;
   visibility: visible;

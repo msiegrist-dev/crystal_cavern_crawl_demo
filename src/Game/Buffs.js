@@ -37,15 +37,30 @@ const Buffs = ({combatant}) => {
     flame_guard: "Flame Guard"
   }
 
+  let left = "0px"
+  let top = "0px"
+  if(combatant.key === "player"){
+    left = "75px"
+    top = "74%"
+  }
+  if(combatant.key !== "player"){
+    left = "75px"
+    top = "100%"
+  }
+
   return <div className="flex m-0-auto" style={{height: "35px", width: "300px"}}>
     {getBuffs(combatant).map((buff_name) => {
-      return <div className="flex center_all_items" key={buff_name}>
-        <img src={buff_image_map[buff_name]} className="p-2 buff_image popover_message" />
-        <p className="mt-0 p-2 popover_message"> <b>{combatant.buffs[buff_name]}</b></p>
-        <div className="popover_content dark_opaque_bg">
+      return (
+        <>
+        <div className="flex center_all_items popover_message hov_pointer gap-2" key={buff_name}>
+          <img src={buff_image_map[buff_name]} className="m-0 p-0 buff_image" />
+          <p className="m-0 p-0"> <b>{combatant.buffs[buff_name]}</b></p>
+        </div>
+        <div className="popover_content dark_opaque_bg" style={{left, top}}>
           <p><b>{buff_names[buff_name]}</b>: {buff_descriptions[buff_name]}</p>
         </div>
-      </div>
+        </>
+      )
     })}
   </div>
 }

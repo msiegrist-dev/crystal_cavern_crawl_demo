@@ -51,8 +51,8 @@ const game_state = {
 		"max_hp": 120,
 		"hp": 95,
 		"armor": 0.2,
-		"starting_draw": 4,
-		"card_draw": 4,
+		"starting_draw": 0,
+		"card_draw": 0,
 		"block": 0,
 		"inventory": [
 			{
