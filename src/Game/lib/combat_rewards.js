@@ -9,7 +9,7 @@ const getRandomCharacterEntity = (character, entity_name) => {
     return getRandomValueFromList(character.deck)
   }
   if(entity_name === "item"){
-    return getRandomValueFromList(character.items)
+    return getRandomValueFromList(character.inventory)
   }
   if(entity_name === "gem"){
     const gem_name = getRandomGemName()

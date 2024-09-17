@@ -27,6 +27,28 @@ const Victory = ({
   const reward_message = `Select a ${entity}`
   const remove_card_message = `Select a card to remove from your deck`
   const use_message = type === "remove" && entity === "card" ? remove_card_message : reward_message
+  const selected_color = "rgba(121, 163, 242, 0.88)"
+  const inactive_color = "rgba(86, 82, 120, 0.95)"
+
+  const grid_styles = `grid gap-8 ${selections.length === 3 ? "three_col_equal" : "two_col_equal"}`
+  const span_styles = `center_text ${selections.length === 3 ? "span_three_col" : "span_two_col"}`
+
+  const GemSelect = ({alt, gem_img, select_entity}) => {
+    return (
+      <div className="flex center_all_content">
+        <img alt={alt} src={gem_img} style={{width: "60px", height: "60px"}} className="p-8" />
+        <h2 className="p-4">x{select_entity.value}</h2>
+      </div>
+    )
+  }
+
+  const ItemSelect = ({item}) => {
+    return (
+      <div className="flex center_all_content">
+        <Item item={item} setDisplayItem={(e) => null}/>
+      </div>
+    )
+  }
 
   return (
 
@@ -36,11 +58,11 @@ const Victory = ({
       <CombatStatsTable combat_stats={combat_stats} />
     </div>
 
-    <div className="grid three_col_equal">
+    <div className={grid_styles}>
 
     {!is_trade && selections && selections.length > 0 &&
       <>
-      <h2 className='center_text span_three_col'>{use_message}</h2>
+      <h2 className={span_styles}>{use_message}</h2>
 
         {selections.map((select_entity, i) => {
 
@@ -82,9 +104,12 @@ const Victory = ({
             }
           }
 
-          const style = {}
+          const style = {
+            padding: "10px",
+            borderRadius: "20px"
+          }
           if(selection_made){
-            style.backgroundColor = select_entity.selected ? "yellow" : "gray"
+            style.backgroundColor = select_entity.selected ? selected_color : inactive_color
           }
 
           const onClickFunc = type === "remove" ? removeCharacterEntity : giveCharacterEntity
@@ -94,13 +119,10 @@ const Victory = ({
                 <Card card={select_entity} playable={false} game_state={game_state} big_card={true}/>
               }
               {entity === "item" &&
-                <Item item={select_entity} setDisplayItem={() => null}/>
+                <ItemSelect item={select_entity} />
               }
               {entity === "gem" &&
-                <div>
-                  <img alt={alt} src={gem_img} style={{width: "35px", height: "35px"}} className="m-4 block" />
-                  <h4>Gems to receive : x{select_entity.value}</h4>
-                </div>
+                <GemSelect alt={alt} gem_img={gem_img} select_entity={select_entity} />
               }
               {entity === "stat" &&
                 <div>
@@ -116,7 +138,7 @@ const Victory = ({
 
     {is_trade &&
       <>
-      <h2 className="span_three_col">Trade your {entity}?</h2>
+      <h2 className={span_styles}>Trade your {entity}?</h2>
         {selections.map((trade, i) => {
           const commitTrade = trade => {
             const {trade_in, trade_for, trade_in_entity, trade_for_entity} = trade
@@ -145,8 +167,9 @@ const Victory = ({
             }
           }
           const style = {}
-          if(selection_made && !trade.selected){
-            style.backgroundColor = "gray"
+          if(selection_made){
+            const color = trade.selected ? selected_color : inactive_color
+            style.backgroundColor = color
           }
           const {trade_for, trade_for_entity, trade_in, trade_in_entity} = trade
           const trade_in_gem_img = `gem_${trade_in_entity.name}.png`
@@ -162,39 +185,26 @@ const Victory = ({
               const new_state = commitTrade(trade)
               setGameState(new_state)
             }}>
-              <h3>Trade In {trade_in}</h3>
+              <h3 className="center_text m-0 p-4" style={{color: "#C42430"}}>Lose</h3>
               {trade_in === "card" &&
                 <Card card={trade_in_entity} playable={false} game_state={game_state} />
               }
               {trade_in === "gem" &&
-                <div>
-                  <img alt={trade_in_gem_img_alt} src={trade_in_gem_img} style={{width: "35px", height: "35px"}} className="m-4 block" />
-                  <h4>Gems to receive : x{trade_in_entity.value}</h4>
-                </div>
+                <GemSelect alt={trade_in_gem_img_alt} src={trade_in_gem_img} select_entity={trade_in_entity} />
               }
               {trade_in === "item" &&
-                <div>
-                  <h3>{trade_in_entity.name}</h3>
-                  <h4>{trade_in_entity.rarity}</h4>
-                  <p>{trade_in_entity.effect} - {trade_in_entity.stat_name} - {trade_in_entity.value}</p>
-                </div>
+                <ItemSelect item={trade_in_entity} />
               }
-              <h3>Trade For {trade_for}</h3>
+
+              <h3 className="center_text p-4" style={{color: "#658CC6"}}>Receive</h3>
               {trade_for === "card" &&
                 <Card card={trade_for_entity} playable={false} game_state={game_state} />
               }
               {trade_for === "gem" &&
-                <div>
-                  <img alt={trade_for_gem_img_alt} src={trade_for_gem_img} style={{width: "35px", height: "35px"}} className="m-4 block" />
-                  <h4>Gems to receive : x{trade_for_entity.value}</h4>
-                </div>
+                <GemSelect alt={trade_for_gem_img_alt} gem_img={trade_for_gem_img} select_entity={trade_for_entity} />
               }
               {trade_for === "item" &&
-                <div>
-                  <h3>{trade_for_entity.name}</h3>
-                  <h4>{trade_for_entity.rarity}</h4>
-                  <p>{trade_for_entity.effect} - {trade_for_entity.stat_name} - {trade_for_entity.value}</p>
-                </div>
+                <ItemSelect item={trade_for_entity} />
               }
             </div>
           )

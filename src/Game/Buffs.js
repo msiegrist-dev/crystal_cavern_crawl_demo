@@ -28,13 +28,22 @@ const Buffs = ({combatant}) => {
     flame_guard: "Attacker is given a turn of the 'burned' debuff.",
   }
 
+  const buff_names = {
+    thorns: "Thorns",
+    slowed: "Slowed",
+    fortify: "Fortify",
+    burned: "Burned",
+    fervor: "Fervor",
+    flame_guard: "Flame Guard"
+  }
+
   return <div className="flex m-0-auto" style={{height: "35px", width: "300px"}}>
     {getBuffs(combatant).map((buff_name) => {
       return <div className="flex center_all_items" key={buff_name}>
         <img src={buff_image_map[buff_name]} className="p-2 buff_image popover_message" />
         <p className="mt-0 p-2 popover_message"> <b>{combatant.buffs[buff_name]}</b></p>
         <div className="popover_content dark_opaque_bg">
-          <p><b>{buff_name}</b>: {buff_descriptions[buff_name]}</p>
+          <p><b>{buff_names[buff_name]}</b>: {buff_descriptions[buff_name]}</p>
         </div>
       </div>
     })}

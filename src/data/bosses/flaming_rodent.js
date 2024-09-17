@@ -1,7 +1,7 @@
 const flaming_rodent = {
   name: "Flaming Rodent",
   splash_text: "The experiment of a twisted wizard.",
-  image_url: "flaming_rodent.gif",
+  image_url: "rat_animate.gif",
   speed: 10,
   attack: 10,
   defense: 5,
@@ -12,12 +12,12 @@ const flaming_rodent = {
     attack: [
       {
         type: "attack",
-        value: 10,
+        value: 8,
         hits: 1
       },
       {
         type: "attack",
-        value: 8,
+        value: 6,
         hits: 2
       }
     ],

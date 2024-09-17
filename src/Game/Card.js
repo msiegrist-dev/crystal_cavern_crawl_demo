@@ -12,7 +12,7 @@ const Card = ({
   const [hover, setHover] = useState(false)
 
   const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
-  const width = big_card ? "400px" : "200px"
+  const width = big_card ? "300px" : "200px"
   const backgroundColor = game_state.character.name.toLowerCase() === "warrior" ? "#C42430" : "white"
 
   let in_hand_style = {}
@@ -123,7 +123,7 @@ const Card = ({
       if(name === "aoe") return `Attack hits all enemies`
       if(name === "block_as_bonus_attack") return `Block as bonus attack : ${value * 100}%`
       if(name === "armor_piercing") return `Ignores enemy armor.`
-      
+
       let trigger_text = ""
       if(trigger === "on_hit"){
         trigger_text = "On Hit"

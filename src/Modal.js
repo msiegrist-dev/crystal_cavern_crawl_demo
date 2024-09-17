@@ -7,7 +7,7 @@ const Modal = ({show_modal, setShowModal, children, permanent}) => {
     top: "5vh",
     zIndex: "12",
     position: "fixed",
-    background: "rgba(90, 91, 84, .95)",
+    backgroundColor: "rgba(90, 91, 84, .95)",
     overflowY: "hidden"
   }
 
