@@ -9,9 +9,7 @@ const giveCharacterGems = (state, gem_name, amount) => {
   return state_copy
 }
 
-const doesCharacterHaveGems = (character, gem_name, number) => {
-  return character.gems[gem_name] >= number
-}
+const doesCharacterHaveGems = (character, gem_name, number) => character.gems[gem_name] >= number
 
 export {
   getRandomGemName,

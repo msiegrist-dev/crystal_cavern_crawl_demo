@@ -1,6 +1,8 @@
 import {
   getRandomNumber100, getRandomNumber, roundToNearestInt,
-  getRandomValueFromList, shuffleKeyedArray, handleOdds
+  getRandomValueFromList, shuffleKeyedArray, handleOdds,
+  copyState, increaseByPercent,
+  getIndexOfArrayItemByKey
 } from "../Game/lib/helper_lib"
 
 test("getRandomNumber100 never returns 0 or 101", () => {
@@ -175,4 +177,42 @@ test.each(to_test)('complex outcome %s is reasonably distributed as %i%', (name,
   const goal = 1000 * (value / 100)
   const reasonable = occurrences >= (goal - 25) && occurrences <= (goal + 25)
   expect(reasonable).toBe(true)
+})
+
+test("copyState returns a new reference to the object passed", () => {
+  expect(copyState({foo: "bar"})).toEqual({foo: "bar"})
+  const gs = {
+    score: 50,
+    bosses_faced: ["Flaming Rodent"],
+    character: {
+      name: "warrior",
+      attack: 1,
+      defense: 2,
+      speed: 3,
+      hp: 80,
+      max_hp: 120
+    }
+  }
+  expect(copyState(gs)).toEqual(gs)
+})
+
+test("increaseByPercent increases the value by the percent provided", () => {
+  expect(increaseByPercent(100, 25)).toBe(125)
+  expect(increaseByPercent(200, 50)).toBe(300)
+})
+
+test("getIndexOfArrayItemByKey returns the index of item in array with key", () => {
+  const array = [
+    {type: "attack", key: 0},
+    {type: "defend", key: 1},
+    {type: "effect", key: 2},
+    {type: "foo", key: "bar"}
+  ]
+
+  expect(getIndexOfArrayItemByKey(array, 0)).toBe(0)
+  expect(getIndexOfArrayItemByKey(array, "bar")).toBe(3)
+  expect(getIndexOfArrayItemByKey(array, "sandwich")).toBe(-1)
+  for(let item of array){
+    expect(getIndexOfArrayItemByKey(array, item.key)).toBeGreaterThan(-1)
+  }
 })
