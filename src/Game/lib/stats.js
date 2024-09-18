@@ -24,11 +24,12 @@ const getRandomStatValue = stat_name => {
 }
 
 const healCharacter = (game_state, value) => {
-  game_state.character.hp += value
-  if(game_state.character.hp > game_state.character.max_hp){
-    game_state.character.hp = game_state.character.max_hp
+  const copy = JSON.parse(JSON.stringify(game_state))
+  copy.character.hp += value
+  if(copy.character.hp > copy.character.max_hp){
+    copy.character.hp = copy.character.max_hp
   }
-  return game_state
+  return copy
 }
 
 export {
