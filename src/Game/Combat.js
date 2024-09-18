@@ -8,7 +8,7 @@ import {
   getTurnOrder, getEnemyAction, processAction, drawCards, playCard,
   sendCardsToGraveYard, giveCombatantCondition, reduceBlockCombatStart
 } from "./lib/combat"
-import {getTradeSelections, determineVictoryReward} from "./lib/combat_rewards"
+import {getTradeSelections, determineVictoryReward, getRewardChoices} from "./lib/combat_rewards"
 import {goNextLevel} from "./lib/levels"
 import {getRandomCards} from "./lib/cards"
 import {getRandomItems} from "./lib/items"
@@ -211,66 +211,6 @@ const Combat = ({game_state, setGameState, toggleDeckModal, setBackground}) => {
 
     const combatVictory = () => {
 
-      const getRewardChoices = (type, entity) => {
-        if(type === "remove" && entity === "card"){
-          return game_state.character.deck
-        }
-        if(type === "choice"){
-          if(entity === "card"){
-            return getRandomCards(3, game_state.character.name.toLowerCase())
-          }
-          if(entity === "item"){
-            return getRandomItems(3)
-          }
-          if(entity === "gem"){
-            return [
-              {name: "red", value: getRandomNumber(3)},
-              {name: "blue", value: getRandomNumber(3)}
-            ]
-          }
-          if(entity === "stat"){
-            const stat_choices = []
-            for(let i = 0; i < 4; i++){
-              const stat_name = getRandomStatName()
-              const stat_value = getRandomStatValue(stat_name)
-              stat_choices.push({
-                name: stat_name,
-                value: stat_value
-              })
-            }
-            return stat_choices
-          }
-        }
-        if(type === "random"){
-          if(entity === "card"){
-            return getRandomCards(1, game_state.character.name.toLowerCase())
-          }
-          if(entity === "item"){
-            return getRandomItems(1)
-          }
-          if(entity === "gem"){
-            const gem_color = environment.ALL_GEMS[getRandomNumber(2)]
-            const gem_amount = getRandomNumber(3)
-            return [{name: gem_color, value: gem_amount}]
-          }
-          if(entity === "stat"){
-            const stat_choices = []
-            for(let i = 0; i < 1; i++){
-              const stat_name = getRandomStatName()
-              const stat_value = getRandomStatValue(stat_name)
-              stat_choices.push({
-                name: stat_name,
-                value: stat_value
-              })
-            }
-            return stat_choices
-          }
-        }
-        if(type === "trade"){
-          return getTradeSelections(2, "random", entity, game_state.character)
-        }
-      }
-
       const game_state_copy = copyState(game_state)
       game_state_copy.level.combat_victory = true
       game_state_copy.character.block = 0
@@ -278,7 +218,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal, setBackground}) => {
       const reward_text = determineVictoryReward(game_state_copy)
       const [type, entity] = reward_text.split("_")
       setVictoryReward(reward_text)
-      setVictorySelections(getRewardChoices(type, entity))
+      setVictorySelections(getRewardChoices(type, entity, game_state_copy))
       setGameState(game_state_copy)
       setHand([])
       setGraveyard([])

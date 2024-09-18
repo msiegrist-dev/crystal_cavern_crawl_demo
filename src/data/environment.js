@@ -17,6 +17,7 @@ const environment = {
     "trade_gem",
     "trade_card",
     "trade_item",
+    "trade_random",
     "remove_card",
   ],
   CARD_REWARDS: [
