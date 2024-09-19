@@ -56,13 +56,6 @@ const getIndexOfArrayItemByName = (array, name) => {
 }
 
 const capitalizeFirst = str => str[0].toUpperCase() + str.substr(1, str.length)
-const formatKeyword = str => {
-  let res = ``
-  for(let word of str.split("_")){
-    res += `${capitalizeFirst(word)} `
-  }
-  return res
-}
 
 const displayArmorAsPct = entity => Number(entity.armor * 100) + "%"
 
@@ -79,9 +72,9 @@ const removeItemFromArrayByKey = (array, key) => {
   return array.slice(0, index).concat(array.slice(index + 1, array.length))
 }
 
-const assignRandomKey = (entity, inventory) => {
+const assignRandomKey = (entity, existing_entities) => {
   let entity_copy = copyState(entity)
-  const keys = inventory.map((ent) => ent.key)
+  const keys = existing_entities.map((ent) => ent.key)
   let random_value = getRandomNumber100()
   while(keys.includes(random_value)){
     random_value = getRandomNumber100()
@@ -103,9 +96,7 @@ const handleOdds = outcomes => {
     }
 
     if(i === (outcomes.length - 1)){
-      if(random > current){
-        return name
-      }
+      return name
     }
 
     if(random > current && random <= current + value){
@@ -113,7 +104,6 @@ const handleOdds = outcomes => {
     }
     current += value
   }
-  return null
 }
 
 const getRarityTextColor = rarity => {
@@ -143,7 +133,6 @@ export {
   roundToNearestInt,
   getIndexOfArrayItemByKey,
   capitalizeFirst,
-  formatKeyword,
   copyState,
   displayArmorAsPct,
   removeItemFromArrayByKey,

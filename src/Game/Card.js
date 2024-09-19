@@ -13,7 +13,8 @@ const Card = ({
 
   const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
   const width = big_card ? "300px" : "200px"
-  const backgroundColor = game_state.character.name.toLowerCase() === "warrior" ? "#C42430" : "white"
+  let backgroundColor = "white"
+  if(game_state.character?.name?.toLowerCase() === "warrior") backgroundColor = "#C42430"
 
   let in_hand_style = {}
   const hover_style = {}

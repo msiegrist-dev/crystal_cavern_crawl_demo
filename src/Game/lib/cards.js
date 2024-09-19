@@ -17,12 +17,11 @@ const doesCardRequireGem = card => {
 }
 
 const isCardUsingGems = card => {
-  if(!card.gem_augments || !card.gem_inventory){
+  if(!card.gem_inventory){
     return false
   }
-  for(let gem_name of Object.keys(card.gem_augments)){
-    const gem = card.gem_augments[gem_name]
-    if(card.gem_inventory[gem_name] === gem.number){
+  for(let gem_name of Object.keys(card.gem_inventory)){
+    if(card.gem_inventory[gem_name] > 0){
       return true
     }
   }
@@ -51,9 +50,6 @@ const processGemAugment = card => {
 
   for(let gem_name of Object.keys(card.gem_augments)){
     const augment = card.gem_augments[gem_name]
-    if(!augment){
-      continue
-    }
     const inventory = card.gem_inventory[gem_name]
     if(!inventory){
       continue
@@ -103,14 +99,10 @@ const removeCardFromDeck = (game_state, card) => {
   return game_state_copy
 }
 
-const getRandomCards = (number, character_name) => {
-  let source
-  if(character_name === "warrior"){
-    source = warrior_deck
-  }
-  let cards = []
+const getRandomCards = number => {
+  const cards = []
   for(let i = 0; i < number; i++){
-    cards.push(getRandomValueFromList(source))
+    cards.push(getRandomValueFromList(warrior_deck))
   }
   return cards
 }

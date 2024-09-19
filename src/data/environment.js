@@ -31,13 +31,22 @@ const environment = {
     "trap_fall",
     "seers_sacrifice"
   ],
+  ITEM_RARITIES: ["common", "uncommon", "rare"],
   THORNS_ATTACK_ENEMY: {
     type: "attack", value: 8, hits: 1, accuracy: 100, do_not_process_attack_modifiers: true, is_thorns: true
   },
   THORNS_ATTACK_PLAYER: {
     type: "attack", value: 3, hits: 1, accuracy: 100, do_not_process_attack_modifiers: true, is_thorns: true
   },
-  DEFAULT_DRAW: 4
+  DEFAULT_DRAW: 4,
+  ALL_BUFFS: [
+    "thorns",
+    "slowed",
+    "fortify",
+    "burned",
+    "fervor",
+    "flame_guard"
+  ]
 }
 
 export default environment

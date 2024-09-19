@@ -29,9 +29,10 @@ const Victory = ({
   const use_message = type === "remove" && entity === "card" ? remove_card_message : reward_message
   const selected_color = "rgba(121, 163, 242, 0.88)"
   const inactive_color = "rgba(86, 82, 120, 0.95)"
+  const trade_message = entity === "random" ? "Would you like to trade?" : `Trade your ${entity}`
 
-  const grid_styles = `grid gap-8 ${selections.length === 3 ? "three_col_equal" : "two_col_equal"}`
-  const span_styles = `center_text ${selections.length === 3 ? "span_three_col" : "span_two_col"}`
+  const grid_styles = `grid gap-4 ${selections.length === 3 ? "three_col_equal" : "two_col_equal"}`
+  const span_styles = `m-0 p-2 center_text ${selections.length === 3 ? "span_three_col" : "span_two_col"}`
 
   const GemSelect = ({alt, gem_img, select_entity}) => {
     return (
@@ -53,10 +54,12 @@ const Victory = ({
   return (
 
     <>
-    <h2 className="center_text">Combat Victory</h2>
-    <div className="grid center_all_items">
-      <CombatStatsTable combat_stats={combat_stats} />
-    </div>
+      <div className="grid two_col_equal m-0 p-2 center_all_items">
+        <h2 className="center_text m-0 p-4">Combat Victory</h2>
+        <div className="grid center_all_items">
+          <CombatStatsTable combat_stats={combat_stats} />
+        </div>
+      </div>
 
     <div className={grid_styles}>
 
@@ -138,7 +141,7 @@ const Victory = ({
 
     {is_trade &&
       <>
-      <h2 className={span_styles}>Trade your {entity}?</h2>
+      <h2 className={span_styles}>{trade_message}</h2>
         {selections.map((trade, i) => {
           const commitTrade = trade => {
             const {trade_in, trade_for, trade_in_entity, trade_for_entity} = trade
@@ -177,7 +180,7 @@ const Victory = ({
           const trade_for_gem_img = `gem_${trade_for_entity.name}.png`
           const trade_for_gem_img_alt = `${trade_for_entity.name} gem`
           return (
-            <div style={style} className="hov pointer" onClick={(e) => {
+            <div style={style} className="hov_pointer" onClick={(e) => {
               if(selection_made){
                 return
               }
@@ -190,7 +193,7 @@ const Victory = ({
                 <Card card={trade_in_entity} playable={false} game_state={game_state} />
               }
               {trade_in === "gem" &&
-                <GemSelect alt={trade_in_gem_img_alt} src={trade_in_gem_img} select_entity={trade_in_entity} />
+                <GemSelect alt={trade_in_gem_img_alt} gem_img={trade_in_gem_img} select_entity={trade_in_entity} />
               }
               {trade_in === "item" &&
                 <ItemSelect item={trade_in_entity} />
@@ -213,7 +216,7 @@ const Victory = ({
     }
     </div>
     <h3 className="center_text">{message}</h3>
-    <h2  className="m-4 p-4 center_text action_text"
+    <h2  className="m-0 p-2 center_text action_text"
       onClick={(e) => {
         setSelections([])
         setSelectionMade(false)

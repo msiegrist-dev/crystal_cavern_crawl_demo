@@ -13,7 +13,7 @@ const groblin =  {
     attack: [
       {
         type: "attack",
-        value: 4,
+        value: 3,
         hits: 1
       }
     ],

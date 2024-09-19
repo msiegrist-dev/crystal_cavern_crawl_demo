@@ -48,7 +48,7 @@ const getTradeSelections = (quantity, trade_for, character) => {
     const trade_in = getRandomValueFromList(available_character_entities)
     const trade_in_entity = getRandomCharacterEntity(character, trade_in)
     if(trade_for === "card"){
-      trade_for_entity = getRandomCards(1, "warrior")[0]
+      trade_for_entity = getRandomCards(1)[0]
     }
     if(trade_for === "gem"){
       let gem_name = getRandomGemName()
@@ -87,7 +87,7 @@ const getRewardChoices = (type, entity, game_state) => {
   }
   if(type === "choice"){
     if(entity === "card"){
-      return getRandomCards(3, game_state.character.name.toLowerCase())
+      return getRandomCards(3)
     }
     if(entity === "item"){
       return getRandomItems(3)
@@ -113,7 +113,7 @@ const getRewardChoices = (type, entity, game_state) => {
   }
   if(type === "random"){
     if(entity === "card"){
-      return getRandomCards(1, game_state.character.name.toLowerCase())
+      return getRandomCards(1)
     }
     if(entity === "item"){
       return getRandomItems(1)

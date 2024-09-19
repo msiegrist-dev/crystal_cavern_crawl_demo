@@ -10,7 +10,6 @@ import {
 } from "./lib/combat"
 import {getTradeSelections, determineVictoryReward, getRewardChoices} from "./lib/combat_rewards"
 import {goNextLevel} from "./lib/levels"
-import {getRandomCards} from "./lib/cards"
 import {getRandomItems} from "./lib/items"
 import {getRandomStatName, getRandomStatValue} from "./lib/stats"
 

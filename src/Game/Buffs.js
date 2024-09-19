@@ -48,7 +48,7 @@ const Buffs = ({combatant}) => {
     top = "100%"
   }
 
-  return <div className="flex m-0-auto" style={{height: "35px", width: "300px"}}>
+  return <div className="flex m-0-auto gap-2" style={{height: "35px", width: "300px"}}>
     {getBuffs(combatant).map((buff_name) => {
       return (
         <>

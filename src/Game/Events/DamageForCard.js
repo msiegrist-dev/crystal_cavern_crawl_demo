@@ -7,7 +7,7 @@ const DamageForCard = ({REQUIRED_EVENT_PROPS}) => {
 
   const accept = () => {
     const game_state_copy = copyState(game_state)
-    const random_card = getRandomCards(1, "warrior")[0]
+    const random_card = getRandomCards(1)[0]
     game_state_copy.character.hp -= 10
     setGameState(addCardToDeck(game_state_copy, random_card))
     setSatisfied(true)

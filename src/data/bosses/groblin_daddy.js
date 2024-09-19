@@ -8,7 +8,7 @@ const groblin_daddy = {
   speed: 7,
   attack: 10,
   defense: 7,
-  max_hp: 80,
+  max_hp: 60,
   armor: .10,
   block: 0,
   options: {

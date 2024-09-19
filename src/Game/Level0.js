@@ -44,7 +44,7 @@ const Level0 = ({game_state, setGameState, setBackground}) => {
 
   const randomCard = () => {
     const game_state_copy = copyState(game_state)
-    const random_card = getRandomCards(1, "warrior")[0]
+    const random_card = getRandomCards(1)[0]
     setGameState(
       goNextLevel(
         addCardToDeck(game_state_copy, random_card)
