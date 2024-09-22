@@ -3,7 +3,7 @@ import items from "../data/items"
 import {
   getAttackValue, getRemainingBlock, getBlockValue, processAction, getTurnOrder,
   getEnemyAction, drawCards, sendCardsToGraveYard, processEffect, initCombatantTurn,
-  reduceBlockCombatStart
+  reduceBlockCombatStart, processAttack
 } from "../Game/lib/combat"
 import {giveCharacterItem} from "../Game/lib/items"
 
@@ -277,16 +277,33 @@ test("items add to base defense stat which is added to block action value", () =
   ).toBe(3)
 })
 
-test("defeating an enemy while you have Lucky Groblin's Foot will draw a card if you have one", () => {
+test("defeating an enemy while you have Lucky Groblin's Foot will draw a card if you have one - empty hand", () => {
 
   const processed_action = processAction(
     groblin_foot_state, groblin_foot_state.character, [0],
     {type: "attack", value: 300, hits: 1}, [], () => true,
     {enemies_killed: 0}, () => true,
-    {hand: [], graveyard: [], draw_pile: [{type:" attack", value: 12}]}
+    {hand: [], graveyard: [], draw_pile: [{type: "attack", value: 12}]}
   )
 
-  expect(processed_action.card_state.hand.length).toBe(1)
+  expect(processed_action.card_state.hand).toHaveLength(1)
+  expect(processed_action.card_state.draw_pile).toHaveLength(0)
+  expect(processed_action.card_state.hand.find((c) => c.type === "attack" && c.value === 12)).toBeDefined()
+})
+
+test("defeating an enemy while you have Lucky Groblin's Foot will draw a card if you have one - cards in hand", () => {
+
+  const processed_action = processAction(
+    groblin_foot_state, groblin_foot_state.character, [0],
+    {type: "attack", value: 300, hits: 1}, [], () => true,
+    {enemies_killed: 0}, () => true,
+    {hand: [{type: "defend", value: 3}, {type: "defend", value: 4}], graveyard: [], draw_pile: [{type: "attack", value: 12}]}
+  )
+
+  expect(processed_action.card_state.hand).toHaveLength(3)
+  expect(processed_action.card_state.draw_pile).toHaveLength(0)
+  expect(processed_action.card_state.hand.filter((c) => c.type === "defend")).toHaveLength(2)
+  expect(processed_action.card_state.hand.filter((c) => c.type === "attack")).toHaveLength(1)
 })
 
 test("getTurnOrders returns enemies ranked by speed 1", () => {
@@ -628,4 +645,50 @@ test("initial phase of combatant on turn 1 will trigger starting_buffs item effe
     },
     flat_stat_increases: {}
   })
+})
+
+test("attacking an enemy with thorns will return damage to the attack if the hit lands", () => {
+  const doer = {...default_entity}
+  const target = {
+    ...default_entity,
+    buffs: {
+      thorns: 2
+    }
+  }
+  const action = {
+    type: "attack",
+    value: 2,
+    accuracy: 100,
+    hits: 1
+  }
+
+  const processed = processAttack(
+    doer, target, action, [], () => true, false, false
+  )
+  expect(processed.doer).toEqual({...default_entity, hp: 95})
+  expect(processed.target).toEqual({...target, hp: 97})
+  expect(processed.damage_dealt).toBe(3)
+})
+
+test("attacking an enemy with thorns will return damage to the attack per hit if the hit lands", () => {
+  const doer = {...default_entity}
+  const target = {
+    ...default_entity,
+    buffs: {
+      thorns: 2
+    }
+  }
+  const action = {
+    type: "attack",
+    value: 2,
+    accuracy: 100,
+    hits: 2
+  }
+
+  const processed = processAttack(
+    doer, target, action, [], () => true, false, false
+  )
+  expect(processed.doer).toEqual({...default_entity, hp: 90})
+  expect(processed.target).toEqual({...target, hp: 94})
+  expect(processed.damage_dealt).toBe(6)
 })

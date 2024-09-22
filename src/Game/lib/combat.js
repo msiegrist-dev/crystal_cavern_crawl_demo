@@ -261,16 +261,14 @@ const processAttack = (doer, target, action, combat_log, setCombatLog, do_not_re
     if(target_has_buffs && !do_not_refire_thorns){
 
       if(combatantHasCondition("buff", target_copy, "thorns")){
-        console.log("DOING THORNS OUCH")
         const thorns_action = target.key === "character" ? environment.THORNS_ATTACK_PLAYER : environment.THORNS_ATTACK_ENEMY
-        const state_processed_thorns = processAttack(target, doer, thorns_action, combat_log, setCombatLog, true, true)
+        const state_processed_thorns = processAttack(target_copy, doer_copy, thorns_action, combat_log, setCombatLog, true, true)
         target_copy = state_processed_thorns.doer
         doer_copy = state_processed_thorns.target
         combat_log_copy = combat_log_copy.concat([`${target_copy.name} did thorns damage back to ${doer_copy.name}`])
       }
 
       if(combatantHasCondition("buff", target_copy, "flame_guard")){
-        console.log("DOING FLAME GUARD HOT")
         doer_copy = giveCombatantCondition("buff", doer_copy, "burned", 1)
       }
     }
@@ -287,11 +285,11 @@ const processAttack = (doer, target, action, combat_log, setCombatLog, do_not_re
     if(remaining_block <= 0){
       target_copy.block = 0
       target_copy.hp -= (remaining_block * -1)
-      damage_dealt = target.block + (remaining_block * -1)
+      damage_dealt += (target.block + (remaining_block * -1))
       continue
     }
 
-    damage_dealt = target_copy.block - remaining_block
+    damage_dealt += (target_copy.block - remaining_block)
     target_copy.block = remaining_block
 
   }
@@ -308,12 +306,10 @@ const processAttack = (doer, target, action, combat_log, setCombatLog, do_not_re
   }
 
   return {
+    damage_dealt,
     doer: doer_copy,
     target: target_copy,
     total_damage: total_damage_value,
-    damage_dealt,
-    hits: action.hits,
-    base_damage_value: action.value,
     combat_log: combat_log_copy
   }
 }
@@ -440,7 +436,7 @@ const processAction = (game_state, doer, target_keys, action, combat_log, setCom
 const drawCards = (draw_pile, graveyard, hand, number_to_draw) => {
   let draw = copyState(draw_pile)
   let grave = copyState(graveyard)
-  let hand_copy = []
+  let hand_copy = copyState(hand)
 
   const available_cards = draw.length + grave.length
   const to_draw = available_cards >= number_to_draw ? number_to_draw : available_cards
@@ -607,5 +603,6 @@ export {
   combatantHasCondition,
   reduceBlockCombatStart,
   processEffect,
+  processAttack,
   initCombatantTurn
 }
