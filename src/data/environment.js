@@ -33,7 +33,7 @@ const environment = {
   ],
   ITEM_RARITIES: ["common", "uncommon", "rare"],
   THORNS_ATTACK_ENEMY: {
-    type: "attack", value: 8, hits: 1, accuracy: 100, do_not_process_attack_modifiers: true, is_thorns: true
+    type: "attack", value: 6, hits: 1, accuracy: 100, do_not_process_attack_modifiers: true, is_thorns: true
   },
   THORNS_ATTACK_PLAYER: {
     type: "attack", value: 3, hits: 1, accuracy: 100, do_not_process_attack_modifiers: true, is_thorns: true

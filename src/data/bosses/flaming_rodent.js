@@ -5,14 +5,14 @@ const flaming_rodent = {
   speed: 10,
   attack: 10,
   defense: 5,
-  max_hp: 60,
-  armor: .10,
+  max_hp: 55,
+  armor: .05,
   block: 0,
   options: {
     attack: [
       {
         type: "attack",
-        value: 8,
+        value: 6,
         hits: 1
       },
       {

@@ -3,7 +3,7 @@ const living_spike =  {
   splash_text: "What's lacking in brains is made up for in knives.",
   combat_detail: "Spike's pointy exterior deals damage back to attackers.",
   image_url: "living_spike.png",
-  speed: 3,
+  speed: 2,
   attack: 2,
   defense: 3,
   max_hp: 12,
@@ -20,7 +20,7 @@ const living_spike =  {
     defend: [
       {
         type: "defend",
-        value: 3
+        value: 2
       }
     ]
   },

@@ -6,28 +6,28 @@ const groblin =  {
   speed: 5,
   attack: 5,
   defense: 1,
-  max_hp: 12,
+  max_hp: 10,
   armor: .05,
   block: 0,
   options: {
     attack: [
       {
         type: "attack",
-        value: 3,
+        value: 2,
         hits: 1
       }
     ],
     defend: [
       {
         type: "defend",
-        value: 4
+        value: 3
       }
     ]
   },
   override_odds: [
     {
       name: "attack",
-      value: 90
+      value: 85
     },
     {
       name: "defend",

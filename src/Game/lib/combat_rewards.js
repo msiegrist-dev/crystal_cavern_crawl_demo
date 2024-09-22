@@ -75,7 +75,7 @@ const getTradeSelections = (quantity, trade_for, character) => {
 
 const determineVictoryReward = () => {
   const value = getRandomNumber100()
-  if(value <= 65){
+  if(value <= 50){
     return getRandomValueFromList(environment.CARD_REWARDS)
   }
   return getRandomValueFromList(environment.ALL_REWARDS)

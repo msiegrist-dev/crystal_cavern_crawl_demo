@@ -3,15 +3,13 @@ import {useState, useEffect} from 'react'
 import default_game_state from "../data/default_game_state"
 import environment from "../data/environment"
 
-import {getIndexOfArrayItemByKey, copyState, shuffleKeyedArray, getRandomNumber} from "./lib/helper_lib"
+import {getIndexOfArrayItemByKey, copyState, shuffleKeyedArray} from "./lib/helper_lib"
 import {
   getTurnOrder, getEnemyAction, processAction, drawCards, playCard,
-  sendCardsToGraveYard, giveCombatantCondition, reduceBlockCombatStart
+  sendCardsToGraveYard, initCombatantTurn
 } from "./lib/combat"
-import {getTradeSelections, determineVictoryReward, getRewardChoices} from "./lib/combat_rewards"
+import {determineVictoryReward, getRewardChoices} from "./lib/combat_rewards"
 import {goNextLevel} from "./lib/levels"
-import {getRandomItems} from "./lib/items"
-import {getRandomStatName, getRandomStatValue} from "./lib/stats"
 
 
 import Card from "./Card"
@@ -139,32 +137,15 @@ const Combat = ({game_state, setGameState, toggleDeckModal, setBackground}) => {
       }
       console.log("IT IS PLAYER TURN")
       let game_state_copy = copyState(game_state)
-      game_state_copy.character.flat_stat_increases = {}
-      if(game_state_copy.character.buffs){
-        for(let buff_name of Object.keys(game_state_copy.character.buffs)){
-          if(game_state_copy.character.buffs[buff_name] < 1){
-            continue
-          }
-          game_state_copy.character.buffs[buff_name] -= 1
-        }
-      }
-      game_state_copy.character.block = reduceBlockCombatStart(game_state_copy.character.block)
-      if(turn_number === 1){
-        for(let item of game_state_copy.character.inventory){
-          if(Object.keys(item).includes("starting_buffs")){
-            for(let buff of item.starting_buffs){
-              game_state_copy.character = giveCombatantCondition("buff", game_state_copy.character, buff.name, buff.value)
-            }
-          }
-        }
-      }
+      game_state_copy.character = initCombatantTurn(game_state_copy.character, turn_number)
       setGameState(game_state_copy)
+
       const {card_draw, starting_draw} = game_state_copy.character
       const default_draw = environment.DEFAULT_DRAW
       let use_draw = default_draw + card_draw
       if(turn_number === 1) use_draw += starting_draw
-
       const draw = drawCards(draw_pile, graveyard, hand, use_draw)
+
       setGraveyard(draw.graveyard)
       setDrawPile(draw.draw_pile)
       setHand(draw.hand)
@@ -175,14 +156,13 @@ const Combat = ({game_state, setGameState, toggleDeckModal, setBackground}) => {
         return
       }
       console.log("IT IS ENEMIES TURN")
-      let enemy = game_state.level.enemies.find((ene) => ene.key === turn.key)
-      if(enemy.hp <= 0){
+      const enemy_index = game_state.level.enemies.findIndex((ene) => ene.key === turn.key)
+      if(game_state.level.enemies[enemy_index].hp <= 0){
         return goNextTurn()
       }
-      const enemy_index = game_state.level.enemies.findIndex((ene) => ene.key === turn.key)
-      let copy = JSON.parse(JSON.stringify(game_state))
-      copy.level.enemies[enemy_index].block = reduceBlockCombatStart(copy.level.enemies[enemy_index].block)
-      enemy = copy.level.enemies.find((ene) => ene.key === turn.key)
+      let copy = copyState(game_state)
+      copy.level.enemies[enemy_index] = initCombatantTurn(copy.level.enemies[enemy_index], turn_number)
+      const enemy = copy.level.enemies.find((ene) => ene.key === turn.key)
       const action = getEnemyAction(copy, enemy)
       const processed = processAction(copy, enemy, ["player"], action, combat_log, setCombatLog, combat_stats, setCombatStats, {draw_pile, hand, graveyard})
       setGameState(processed.game_state)

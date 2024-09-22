@@ -2,7 +2,8 @@ import items from "../data/items"
 
 import {
   getAttackValue, getRemainingBlock, getBlockValue, processAction, getTurnOrder,
-  getEnemyAction, drawCards, sendCardsToGraveYard, processEffect
+  getEnemyAction, drawCards, sendCardsToGraveYard, processEffect, initCombatantTurn,
+  reduceBlockCombatStart
 } from "../Game/lib/combat"
 import {giveCharacterItem} from "../Game/lib/items"
 
@@ -567,5 +568,64 @@ test("effect type actions will trigger all their effects", () => {
       }
     },
     combat_log: []
+  })
+})
+
+test.each([
+  [3, 3],
+  [0, 0],
+  [null, 0],
+  [undefined, 0],
+  [4, 2],
+  [6, 3],
+  [7, 4],
+  [200, 100],
+  [89, 45]
+])('reduceBlockCombatStart(%d)', (value, expected) => {
+  expect(reduceBlockCombatStart(value)).toBe(expected)
+})
+
+test("initial phase of combatant turn will remove stat effects, decrease buffs by 1 and reduce block", () => {
+  const combatant = {
+    name: "grublin",
+    hp: 10,
+    flat_stat_increases: {attack: 2},
+    buffs: {
+      flame_guard: 12
+    },
+    block: 8
+  }
+  expect(initCombatantTurn(combatant, 1)).toEqual({
+    ...combatant,
+    flat_stat_increases:{},
+    buffs: {
+      flame_guard: 11
+    },
+    block: 4
+  })
+})
+
+test("initial phase of combatant on turn 1 will trigger starting_buffs item effects", () => {
+  const combatant = {
+    name: "grublin",
+    hp: 10,
+    inventory: [
+      {
+        name: "Armor of Annoyance",
+        starting_buffs: [
+          {name: "thorns", value: 2}
+        ],
+        rarity: "uncommon",
+        image: "armor_of_annoyance.png"
+      },
+    ]
+  }
+  expect(initCombatantTurn(combatant, 1)).toEqual({
+    ...combatant,
+    block: 0,
+    buffs: {
+      thorns: 2
+    },
+    flat_stat_increases: {}
   })
 })

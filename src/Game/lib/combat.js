@@ -561,7 +561,34 @@ const returnCardGemToCharacter = (gem, card, game_state, hand, setGameState, set
   setGameState(game_state_copy)
 }
 
-const reduceBlockCombatStart = block => block > 4 ? roundToNearestInt(block / 2) : block
+const reduceBlockCombatStart = block => {
+  if(!block) return 0
+  return Number(block) > 3 ? roundToNearestInt(Number(block) / 2) : Number(block)
+}
+
+const initCombatantTurn = (entity, turn_number) => {
+  let combatant = copyState(entity)
+  combatant.flat_stat_increases = {}
+  if(combatant.buffs){
+    for(let buff_name of Object.keys(combatant.buffs)){
+      if(combatant.buffs[buff_name] < 1){
+        continue
+      }
+      combatant.buffs[buff_name] -= 1
+    }
+  }
+  combatant.block = reduceBlockCombatStart(combatant.block)
+  if(turn_number === 1 && combatant.inventory){
+    for(let item of combatant.inventory){
+      if(Object.keys(item).includes("starting_buffs")){
+        for(let buff of item.starting_buffs){
+          combatant = giveCombatantCondition("buff", combatant, buff.name, buff.value)
+        }
+      }
+    }
+  }
+  return combatant
+}
 
 export {
   getBlockValue,
@@ -579,5 +606,6 @@ export {
   giveCombatantCondition,
   combatantHasCondition,
   reduceBlockCombatStart,
-  processEffect
+  processEffect,
+  initCombatantTurn
 }

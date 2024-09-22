@@ -16,16 +16,17 @@ const Buffs = ({combatant}) => {
     slowed: "ball_chain.png",
     fortify: "fortify.png",
     burned: "burn.png",
-    fervor: "fervor.png"
+    fervor: "fervor.png",
+    flame_guard: "flame_guard.png"
   }
 
   const buff_descriptions = {
-    thorns: "Returns 8 damage on attack if target is an enemy and 3 damage if you are the target.",
+    thorns: "Returns 6 damage on attack if target is an enemy and 3 damage if you are the target.",
     slowed: "Speed is halved when calculating the turn order.",
     fortify: "Block values which can be increased have their final values increased by 33%.",
     burned: "Final attack value is reduced by 25%.",
     fervor: "Increases card attack value and base attack stat value by 25%.",
-    flame_guard: "Attacker is given a turn of the 'burned' debuff.",
+    flame_guard: "When attacked, the attacker is given a turn of the Burned debuff.",
   }
 
   const buff_names = {
@@ -44,7 +45,7 @@ const Buffs = ({combatant}) => {
     top = "74%"
   }
   if(combatant.key !== "player"){
-    left = "75px"
+    left = "-75px"
     top = "100%"
   }
 

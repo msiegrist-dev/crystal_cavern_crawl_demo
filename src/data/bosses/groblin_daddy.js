@@ -5,23 +5,23 @@ const groblin_daddy = {
   splash_text: "It is not above the K'Nesh to eat an unrly servant.",
   combat_detail: "His groblin servants will flock to aid their king. They must all be eliminated.",
   image_url: "groblin_daddy.png",
-  speed: 7,
+  speed: 5,
   attack: 10,
   defense: 7,
-  max_hp: 60,
+  max_hp: 55,
   armor: .10,
   block: 0,
   options: {
     attack: [
       {
         type: "attack",
-        value: 8,
+        value: 6,
         hits: 1
       }
     ],
     defend: [{
       type: "defend",
-      value: 8
+      value: 6
     }],
     effect: [
       {
