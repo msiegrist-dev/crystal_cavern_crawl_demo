@@ -371,6 +371,26 @@ test("getTurnOrders returns all enemies when shuffling like speed entities", () 
   expect(isPass()).toBe(true)
 })
 
+test("getTurnOrder sloed buff will decrease speed by half", () => {
+  const state = {
+    character: {
+      speed: 4,
+      buffs: {slowed: 2}
+    },
+    level: {
+      enemies: [
+        {key: 6, speed: 4, hp: 2},
+        {key: 4, speed: 3, hp: 4}
+      ]
+    }
+  }
+  expect(getTurnOrder(state)).toEqual([
+    {key: 6, speed: 4},
+    {key: 4, speed: 3},
+    {key: "player", speed: 2},
+  ])
+})
+
 test("getEnemyAction returns a summon effect if daddy and 0 groblins", () => {
   const state = {
     level: {
@@ -691,4 +711,112 @@ test("attacking an enemy with thorns will return damage to the attack per hit if
   expect(processed.doer).toEqual({...default_entity, hp: 90})
   expect(processed.target).toEqual({...target, hp: 94})
   expect(processed.damage_dealt).toBe(6)
+})
+
+test("processAction with a defend type action with action effects", () => {
+  const test_card = {
+    type: "defend",
+    target_required: false,
+    value: 2,
+    effects: [
+      {name: "give_doer_buff", buff_name: "thorns", value: 1}
+    ]
+  }
+
+  const doer = {...default_entity, key: "player"}
+  const game_state = {
+    character: doer,
+    level: {
+      enemies: [
+        {...default_entity}
+      ]
+    }
+  }
+  const processed = processAction(
+    game_state, doer, ["player"], test_card, [], () => true, [], () => true,
+    {draw_pile: [], hand: [], graveyard: []}
+  )
+  expect(processed.game_state.character).toEqual(
+    {...default_entity, key: "player", block: 3, buffs: {thorns: 1}}
+  )
+  expect(processed.card_state.hand).toHaveLength(0)
+  expect(processed.card_state.draw_pile).toHaveLength(0)
+  expect(processed.card_state.graveyard).toHaveLength(0)
+})
+
+test("processAttack will trigger on hit effects when a hit lands ", () => {
+  const test_action = {
+    type: "attack",
+    value: 4,
+    hits: 1,
+    target_required: true,
+    effects: [
+      {
+        name: "give_doer_block",
+        value: 2,
+        trigger: "on_hit"
+      }
+    ],
+    accuracy: 100
+  }
+
+  const doer = {...default_entity, key: "player"}
+  const target = {...default_entity, key: 1}
+  const processed = processAttack(doer, target, test_action, [], () => true, false, false)
+
+  expect(processed.doer).toEqual({...doer, block: 2})
+  expect(processed.target).toEqual({...target, hp: 95})
+  expect(processed.total_damage).toBe(5)
+})
+
+test("processAttack - landing a hit on a target with flame guard applies burn to the attacker", () => {
+  const test_action = {
+    type: "attack",
+    value: 4,
+    hits: 2,
+    target_required: true,
+    accuracy: 100
+  }
+
+  const doer = {...default_entity, key: "player"}
+  const target = {...default_entity, key: 1, buffs: {flame_guard: 1}, block: 3}
+  const processed = processAttack(doer, target, test_action, [], () => true, false, false)
+  expect(processed.doer).toEqual({...doer, buffs: {burned: 2}})
+  expect(processed.target).toEqual({...target, hp: 94, block: 0})
+})
+
+test("processAttack will trigger on_attack effects should one hit of the attack land", () => {
+  const action = {
+    type: "attack",
+    accuracy: 100,
+    hits: 1,
+    value: 5,
+    effects: [
+      {name: "give_doer_block", value: 10, trigger: "on_attack"},
+      {name: "give_doer_buff", value: 2, buff_name: "thorns", trigger: "on_attack"}
+    ]
+  }
+  const doer = {...default_entity, key: "player", buffs: {}}
+  const target = {...default_entity, key: 1, block: 30}
+  const processed = processAttack(doer, target, action, [], () => true, false, false)
+  expect(processed.doer).toEqual({...doer, block: 10, buffs: {thorns: 2}})
+  expect(processed.target).toEqual({...target, block: 25})
+})
+
+test("processAttack - missing an attack will not trigger any effects", () => {
+  const action = {
+    type: "attack",
+    accuracy: -1,
+    hits: 1,
+    value: 5,
+    effects: [
+      {name: "give_doer_block", value: 10, trigger: "on_attack"},
+      {name: "give_doer_buff", value: 2, buff_name: "thorns", trigger: "on_attack"}
+    ]
+  }
+  const doer = {...default_entity, key: "player", buffs: {}}
+  const target = {...default_entity, key: 1, block: 30}
+  const processed = processAttack(doer, target, action, [], () => true, false, false)
+  expect(processed.doer).toEqual(doer)
+  expect(processed.target).toEqual(target)
 })
