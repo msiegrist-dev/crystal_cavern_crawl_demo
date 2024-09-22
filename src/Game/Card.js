@@ -32,10 +32,10 @@ const Card = ({
     const hand_is_even = Number.isInteger(middle)
     const middle_index = !hand_is_even ? rounded_middle - 1 : null
 
-    const top_base = -20
-    const tier_1 = 25
-    const tier_2 = 65
-    const tier_3 = 100
+    const top_base = -30
+    const tier_1 = 15
+    const tier_2 = 55
+    const tier_3 = 90
     const top_tier_map = {
       0: top_base,
       1: tier_1,
@@ -90,7 +90,7 @@ const Card = ({
       top: top + "px"
     }
     if(hover){
-      let top_copy = top - 55
+      let top_copy = top - 85
       hover_style.zIndex = "15"
       hover_style.top = top_copy + "px"
     }
@@ -123,6 +123,7 @@ const Card = ({
 
       if(name === "aoe") return `Attack hits all enemies`
       if(name === "block_as_bonus_attack") return `Block as bonus attack : ${value * 100}%`
+      if(name === "block_as_attack") return `Block as attack value : ${value * 100}%`
       if(name === "armor_piercing") return `Ignores enemy armor.`
 
       let trigger_text = ""
@@ -153,7 +154,7 @@ const Card = ({
     return <p className="mt-0">{getEffectText()}</p>
   }
 
-  let class_string = "m-4 p-4 game_card grid center_all_items"
+  let class_string = "m-4 p-2 game_card grid center_all_items"
   if(in_combat_hand){
     class_string += ` hov_pointer`
   }
