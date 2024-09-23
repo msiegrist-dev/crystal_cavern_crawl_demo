@@ -3,7 +3,7 @@ import {giveCharacterItem} from "../Game/lib/items"
 import {
   getAttackValue, getRemainingBlock, getBlockValue, processAction, getTurnOrder,
   getEnemyAction, drawCards, sendCardsToGraveYard, processEffect, initCombatantTurn,
-  reduceBlockCombatStart, processAttack, playCard
+  reduceBlockCombatStart, processAttack, playCard, addGemToCard, returnCardGemToCharacter
 } from "../Game/lib/combat"
 
 
@@ -957,22 +957,118 @@ test("playCard will add augment effects to the played card but the card sent to 
   expect(card_state.hand).toHaveLength(0)
   expect(card_state.draw_pile).toHaveLength(0)
   expect(card_state.graveyard[0]).toEqual({
-    type: "attack",
-    value: 4,
-    hits: 1,
-    target_required: true,
-    accuracy: 100,
-    gem_augments: {
-      red: {
-        number: 1,
-        effect: true,
-        effect_name: "increase_card_value",
-        value: 3,
-        effect_description: `Increase base damage by 3`
-      }
-    },
+    ...test_card,
     gem_inventory: {
       red: 0
     }
   })
+})
+
+test("addGemToCard finds card correctly by key and gives it a gem", () => {
+  const card = {
+    gem_inventory: {red: 0},
+    key: 2
+  }
+  const game_state = {
+    character: {
+      gems: {
+        red: 2,
+        blue: 3
+      }
+    }
+  }
+  const hand = [
+    card,
+    {...card, key: 3}
+  ]
+  const processed = addGemToCard("red", card, game_state, hand)
+  expect(processed.hand).toHaveLength(2)
+  expect(processed.game_state.character.gems.red).toBe(1)
+  expect(processed.game_state.character.gems.blue).toBe(3)
+  expect(processed.hand).toEqual([
+    {...card, gem_inventory: {red: 1}},
+    {...card, key: 3}
+  ])
+})
+
+test("addGemToCard returns state as passed if character does not have gems", () => {
+  const card = {
+    gem_inventory: {red: 0},
+    key: 2
+  }
+  const game_state = {
+    character: {
+      gems: {
+        red: 0,
+        blue: 0
+      }
+    }
+  }
+  const hand = [
+    card,
+    {...card, key: 3}
+  ]
+  const processed = addGemToCard("red", card, game_state, hand)
+  expect(processed.hand).toHaveLength(2)
+  expect(processed.game_state.character.gems.red).toBe(0)
+  expect(processed.game_state.character.gems.blue).toBe(0)
+  expect(processed.hand).toEqual(hand)
+  expect(processed.game_state).toEqual(game_state)
+})
+
+test("returnCardGemToCharacter decrements card gem inventory by 1 and gives that value to the character's gems", () => {
+  const game_state = {
+    character: {
+      ...default_entity,
+      gems: {
+        red: 1,
+        blue: 1
+      }
+    }
+  }
+  const card = {
+    gem_inventory: {
+      red: 1
+    },
+    key: 2
+  }
+  const hand = [
+    {...card},
+    {...card, key: 3}
+  ]
+  const processed = returnCardGemToCharacter("red", card, game_state, hand)
+  expect(processed.game_state.character.gems.red).toBe(2)
+  expect(processed.game_state.character.gems.blue).toBe(1)
+  expect(processed.hand).toHaveLength(2)
+  expect(processed.hand[0].gem_inventory.red).toBe(0)
+})
+
+test("returnCardGemToCharacter returns state as passed if card does not have any gems of type", () => {
+  const game_state = {
+    character: {
+      ...default_entity,
+      gems: {
+        red: 1,
+        blue: 1
+      }
+    }
+  }
+  const card = {
+    gem_inventory: {
+      red: 0,
+      blue: 0
+    },
+    key: 2
+  }
+  const hand = [
+    {...card},
+    {...card, key: 3}
+  ]
+  const processed = returnCardGemToCharacter("blue", card, game_state, hand)
+  expect(processed.game_state.character.gems.red).toBe(1)
+  expect(processed.game_state.character.gems.blue).toBe(1)
+  expect(processed.hand).toHaveLength(2)
+  expect(processed.hand[0].gem_inventory.red).toBe(0)
+  expect(processed.game_state).toEqual(game_state)
+  expect(processed.hand).toEqual(hand)
 })

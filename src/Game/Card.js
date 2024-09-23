@@ -90,7 +90,7 @@ const Card = ({
       top: top + "px"
     }
     if(hover){
-      let top_copy = top - 85
+      let top_copy = top - 100
       hover_style.zIndex = "15"
       hover_style.top = top_copy + "px"
     }
@@ -100,7 +100,7 @@ const Card = ({
   const style = {
     width,
     backgroundColor,
-    height: "175px"
+    height: "225px"
   }
 
 
@@ -212,7 +212,9 @@ const Card = ({
                 if(!playable){
                   return
                 }
-                addGemToCard(gem_name, card, game_state, hand, setGameState, setHand)
+                const processed = addGemToCard(gem_name, card, game_state, hand)
+                setHand(processed.hand)
+                setGameState(processed.game_state)
               }}
             >
               <img alt={alt} key={gem_name} src={img} style={{height: "25px", width: "25px"}} className="block" />
@@ -236,7 +238,11 @@ const Card = ({
             for(let i = 0; i < gem_number; i++){
               list.push(
                 <img alt={alt} key={i} src={img} style={{height: "25px", width: "25px"}}
-                  onClick={(e) => returnCardGemToCharacter(gem_name, card, game_state, hand, setGameState, setHand)}
+                  onClick={(e) => {
+                    const processed = returnCardGemToCharacter(gem_name, card, game_state, hand)
+                    setHand(processed.hand)
+                    setGameState(processed.game_state)
+                  }}
                 />
               )
             }

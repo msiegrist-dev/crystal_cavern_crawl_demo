@@ -522,9 +522,9 @@ const playCard = (card, game_state, target_keys, hand, graveyard, combat_log, se
   }
 }
 
-const addGemToCard = (gem, card, game_state, hand, setGameState, setHand) => {
+const addGemToCard = (gem, card, game_state, hand) => {
   if(!game_state.character.gems[gem] || game_state.character.gems[gem] < 1){
-    return
+    return {game_state, hand}
   }
   let game_state_copy = copyState(game_state)
   let hand_copy = copyState(hand)
@@ -537,11 +537,13 @@ const addGemToCard = (gem, card, game_state, hand, setGameState, setHand) => {
   }
   hand_copy[card_index]["gem_inventory"][gem] += 1
   game_state_copy["character"]["gems"][gem] -= 1
-  setHand(hand_copy)
-  setGameState(game_state_copy)
+  return {
+    game_state: game_state_copy,
+    hand: hand_copy
+  }
 }
 
-const returnCardGemToCharacter = (gem, card, game_state, hand, setGameState, setHand) => {
+const returnCardGemToCharacter = (gem, card, game_state, hand) => {
   let game_state_copy = copyState(game_state)
   let hand_copy = copyState(hand)
   const card_index = getIndexOfArrayItemByKey(hand, card.key)
@@ -551,10 +553,15 @@ const returnCardGemToCharacter = (gem, card, game_state, hand, setGameState, set
   if(!hand_copy[card_index]["gem_inventory"][gem]){
     hand_copy[card_index]["gem_inventory"][gem] = 0
   }
+  if(hand_copy[card_index]["gem_inventory"][gem] < 1){
+    return {game_state: game_state, hand: hand_copy}
+  }
   hand_copy[card_index]["gem_inventory"][gem] -= 1
   game_state_copy["character"]["gems"][gem] += 1
-  setHand(hand_copy)
-  setGameState(game_state_copy)
+  return {
+    game_state: game_state_copy,
+    hand: hand_copy
+  }
 }
 
 const reduceBlockCombatStart = block => {
