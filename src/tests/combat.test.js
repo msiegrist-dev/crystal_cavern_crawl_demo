@@ -1,14 +1,13 @@
 import items from "../data/items"
-
+import {giveCharacterItem} from "../Game/lib/items"
 import {
   getAttackValue, getRemainingBlock, getBlockValue, processAction, getTurnOrder,
   getEnemyAction, drawCards, sendCardsToGraveYard, processEffect, initCombatantTurn,
-  reduceBlockCombatStart, processAttack
+  reduceBlockCombatStart, processAttack, playCard
 } from "../Game/lib/combat"
-import {giveCharacterItem} from "../Game/lib/items"
+
 
 import groblin_foot_state from "./game_states/groblin_foot"
-
 import groblin_daddy from "../data/bosses/groblin_daddy"
 
 const default_entity = {
@@ -628,7 +627,8 @@ test("initial phase of combatant turn will remove stat effects, decrease buffs b
     hp: 10,
     flat_stat_increases: {attack: 2},
     buffs: {
-      flame_guard: 12
+      flame_guard: 12,
+      thorns: 0
     },
     block: 8
   }
@@ -636,7 +636,8 @@ test("initial phase of combatant turn will remove stat effects, decrease buffs b
     ...combatant,
     flat_stat_increases:{},
     buffs: {
-      flame_guard: 11
+      flame_guard: 11,
+      thorns: 0
     },
     block: 4
   })
@@ -819,4 +820,159 @@ test("processAttack - missing an attack will not trigger any effects", () => {
   const processed = processAttack(doer, target, action, [], () => true, false, false)
   expect(processed.doer).toEqual(doer)
   expect(processed.target).toEqual(target)
+})
+
+test("playCard processes card action accordingly and sends card to the graveyard, basic attack card", () => {
+  const test_card = {
+    type: "attack",
+    value: 4,
+    hits: 1,
+    target_required: true,
+    accuracy: 100
+  }
+  const state = {
+    character: {...default_entity, key: "player"},
+    level: {
+      enemies: [
+        {...default_entity, key: 1}
+      ]
+    }
+  }
+
+  const processed = playCard(
+    test_card, state, [1], [test_card], [], [], () => true, [], () => true, () => true, [], () => true
+  )
+  const {game_state, card_state} = processed
+  expect(card_state.hand).toHaveLength(0)
+  expect(card_state.graveyard).toHaveLength(1)
+  expect(card_state.draw_pile).toHaveLength(0)
+  expect(game_state.level.enemies[0].hp).toBe(95)
+})
+
+test("playCard cannot play a card which requires gems without any gem inventory", () => {
+  const test_card = {
+    type: "attack",
+    value: 4,
+    hits: 1,
+    target_required: true,
+    accuracy: 100,
+    gem_augments: {
+      red: {
+        number: 1,
+        required: true,
+        effect: false
+      }
+    }
+  }
+  const state = {
+    character: {...default_entity, key: "player"},
+    level: {
+      enemies: [
+        {...default_entity, key: 1}
+      ]
+    }
+  }
+
+  const processed = playCard(
+    test_card, state, [1], [test_card], [], [], () => true, [], () => true, () => true, [], () => true
+  )
+  const {game_state, card_state} = processed
+  expect(game_state).toBeUndefined()
+  expect(card_state).toBeUndefined()
+  expect(processed.error).toBeDefined()
+  expect(processed.error).toBe("Card requires a gem to play.")
+})
+
+test("playCard cannot play a card which requires gems without meeting the required amount", () => {
+  const test_card = {
+    type: "attack",
+    value: 4,
+    hits: 1,
+    target_required: true,
+    accuracy: 100,
+    gem_augments: {
+      red: {
+        number: 3,
+        required: true,
+        effect: false
+      }
+    },
+    gem_inventory: {
+      red: 2
+    }
+  }
+  const state = {
+    character: {...default_entity, key: "player"},
+    level: {
+      enemies: [
+        {...default_entity, key: 1}
+      ]
+    }
+  }
+
+  const processed = playCard(
+    test_card, state, [1], [test_card], [], [], () => true, [], () => true, () => true, [], () => true
+  )
+  const {game_state, card_state} = processed
+  expect(game_state).toBeUndefined()
+  expect(card_state).toBeUndefined()
+  expect(processed.error).toBeDefined()
+  expect(processed.error).toBe("Card requires a gem to play.")
+})
+
+test("playCard will add augment effects to the played card but the card sent to the graveyard is the original", () => {
+  const test_card = {
+    type: "attack",
+    value: 4,
+    hits: 1,
+    target_required: true,
+    accuracy: 100,
+    gem_augments: {
+      red: {
+        number: 1,
+        effect: true,
+        effect_name: "increase_card_value",
+        value: 3,
+        effect_description: `Increase base damage by 3`
+      }
+    },
+    gem_inventory: {
+      red: 1
+    }
+  }
+  const state = {
+    character: {...default_entity, key: "player"},
+    level: {
+      enemies: [
+        {...default_entity, key: 1}
+      ]
+    }
+  }
+
+  const processed = playCard(
+    test_card, state, [1], [test_card], [], [], () => true, [], () => true, () => true, [], () => true
+  )
+  const {game_state, card_state} = processed
+  expect(game_state.level.enemies[0].hp).toBe(93)
+  expect(card_state.hand).toHaveLength(0)
+  expect(card_state.draw_pile).toHaveLength(0)
+  expect(card_state.graveyard[0]).toEqual({
+    type: "attack",
+    value: 4,
+    hits: 1,
+    target_required: true,
+    accuracy: 100,
+    gem_augments: {
+      red: {
+        number: 1,
+        effect: true,
+        effect_name: "increase_card_value",
+        value: 3,
+        effect_description: `Increase base damage by 3`
+      }
+    },
+    gem_inventory: {
+      red: 0
+    }
+  })
 })
