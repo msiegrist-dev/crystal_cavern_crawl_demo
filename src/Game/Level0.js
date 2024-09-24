@@ -35,11 +35,8 @@ const Level0 = ({game_state, setGameState, setBackground}) => {
   const randomItem = () => {
     const game_state_copy = copyState(game_state)
     const random_item = getRandomItems(1)[0]
-    setGameState(
-      goNextLevel(
-        giveCharacterItem(game_state_copy, random_item)
-      )
-    )
+    game_state_copy.character = giveCharacterItem(game_state_copy.character, random_item)
+    setGameState(goNextLevel(game_state_copy))
   }
 
   const randomCard = () => {

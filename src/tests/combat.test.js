@@ -24,24 +24,28 @@ const default_entity = {
   armor: .1
 }
 
+const attack_action = {
+  type: "attack",
+  value: 1
+}
+
+const defend_action = {
+  type: "defend",
+  value: 1
+}
+
 const getItem = name => items.find((i) => i.name === name)
 
 test("attack stat value is added to attack action value", () => {
-  expect(
-    getAttackValue(default_entity, {type: "attack", value: 1})
-  ).toBe(2)
+  expect(getAttackValue(default_entity, attack_action)).toBe(2)
 })
 
 test("base attack stat values can be increased by items in the inventory", () => {
 
-  const state = {
-    character: {...default_entity}
-  }
-  const given_dagger = giveCharacterItem(state, getItem("Rusty Dagger"))
+  const character = {...default_entity}
+  const given_dagger = giveCharacterItem(character, getItem("Rusty Dagger"))
 
-  expect(
-    getAttackValue(given_dagger.character, {type: "attack", value: 1})
-  ).toBe(3)
+  expect(getAttackValue(given_dagger, attack_action)).toBe(3)
 })
 
 test("fervor buff action value and stat increases are immediately rounded - no impact on value of 1", () => {
@@ -52,7 +56,7 @@ test("fervor buff action value and stat increases are immediately rounded - no i
         buffs: {
           fervor: 1
         }
-      }, {type: "attack", value: 1}
+      }, attack_action
     )
   ).toBe(2)
 })
@@ -65,23 +69,24 @@ test("fervor buff increases attack value by 25%", () => {
         buffs: {
           fervor: 1
         }
-      }, {type: "attack", value: 2}
+      }, {...attack_action, value: 2}
     )
   ).toBe(4)
 })
 
-test("fervor buff increases stat value by 25%", () => {
+test("certain actions will not process attack modifiers whatsoever and will only use base value", () => {
   expect(
     getAttackValue(
       {
         ...default_entity,
-        attack: 2,
+        attack: 4,
         buffs: {
           fervor: 1
         }
-      }, {type: "attack", value: 1}
+      },
+      {...attack_action, do_not_process_attack_modifiers: true}
     )
-  ).toBe(4)
+  ).toBe(1)
 })
 
 test("block_as_bonus_attack effect adds value to action value", () => {
@@ -158,11 +163,7 @@ test("flat_stat_increases from buffs and effects are added to attack stat", () =
         flat_stat_increases: {
           attack: 1
         }
-      },
-      {
-        type: "attack",
-        value: 1,
-      }
+      }, attack_action
     )
   ).toBe(3)
 })
@@ -178,11 +179,7 @@ test("flat_stat_increases from buffs and effects are added to attack stat and in
         flat_stat_increases: {
           attack: 1
         }
-      },
-      {
-        type: "attack",
-        value: 1,
-      }
+      }, attack_action
     )
   ).toBe(4)
 })
@@ -257,25 +254,30 @@ test("when armor is consumed, a negative value is returned", () => {
 })
 
 test("defense stat is added to block action value", () => {
-  expect(
-    getBlockValue(
-      default_entity,
-      {name: "defend", value: 1},
-      true
-    )
-  ).toBe(2)
+  expect(getBlockValue({...default_entity}, {...defend_action}, true)).toBe(2)
 })
 
-test("items add to base defense stat which is added to block action value", () => {
-  const gs = {character: default_entity}
-  const given = giveCharacterItem(gs, getItem("Poor Man's Shield"))
-  expect(
-    getBlockValue(
-      given.character,
-      {name: "defend", value: 1},
-      true
-    )
-  ).toBe(3)
+test("items add to character's base defense stat which is added to block action value", () => {
+  const character = {...default_entity}
+  const given = giveCharacterItem(character, getItem("Poor Man's Shield"))
+  expect(getBlockValue(given, {...defend_action}, true)).toBe(3)
+})
+
+test("state_increases add to base defense stat which is added to block action value", () => {
+  const character = {...default_entity}
+  const given = giveCharacterItem(character, getItem("Poor Man's Shield"))
+  given.flat_stat_increases = {
+    defense: 2
+  }
+  expect(getBlockValue(given, {...defend_action}, true)).toBe(5)
+})
+
+test("fortify increaess final block value by 33% rounded", () => {
+  const character = {...default_entity}
+  const given = giveCharacterItem(character, getItem("Poor Man's Shield"))
+  given.flat_stat_increases = {defense: 2}
+  given.buffs = {fortify: 1}
+  expect(getBlockValue(given, {...defend_action}, true)).toBe(7)
 })
 
 test("defeating an enemy while you have Lucky Groblin's Foot will draw a card if you have one - empty hand", () => {
@@ -605,6 +607,29 @@ test("effect type actions will trigger all their effects", () => {
         slowed: 2
       }
     },
+    combat_log: []
+  })
+})
+
+test("effect type actions can miss based on accuracy value like attacks", () => {
+  const doer = {...default_entity}
+  const target = {...default_entity}
+
+  const action = {
+    type: "effect",
+    accuracy: 0,
+    effects: [
+      {
+        name: "give_doer_block",
+        value: 2
+      }
+    ]
+  }
+
+  expect(processEffect({...default_entity}, {...default_entity}, action, [], () => true))
+  .toEqual({
+    doer: {...default_entity},
+    target: {...default_entity},
     combat_log: []
   })
 })

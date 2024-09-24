@@ -55,8 +55,7 @@ const Game = ({setPage, setGameState, game_state, setBackground}) => {
     const starting_items = game_state_copy.character.inventory
     game_state_copy.character.inventory = []
     starting_items.forEach((it) => {
-      const given = giveCharacterItem(game_state_copy, it)
-      game_state_copy.character = given.character
+      game_state_copy.character = giveCharacterItem(game_state_copy.character, it)
     })
     setGameState(game_state_copy)
   }

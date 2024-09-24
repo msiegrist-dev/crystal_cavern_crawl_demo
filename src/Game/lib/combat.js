@@ -226,9 +226,8 @@ const getRemainingBlock = (target, damage, pierce_armor) => {
 }
 
 const actionMissed = action => {
-  if(!action.accuracy){
-    return false
-  }
+  if(action.accuracy === 0) return true
+  if(!action.accuracy) return false
   return Number(action.accuracy) < getRandomNumber100()
 }
 
@@ -311,7 +310,7 @@ const processAttack = (doer, target, action, combat_log, setCombatLog, do_not_re
 const processEffect = (doer, target, action, combat_log, setCombatLog) => {
   let combat_log_copy = copyState(combat_log)
   if(actionMissed(action)){
-    return {doer, target}
+    return {doer, target, combat_log}
   }
   let doer_copy = copyState(doer)
   let target_copy = copyState(target)
@@ -331,9 +330,9 @@ const getBlockValue = (doer, action, can_be_increased) => {
     return block_value
   }
   let defense_stat = doer.defense
-  const item_increases = getCombatStatIncreases(doer, "defense")
-  if(item_increases){
-    defense_stat += item_increases
+  const stat_increases = getCombatStatIncreases(doer, "defense")
+  if(stat_increases){
+    defense_stat += stat_increases
   }
   block_value += defense_stat
   if(doer.buffs && doer.buffs["fortify"] > 0){

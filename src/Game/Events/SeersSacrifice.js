@@ -50,7 +50,7 @@ const SeersSacrifice = ({REQUIRED_EVENT_PROPS}) => {
     for(let card of selected_cards){
       copy = removeCardFromDeck(copy, card)
     }
-    copy = giveCharacterItem(copy, items.find((it) => it.name === "Seer's Crystal Ball"))
+    copy.character = giveCharacterItem(copy.character, items.find((it) => it.name === "Seer's Crystal Ball"))
     setGameState(copy)
     setSatisfied(true)
     setMessage("May this gift guide your path " + game_state.character.name)

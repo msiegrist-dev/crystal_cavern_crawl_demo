@@ -1,11 +1,14 @@
+import {copyState} from "../lib/helper_lib"
 import {giveCharacterItem, getRandomItems} from "../lib/items"
 const ItemStash = ({REQUIRED_EVENT_PROPS}) => {
 
-  const {satisfied, setSatisfied, game_state} = REQUIRED_EVENT_PROPS
+  const {satisfied, setSatisfied, game_state, setGameState} = REQUIRED_EVENT_PROPS
 
   const event = () => {
     setSatisfied(true)
-    giveCharacterItem(game_state, getRandomItems(1)[0])
+    let game = copyState(game_state)
+    game.character = giveCharacterItem(game.character, getRandomItems(1)[0])
+    setGameState(game)
   }
 
   return <div>

@@ -82,8 +82,9 @@ const Victory = ({
               setGameState(new_state)
             }
             if(entity === "item"){
-              const new_state = giveCharacterItem(game_state, new_entity)
-              setGameState(new_state)
+              let copy = copyState(game_state)
+              copy.character = giveCharacterItem(copy.character, new_entity)
+              setGameState(copy)
             }
             if(entity === "gem"){
               const new_state = giveCharacterGems(game_state, new_entity.name, new_entity.value)
@@ -162,7 +163,9 @@ const Victory = ({
               return addCardToDeck(game_copy, trade_for_entity)
             }
             if(trade_for === "item"){
-              return giveCharacterItem(game_copy, trade_for_entity)
+              let copy = copyState(game_state)
+              copy.character = giveCharacterItem(game_state.character, trade_for_entity)
+              return setGameState(copy,)
             }
             if(trade_for === "gem"){
               game_copy.character.gems[trade_for_entity.name] += trade_for_entity.value

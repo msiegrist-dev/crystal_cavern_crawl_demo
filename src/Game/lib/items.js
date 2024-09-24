@@ -39,11 +39,11 @@ const processItemEffect = (character, item) => {
   return character_copy
 }
 
-const giveCharacterItem = (game_state, item) => {
-  const state_copy = copyState(game_state)
-  state_copy.character = processItemEffect(game_state.character, item)
-  state_copy.character.inventory.push(item)
-  return state_copy
+const giveCharacterItem = (character, item) => {
+  let character_copy = copyState(character)
+  character_copy = processItemEffect(character_copy, item)
+  character_copy.inventory.push(item)
+  return character_copy
 }
 
 const hasItem = (character, item_name) => character.inventory.find((it) => it.name === item_name)
