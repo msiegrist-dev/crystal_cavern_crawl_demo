@@ -3,12 +3,14 @@ import {giveCharacterItem} from "../Game/lib/items"
 import {
   getAttackValue, getRemainingBlock, getBlockValue, processAction, getTurnOrder,
   getEnemyAction, drawCards, sendCardsToGraveYard, processEffect, initCombatantTurn,
-  reduceBlockCombatStart, processAttack, playCard, addGemToCard, returnCardGemToCharacter
+  reduceBlockCombatStart, processAttack, playCard, addGemToCard, returnCardGemToCharacter,
+  combatantHasCondition, mapEnemiesForCombat
 } from "../Game/lib/combat"
 
 
 import groblin_foot_state from "./game_states/groblin_foot"
 import groblin_daddy from "../data/bosses/groblin_daddy"
+import groblin from "../data/mobs/groblin"
 
 const default_entity = {
   attack: 1,
@@ -1071,4 +1073,139 @@ test("returnCardGemToCharacter returns state as passed if card does not have any
   expect(processed.hand[0].gem_inventory.red).toBe(0)
   expect(processed.game_state).toEqual(game_state)
   expect(processed.hand).toEqual(hand)
+})
+
+test("combatantHasCondition detects whether the entity has a buff or state increase or not", () => {
+  const buff_entity = {
+    ...default_entity,
+    buffs: {
+      thorns: 2
+    }
+  }
+  const stats_entity = {
+    ...default_entity,
+    flat_stat_increases: {
+      attack: 2,
+      speed: 1,
+      defense: 0
+    }
+  }
+
+  expect(combatantHasCondition("buff", buff_entity, "thorns")).toBe(true)
+  expect(combatantHasCondition("buff", buff_entity, "burned")).toBe(false)
+  expect(combatantHasCondition("stat", buff_entity, "speed")).toBe(false)
+
+  expect(combatantHasCondition("buff", stats_entity, "thorns")).toBe(false)
+  expect(combatantHasCondition("stat", stats_entity, "attack")).toBe(true)
+  expect(combatantHasCondition("stat", stats_entity, "defense")).toBe(false)
+})
+
+const testKeys = keys => {
+  for(let i = 0; i < keys.length; i++){
+    expect(keys.indexOf(keys[i])).toBe(i)
+  }
+}
+
+const testUniquePositions = positions => {
+  for(let i = 0; i < positions.length; i++){
+    expect(positions[i]).toBeGreaterThan(-1)
+    expect(positions[i]).toBeLessThan(4)
+    expect(positions.indexOf(positions[i])).toBe(i)
+  }
+}
+
+test("mapEnemiesForCombat assigns enemies a unique key and a position 0-3", () => {
+  const enemies = [groblin, groblin, groblin]
+  const game_state = {
+    level: {
+      enemies: []
+    }
+  }
+
+  const mapped = mapEnemiesForCombat(enemies, game_state)
+  const new_enemies = game_state.level.enemies.concat(mapped)
+  const keys = new_enemies.map((e) => e.key)
+  const positions = new_enemies.map((e) => e.position)
+  expect(new_enemies).toHaveLength(3)
+  testKeys(keys)
+  testUniquePositions(positions)
+
+})
+
+test("mapEnemiesForCombat assigns enemies a unique key and a position 0-3 with existing enemies", () => {
+  const enemies = [groblin, groblin]
+  const game_state = {
+    level: {
+      enemies: [
+        {
+          ...groblin,
+          position: 0,
+          key: 0,
+          hp: 10
+        },
+        {
+          ...groblin,
+          position: 1,
+          key: 1,
+          hp: 10
+        }
+      ]
+    }
+  }
+
+  const mapped = mapEnemiesForCombat(enemies, game_state)
+  const new_enemies = game_state.level.enemies.concat(mapped)
+  const keys = new_enemies.map((e) => e.key)
+  const positions = new_enemies.map((e) => e.position)
+  expect(new_enemies).toHaveLength(4)
+  testKeys(keys)
+  testUniquePositions(positions)
+
+})
+
+test("mapEnemies for combat assigns enemies a unique key and living enemies to positions 0-3, works with dead and alive enemies in game state", () => {
+  const enemies = [groblin, groblin]
+  const game_state = {
+    level: {
+      enemies: [
+        {
+          ...groblin,
+          position: 0,
+          key: 0,
+          hp: 10
+        },
+        {
+          ...groblin,
+          position: 1,
+          key: 1,
+          hp: 10
+        },
+        {
+          ...groblin,
+          position: 2,
+          key: 2,
+          hp: 0
+        },
+        {
+          ...groblin,
+          position: 3,
+          key: 3,
+          hp: 0
+        }
+      ]
+    }
+  }
+
+  const mapped = mapEnemiesForCombat(enemies, game_state)
+  const new_enemies = game_state.level.enemies.concat(mapped)
+  const keys = new_enemies.map((e) => e.key)
+  expect(new_enemies).toHaveLength(6)
+  testKeys(keys)
+  const alive_positions = new_enemies.filter((e) => e.hp > 0).map((e) => e.position)
+  const dead_positions = new_enemies.filter((e) => e.hp < 1).map((e) => e.position)
+  expect(alive_positions).toHaveLength(4)
+  expect(dead_positions).toHaveLength(2)
+  testUniquePositions(alive_positions)
+  testUniquePositions(dead_positions)
+  expect(new_enemies.filter((e) => e.hp === 10)).toHaveLength(4)
 })

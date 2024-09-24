@@ -30,9 +30,6 @@ const combatantHasCondition = (type, combatant, name) => {
   if(!combatant[field_name][name]){
     return false
   }
-  if(combatant[field_name][name] <= 0){
-    return false
-  }
   return true
 }
 
@@ -69,10 +66,7 @@ const processActionEffect = (effect, doer, target) => {
 }
 
 const getActionEffectsWithTrigger = (action, trigger) => {
-  if(!action.effects){
-    return []
-  }
-  if(action.effects.length === 0){
+  if(!action.effects || action.effects.length === 0){
     return []
   }
   return action.effects.filter((fect) => fect.trigger === trigger)
@@ -90,7 +84,7 @@ const mapEnemiesForCombat = (enemies, game_state) => {
   const new_enemies = []
 
   let key = 0
-  if(current_enemies){
+  if(current_enemies && current_enemies.length > 0){
     const keys = current_enemies.map((e) => e.key).sort()
     key = keys[keys.length - 1] + 1
   }
@@ -102,11 +96,11 @@ const mapEnemiesForCombat = (enemies, game_state) => {
       if(enemy.name === "Groblin Daddy") break
       const applied = new_enemies.find((e) => e.position === i)
       if(applied) continue
-      if(!current_enemies){
+      if(!current_enemies || current_enemies.length < 1){
         position = i
         break
       }
-      if(current_enemies){
+      if(current_enemies && current_enemies.length > 0){
         const alive_at_pos = current_enemies.find((e) => e.position === i && e.hp > 0)
         if(alive_at_pos) continue
         position = i
