@@ -34,6 +34,12 @@ const defend_action = {
   value: 1
 }
 
+const empty_card_state = {
+  hand: [],
+  graveyard: [],
+  draw_pile: []
+}
+
 const getItem = name => items.find((i) => i.name === name)
 
 test("attack stat value is added to attack action value", () => {
@@ -650,7 +656,7 @@ test.each([
 
 test("initial phase of combatant turn will remove stat effects, decrease buffs by 1 and reduce block", () => {
   const combatant = {
-    name: "grublin",
+    name: "groblin",
     hp: 10,
     flat_stat_increases: {attack: 2},
     buffs: {
@@ -672,7 +678,7 @@ test("initial phase of combatant turn will remove stat effects, decrease buffs b
 
 test("initial phase of combatant on turn 1 will trigger starting_buffs item effects", () => {
   const combatant = {
-    name: "grublin",
+    name: "groblin",
     hp: 10,
     inventory: [
       {
@@ -762,7 +768,7 @@ test("processAction with a defend type action with action effects", () => {
   }
   const processed = processAction(
     game_state, doer, ["player"], test_card, [], () => true, [], () => true,
-    {draw_pile: [], hand: [], graveyard: []}
+    {...empty_card_state}
   )
   expect(processed.game_state.character).toEqual(
     {...default_entity, key: "player", block: 3, buffs: {thorns: 1}}
@@ -1233,4 +1239,56 @@ test("mapEnemies for combat assigns enemies a unique key and living enemies to p
   testUniquePositions(alive_positions)
   testUniquePositions(dead_positions)
   expect(new_enemies.filter((e) => e.hp === 10)).toHaveLength(4)
+})
+
+test("processAction - summon effect action adds its value as new enemies to level ", () => {
+  const card = {...empty_card_state}
+  const summon_effect = {
+    type: "effect",
+    effect_name: "summon",
+    value: [{...groblin}, {...groblin}]
+  }
+  const state = {
+    character: {...default_entity, key: "player"},
+    level: {
+      enemies: [
+        {...groblin_daddy, key: 0, position: 3}
+      ]
+    }
+  }
+  const processed = processAction(
+    state, [state.level.enemies[0]], [3], summon_effect,
+    [], () => true, [], () => true, card
+  )
+  const {game_state, card_state} = processed
+  expect(card_state).toEqual(card)
+  expect(game_state.character).toEqual(state.character)
+  const enemies = game_state.level.enemies
+  expect(enemies).toHaveLength(3)
+  testKeys(enemies.map((e) => e.key))
+  testUniquePositions(enemies.map((e) => e.position))
+})
+
+test("processAction - enemies can block", () => {
+  const state = {
+    character: {...default_entity, key: "player"},
+    level: {
+      enemies: [
+        {...groblin, key: 0, position: 0},
+        {...groblin, key: 1, position: 1},
+        {...groblin, key: 2, position: 2}
+      ]
+    }
+  }
+
+  const processed = processAction(
+    state, {...groblin, key: 0}, [0], {...defend_action},
+    [], () => true, [], () => true, {...empty_card_state}
+  )
+
+  const enemies = processed.game_state.level.enemies
+  expect(enemies).toHaveLength(3)
+  expect(enemies.filter((e) => e.block > 0)).toHaveLength(1)
+  const blocked = enemies.find((e) => e.key === 0)
+  expect(blocked.block).toBe(2)
 })
