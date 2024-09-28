@@ -100,12 +100,10 @@ const mapEnemiesForCombat = (enemies, game_state) => {
         position = i
         break
       }
-      if(current_enemies && current_enemies.length > 0){
-        const alive_at_pos = current_enemies.find((e) => e.position === i && e.hp > 0)
-        if(alive_at_pos) continue
-        position = i
-        break
-      }
+      const alive_at_pos = current_enemies.find((e) => e.position === i && e.hp > 0)
+      if(alive_at_pos) continue
+      position = i
+      break
     }
     new_enemies.push({
       ...enemy,
@@ -162,10 +160,9 @@ const getEnemyAction = (game_state, enemy) => {
 
   if(enemy.name === "Groblin Daddy"){
     const groblins = game_state.level.enemies.filter((en) => en.name === "Groblin" && en.hp > 0)
-    if(groblins.length < 2){
-      return enemy.options.effect.find((fect) => fect.effect_name === "summon")
-    }
+    if(groblins.length < 2) return enemy.options.effect.find((fect) => fect.effect_name === "summon")
   }
+
   const base_odds = [
     {name: "attack", value: 55}, {name: "defend", value: 45}
   ]
@@ -390,19 +387,20 @@ const processAction = (game_state, doer, target_keys, action, combat_log, setCom
       combat_log_copy = processed.combat_log
       game_state_copy.character = player_action ? processed.doer : processed.target
 
+      const combat_log_message = action.type === "attack" ?
+        `${processed.doer.name} attacks ${processed.target.name} for ${processed.total_damage}.` :
+        `${processed.doer.name} used ${action.name}`
+
       if(action.type === "attack"){
         const combat_stats_key = processed.doer.key === "player" ? "damage_dealt" : "damage_taken"
         combat_stats_copy[combat_stats_key] += processed.damage_dealt
+      }
+      combat_log_copy = combat_log_copy.concat([combat_log_message])
 
-        combat_log_copy = combat_log_copy.concat(`${processed.doer.name} attacks ${processed.target.name} for ${processed.total_damage}.`)
-      }
-      if(action.type === "effect"){
-        combat_log_copy = combat_log_copy.concat(`${processed.doer.name} used ${action.name}`)
-      }
       if(target_enemy_index >= 0){
         game_state_copy.level.enemies[target_enemy_index] = processed.target
         if(processed.target.hp <= 0){
-          combat_log_copy = combat_log_copy.concat(`${processed.doer.name} has defeated ${processed.target.name}`)
+          combat_log_copy = combat_log_copy.concat([`${processed.doer.name} has defeated ${processed.target.name}`])
           combat_stats_copy.enemies_killed += 1
           if(hasItem(game_state_copy.character, "Lucky Groblin's Foot")){
             const processed_cards = drawCards(card_state.draw_pile, card_state.graveyard, card_state.hand, 1)
@@ -480,13 +478,9 @@ const playCard = (card, game_state, target_keys, hand, graveyard, combat_log, se
   let card_copy = copyState(card)
   const requires_gems = doesCardRequireGem(card_copy)
   const using_gems = isCardUsingGems(card_copy)
-  if(requires_gems && !using_gems){
-    return {error: "Card requires a gem to play."}
-  }
   if(requires_gems){
-    if(!doesCardHaveRequiredGems(card_copy)){
-      return {error: "Card requires a gem to play."}
-    }
+    if(!using_gems) return {error: "Card requires a gem to play."}
+    if(!doesCardHaveRequiredGems(card_copy)) return {error: "Card requires a gem to play."}
   }
   let augmented_copy = card_copy
   if(using_gems){
@@ -523,7 +517,7 @@ const addGemToCard = (gem, card, game_state, hand) => {
   let hand_copy = copyState(hand)
   const card_index = getIndexOfArrayItemByKey(hand, card.key)
   if(!hand_copy[card_index]["gem_inventory"]){
-    hand_copy[card_index]["gem_inventory"] = {}
+    hand_copy[card_index]["gem_inventory"] = {red: 0, blue: 0}
   }
   if(!hand_copy[card_index]["gem_inventory"][gem]){
     hand_copy[card_index]["gem_inventory"][gem] = 0
@@ -541,7 +535,7 @@ const returnCardGemToCharacter = (gem, card, game_state, hand) => {
   let hand_copy = copyState(hand)
   const card_index = getIndexOfArrayItemByKey(hand, card.key)
   if(!hand_copy[card_index]["gem_inventory"]){
-    hand_copy[card_index]["gem_inventory"] = {}
+    hand_copy[card_index]["gem_inventory"] = {red: 0, blue: 0}
   }
   if(!hand_copy[card_index]["gem_inventory"][gem]){
     hand_copy[card_index]["gem_inventory"][gem] = 0
@@ -576,7 +570,7 @@ const initCombatantTurn = (entity, turn_number) => {
   combatant.block = reduceBlockCombatStart(combatant.block)
   if(turn_number === 1 && combatant.inventory){
     for(let item of combatant.inventory){
-      if(Object.keys(item).includes("starting_buffs")){
+      if(item.starting_buffs && item.starting_buffs.length > 0){
         for(let buff of item.starting_buffs){
           combatant = giveCombatantCondition("buff", combatant, buff.name, buff.value)
         }

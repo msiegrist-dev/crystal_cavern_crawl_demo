@@ -47,10 +47,7 @@ test("attack stat value is added to attack action value", () => {
 })
 
 test("base attack stat values can be increased by items in the inventory", () => {
-
-  const character = {...default_entity}
-  const given_dagger = giveCharacterItem(character, getItem("Rusty Dagger"))
-
+  const given_dagger = giveCharacterItem({...default_entity}, getItem("Rusty Dagger"))
   expect(getAttackValue(given_dagger, attack_action)).toBe(3)
 })
 
@@ -103,8 +100,7 @@ test("block_as_bonus_attack effect adds value to action value", () => {
         block: 10
       },
       {
-        type: "attack",
-        value: 1,
+        ...attack_action,
         effects: [
           {
             name: "block_as_bonus_attack",
@@ -124,8 +120,7 @@ test("block_as_attack effect takes a percent of block to use as action value", (
         block: 10
       },
       {
-        type: "attack",
-        value: 1,
+        ...attack_action,
         effects: [
           {
             name: "block_as_attack",
@@ -148,8 +143,7 @@ test("block_as_attack effect takes a percent of block to use as action value and
         }
       },
       {
-        type: "attack",
-        value: 1,
+        ...attack_action,
         effects: [
           {
             name: "block_as_attack",
@@ -264,14 +258,12 @@ test("defense stat is added to block action value", () => {
 })
 
 test("items add to character's base defense stat which is added to block action value", () => {
-  const character = {...default_entity}
-  const given = giveCharacterItem(character, getItem("Poor Man's Shield"))
+  const given = giveCharacterItem({...default_entity}, getItem("Poor Man's Shield"))
   expect(getBlockValue(given, {...defend_action}, true)).toBe(3)
 })
 
 test("state_increases add to base defense stat which is added to block action value", () => {
-  const character = {...default_entity}
-  const given = giveCharacterItem(character, getItem("Poor Man's Shield"))
+  const given = giveCharacterItem({...default_entity}, getItem("Poor Man's Shield"))
   given.flat_stat_increases = {
     defense: 2
   }
@@ -279,8 +271,7 @@ test("state_increases add to base defense stat which is added to block action va
 })
 
 test("fortify increaess final block value by 33% rounded", () => {
-  const character = {...default_entity}
-  const given = giveCharacterItem(character, getItem("Poor Man's Shield"))
+  const given = giveCharacterItem({...default_entity}, getItem("Poor Man's Shield"))
   given.flat_stat_increases = {defense: 2}
   given.buffs = {fortify: 1}
   expect(getBlockValue(given, {...defend_action}, true)).toBe(7)
@@ -380,7 +371,7 @@ test("getTurnOrders returns all enemies when shuffling like speed entities", () 
   expect(isPass()).toBe(true)
 })
 
-test("getTurnOrder sloed buff will decrease speed by half", () => {
+test("getTurnOrder slowed buff will decrease speed by half", () => {
   const state = {
     character: {
       speed: 4,
@@ -998,10 +989,7 @@ test("playCard will add augment effects to the played card but the card sent to 
 })
 
 test("addGemToCard finds card correctly by key and gives it a gem", () => {
-  const card = {
-    gem_inventory: {red: 0},
-    key: 2
-  }
+  const card = {key: 2}
   const game_state = {
     character: {
       gems: {
@@ -1019,7 +1007,7 @@ test("addGemToCard finds card correctly by key and gives it a gem", () => {
   expect(processed.game_state.character.gems.red).toBe(1)
   expect(processed.game_state.character.gems.blue).toBe(3)
   expect(processed.hand).toEqual([
-    {...card, gem_inventory: {red: 1}},
+    {...card, gem_inventory: {red: 1, blue: 0}},
     {...card, key: 3}
   ])
 })
@@ -1086,13 +1074,7 @@ test("returnCardGemToCharacter returns state as passed if card does not have any
       }
     }
   }
-  const card = {
-    gem_inventory: {
-      red: 0,
-      blue: 0
-    },
-    key: 2
-  }
+  const card = {key: 2}
   const hand = [
     {...card},
     {...card, key: 3}
@@ -1103,7 +1085,10 @@ test("returnCardGemToCharacter returns state as passed if card does not have any
   expect(processed.hand).toHaveLength(2)
   expect(processed.hand[0].gem_inventory.red).toBe(0)
   expect(processed.game_state).toEqual(game_state)
-  expect(processed.hand).toEqual(hand)
+  expect(processed.hand).toEqual([
+    {...card, gem_inventory: {red: 0, blue: 0}},
+    {...card, key: 3}
+  ])
 })
 
 test("combatantHasCondition detects whether the entity has a buff or state increase or not", () => {
