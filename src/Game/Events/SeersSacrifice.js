@@ -8,6 +8,7 @@ import items from "../../data/items"
 import Modal from "../../Modal"
 import Card from "../Card"
 import GemCounter from "../GemCounter"
+import environment from "../../data/environment"
 
 
 const SeersSacrifice = ({REQUIRED_EVENT_PROPS}) => {
@@ -65,34 +66,35 @@ const SeersSacrifice = ({REQUIRED_EVENT_PROPS}) => {
       The mysterious seer is asking for four cards and four gems in exchange for a powerful item.
       Will you help him light your path?
     </p>
-    <h3 className="center_text action_text" onClick={(e) => {
-        setSatisfied(true)
-        const copy = copyState(game_state)
-        copy.character.gems.red += selected_gems.red
-        copy.character.gems.blue += selected_gems.blue
-        setGameState(copy)
-      }}>Reject</h3>
     {!satisfied &&
       <>
-      <h3 className="center_text action_text" onClick={(e) => openSelectModal("card")}>Select Cards</h3>
+      <h2 className="center_text action_text" onClick={(e) => openSelectModal("card")}>Select Cards</h2>
       {selected_cards.length > 0 &&
         <div>
-          <h3 className="center_text">Chosen Cards</h3>
-          <ul>
-            {selected_cards.map((card) => <li>{card.name}</li>)}
-          </ul>
+          <h2 className="center_text m-2 p-2">Chosen Cards</h2>
+          <div className="grid w-80 four_col_equal gap-4 p-2 m-2">
+            {selected_cards.map((card) => <h4 className="center_text">{card.name}</h4>)}
+          </div>
         </div>
       }
-      <h3 className="center_text action_text" onClick={(e) => openSelectModal("gem")}>Select Gems</h3>
-      <div className="two_col_equal m-4 p-4">
+      <div className="grid two_col_equal m-4 p-4">
         <GemCounter game_state={game_state} setGameState={setGameState}
           color="red" gem_state={selected_gems} setGemState={setSelectedGems}
+          maximum={4}
           />
         <GemCounter game_state={game_state} setGameState={setGameState}
           color="blue" gem_state={selected_gems} setGemState={setSelectedGems}
+          maximum={4}
           />
       </div>
       <h3 className="center_text action_text" onClick={(e) => processTrade()}>Accept</h3>
+        <h3 className="center_text action_text" onClick={(e) => {
+            setSatisfied(true)
+            const copy = copyState(game_state)
+            copy.character.gems.red += selected_gems.red
+            copy.character.gems.blue += selected_gems.blue
+            setGameState(copy)
+          }}>Reject</h3>
       </>
     }
     <Modal show_modal={modal_open} setShowModal={setModalOpen}>
@@ -101,11 +103,13 @@ const SeersSacrifice = ({REQUIRED_EVENT_PROPS}) => {
           <>
           {game_state.character.deck.map((card) => {
             const selected = getIndexOfArrayItemByKey(selected_cards, card.key)
-            const bg_color = selected >= 0 ? "yellow" : "white"
+            const bg_color = selected >= 0 ? environment.SELECTED_COLOR : environment.INACTIVE_COLOR
             return <div className="hov_pointer" style={{backgroundColor: bg_color}}
               onClick={(e) => toggleEntitySelected(card, "card")}
               >
-              <Card card={card} playable={false} big_card={false} />
+              <Card card={card} playable={false} big_card={false}
+                game_state={game_state}
+              />
             </div>
           })}
           </>

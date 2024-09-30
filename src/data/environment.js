@@ -46,7 +46,9 @@ const environment = {
     "burned",
     "fervor",
     "flame_guard"
-  ]
+  ],
+  SELECTED_COLOR: "rgba(121, 163, 242, 0.88)",
+  INACTIVE_COLOR: "rgba(86, 82, 120, 0.95)"
 }
 
 export default environment

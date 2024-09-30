@@ -42,6 +42,10 @@ body {
   height: calc(100vh - 60px)
 }
 
+.h-top-bar-minus-remainder-90 {
+  height: calc(90vh - 60px)
+}
+
 .h-100 {
   height: 100%;
 }

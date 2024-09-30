@@ -7,6 +7,7 @@ import {giveCharacterGems, doesCharacterHaveGems} from "./lib/gems"
 import Card from "./Card"
 import CombatStatsTable from "./CombatStatsTable"
 import Item from "./Item"
+import environment from "../data/environment"
 
 const Victory = ({
   game_state, setGameState, reward, resetCombat, selections, setSelections, combat_stats
@@ -27,8 +28,6 @@ const Victory = ({
   const reward_message = `Select a ${entity}`
   const remove_card_message = `Select a card to remove from your deck`
   const use_message = type === "remove" && entity === "card" ? remove_card_message : reward_message
-  const selected_color = "rgba(121, 163, 242, 0.88)"
-  const inactive_color = "rgba(86, 82, 120, 0.95)"
   const trade_message = entity === "random" ? "Would you like to trade?" : `Trade your ${entity}`
 
   const grid_styles = `grid gap-4 ${selections.length === 3 ? "three_col_equal" : "two_col_equal"}`
@@ -113,7 +112,7 @@ const Victory = ({
             borderRadius: "20px"
           }
           if(selection_made){
-            style.backgroundColor = select_entity.selected ? selected_color : inactive_color
+            style.backgroundColor = select_entity.selected ? environment.SELECTED_COLOR : environment.INACTIVE_COLOR
           }
 
           const onClickFunc = type === "remove" ? removeCharacterEntity : giveCharacterEntity
@@ -174,7 +173,7 @@ const Victory = ({
           }
           const style = {}
           if(selection_made){
-            const color = trade.selected ? selected_color : inactive_color
+            const color = trade.selected ? environment.SELECTED_COLOR : environment.INACTIVE_COLOR
             style.backgroundColor = color
           }
           const {trade_for, trade_for_entity, trade_in, trade_in_entity} = trade

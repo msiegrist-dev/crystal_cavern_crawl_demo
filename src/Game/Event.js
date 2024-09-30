@@ -32,7 +32,7 @@ const Event = ({game_state, setGameState, toggleDeckModal}) => {
   const no_event = !event_name || event_name === ""
 
   return (
-    <div className="m-12 p-8 h-top-bar-minus-remainder">
+    <div className="m-8 p-12 h-top-bar-minus-remainder-90 dark_opaque_bg">
       <Suspense fallback={<h2>Loading...</h2>}>
         {no_event &&
           <p></p>
