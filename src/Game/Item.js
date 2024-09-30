@@ -6,10 +6,6 @@ const Item = ({item, setDisplayItem}) => {
     width: "auto"
   }
 
-  let rarity_text_color = "white"
-  if(item.rarity === "uncommon") rarity_text_color = "#96BD59"
-  if(item.rarity === "rare") rarity_text_color = "#C42430"
-
   return (
     <div className="grid center_all_items hov_pointer"
       style={{maxWidth: "150px", height: "140px"}}

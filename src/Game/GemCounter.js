@@ -1,5 +1,5 @@
 import {copyState} from "./lib/helper_lib"
-const GemCounter = ({game_state, setGameState, color, gem_state, setGemState, maximum}) => {
+const GemCounter = ({game_state, setGameState, color, gem_state, setGemState, maximum, display_only}) => {
 
   const getGemsTotal = () => Number(gem_state["red"]) + Number(gem_state["blue"])
 
@@ -30,11 +30,16 @@ const GemCounter = ({game_state, setGameState, color, gem_state, setGemState, ma
   return (
     <div className='grid center_all_items center_all_content'>
       <img src={`${color}_gem.png`} style={{height: "50px", width: "auto"}}/>
-      <div className="grid three_col_equal center_all_items">
-        <img src="minus_icon.png" onClick={(e) => remove()} alt="Remove" />
-        {gem_state[color]}
-        <img src="plus_icon.png" onClick={(e) => add()} alt="Add" />
-      </div>
+      {!display_only &&
+        <div className="grid three_col_equal center_all_items">>
+          <img src="minus_icon.png" onClick={(e) => remove()} alt="Remove" />
+          {gem_state[color]}
+          <img src="plus_icon.png" onClick={(e) => add()} alt="Add" />
+        </div>
+      }
+      {display_only &&
+        <h3 className="center_text">{gem_state[color]}</h3>
+      }
     </div>
   )
 }

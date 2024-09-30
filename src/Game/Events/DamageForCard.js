@@ -3,7 +3,7 @@ import {getRandomCards, addCardToDeck} from "../lib/cards"
 
 const DamageForCard = ({REQUIRED_EVENT_PROPS}) => {
 
-  const {satisfied, setSatisfied, game_state, setGameState} = REQUIRED_EVENT_PROPS
+  const {satisfied, setSatisfied, game_state, setGameState, setRewards, setShowReward} = REQUIRED_EVENT_PROPS
 
   const accept = () => {
     const game_state_copy = copyState(game_state)
@@ -11,6 +11,8 @@ const DamageForCard = ({REQUIRED_EVENT_PROPS}) => {
     game_state_copy.character.hp -= 10
     setGameState(addCardToDeck(game_state_copy, random_card))
     setSatisfied(true)
+    setRewards([{type: "card", entity: random_card}])
+    setShowReward(true)
   }
 
   return (
