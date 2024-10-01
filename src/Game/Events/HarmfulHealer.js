@@ -6,7 +6,7 @@ const HarmfulHealer = ({REQUIRED_EVENT_PROPS}) => {
 
   const healer = () => {
     const odds = [
-      {name: "heal", value: 75}, {name: "harm", value: 25}
+      {name: "heal", value: 70}, {name: "harm", value: 30}
     ]
     const result = handleOdds(odds)
     let game_state_copy = copyState(game_state)
@@ -32,10 +32,10 @@ const HarmfulHealer = ({REQUIRED_EVENT_PROPS}) => {
       </p>
       {!satisfied &&
         <div className="grid two_col_equal w-80 m-4 p-4">
-          <button className="w-200px m-4 p-4" onClick={(e) => healer()}>
+          <button className="w-200px m-4 p-4 yellow_action_button" onClick={(e) => healer()}>
             Accept
           </button>
-          <button className="w-200px m-4 p-4" onClick={(e) => setSatisfied(true)}>
+          <button className="w-200px m-4 p-4 yellow_action_button" onClick={(e) => setSatisfied(true)}>
             Reject
           </button>
         </div>

@@ -4,6 +4,7 @@ import {copyState} from "./lib/helper_lib"
 import Item from "./Item"
 import Card from "./Card"
 import GemCounter from "./GemCounter"
+import Buffs from "./Buffs"
 
 const HarmfulHealer = lazy(() => import("./Events/HarmfulHealer"))
 const DamageForCard = lazy(() => import("./Events/DamageForCard"))
@@ -28,7 +29,7 @@ const Event = ({game_state, setGameState, toggleDeckModal}) => {
     setGameState(goNextLevel(copyState(game_state)))
     setMessage("")
   }
-
+  
   const REQUIRED_EVENT_PROPS = {
     satisfied,
     setSatisfied,
@@ -79,8 +80,22 @@ const Event = ({game_state, setGameState, toggleDeckModal}) => {
             }
             if(type === "gem"){
               const gem_state = {}
-              gem_state[entity.color] = entity.number
-              return <GemCounter gem_state={gem_state} display_only={true} color={entity.color}/>
+              const {color, number} = entity
+              gem_state[color] = number
+              return <GemCounter gem_state={gem_state} display_only={true} color={color}/>
+            }
+            if(type === "stat"){
+              const {direction, name, value} = entity
+              const verb = direction === "increase" ? "increased" : "decreased"
+              return <h4>{name} {verb} by {value}</h4>
+            }
+            if(type === "buff"){
+              const {name, value} = entity
+              const buff_state = {
+                buffs: {}
+              }
+              buff_state.buffs[name] = value
+              return <Buffs combatant={buff_state} disable_popover={true} />
             }
           })}
         </div>

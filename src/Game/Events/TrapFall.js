@@ -4,7 +4,7 @@ import {giveCombatantCondition} from "../lib/combat"
 
 const TrapFall = ({REQUIRED_EVENT_PROPS}) => {
 
-  const {setSatisfied, game_state, setGameState} = REQUIRED_EVENT_PROPS
+  const {setSatisfied, game_state, setGameState, setRewards, setShowReward} = REQUIRED_EVENT_PROPS
   const [escaped, setEscaped] = useState(false)
 
   const escape = () => {
@@ -15,6 +15,11 @@ const TrapFall = ({REQUIRED_EVENT_PROPS}) => {
     copy.character.hp -= 10
     setGameState(copy)
     setSatisfied(true)
+    setRewards([
+      {type: "stat", entity: {direction: "decrease", name: "hp", value: 10}},
+      {type: "buff", entity: {name: "slowed", value: 3}}
+    ])
+    setShowReward(true)
   }
 
   return <div>

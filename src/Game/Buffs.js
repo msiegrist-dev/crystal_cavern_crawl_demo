@@ -1,4 +1,4 @@
-const Buffs = ({combatant}) => {
+const Buffs = ({combatant, disable_popover}) => {
 
   const getBuffs = combatant => {
     if(!combatant.buffs){
@@ -57,9 +57,11 @@ const Buffs = ({combatant}) => {
           <img src={buff_image_map[buff_name]} className="m-0 p-0 buff_image" />
           <p className="m-0 p-0"> <b>{combatant.buffs[buff_name]}</b></p>
         </div>
-        <div className="popover_content dark_opaque_bg" style={{left, top}}>
+        {!disable_popover &&
+          <div className="popover_content dark_opaque_bg" style={{left, top}}>
           <p><b>{buff_names[buff_name]}</b>: {buff_descriptions[buff_name]}</p>
-        </div>
+          </div>
+        }
         </>
       )
     })}

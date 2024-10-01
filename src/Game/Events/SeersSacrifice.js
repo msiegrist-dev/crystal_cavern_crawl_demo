@@ -13,7 +13,7 @@ import environment from "../../data/environment"
 
 const SeersSacrifice = ({REQUIRED_EVENT_PROPS}) => {
 
-  const {satisfied, setSatisfied, game_state, setGameState, setMessage} = REQUIRED_EVENT_PROPS
+  const {satisfied, setSatisfied, game_state, setGameState, setMessage, setRewards, setShowReward} = REQUIRED_EVENT_PROPS
 
   const [selected_cards, setSelectedCards] = useState([])
   const [selected_gems, setSelectedGems] = useState({red: 0, blue: 0})
@@ -51,10 +51,13 @@ const SeersSacrifice = ({REQUIRED_EVENT_PROPS}) => {
     for(let card of selected_cards){
       copy = removeCardFromDeck(copy, card)
     }
-    copy.character = giveCharacterItem(copy.character, items.find((it) => it.name === "Seer's Crystal Ball"))
+    const crystal_ball = items.find((it) => it.name === "Seer's Crystal Ball")
+    copy.character = giveCharacterItem(copy.character, crystal_ball)
     setGameState(copy)
     setSatisfied(true)
     setMessage("May this gift guide your path " + game_state.character.name)
+    setRewards([{type: "item", entity: crystal_ball}])
+    setShowReward(true)
   }
 
   return <div>
