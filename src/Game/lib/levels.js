@@ -17,9 +17,25 @@ const generateCombatLevelEnemies = (level, game_state) => {
   }
 }
 
-const generateEvent = () => getRandomValueFromList(environment.BASE_EVENTS)
+const generateEvent = game_state => {
+  if(environment.BASE_EVENTS.length === game_state.events_faced.length){
+    return getRandomValueFromList(environment.BASE_EVENTS)
+  }
+  let random_event = getRandomValueFromList(environment.BASE_EVENTS)
+  while(game_state.events_faced.includes(random_event)){
+    random_event = getRandomValueFromList(environment.BASE_EVENTS)
+  }
+  return random_event
+}
 
-const getRandomLevel = (number, game_state) => {
+const getRandomLevel = (number, game_state, force_event) => {
+  if(force_event){
+    return {
+      number,
+      type: "event",
+      event_name: generateEvent(game_state)
+    }
+  }
   const level_type_odds = [
     {name: "combat", value: 80},
     {name: "event", value: 20}
@@ -44,21 +60,24 @@ const getRandomLevel = (number, game_state) => {
     return {
       number,
       type: level_type,
-      event_name: generateEvent(number)
+      event_name: generateEvent(game_state)
     }
   }
 }
 
-const goNextLevel = game_state => {
+const goNextLevel = (game_state, force_event) => {
   const game_state_copy = copyState(game_state)
   const next_level = game_state.level.number + 1
   if(next_level > 1){
     game_state_copy.score += 50
   }
-  const new_level = getRandomLevel(next_level, game_state_copy)
+  const new_level = getRandomLevel(next_level, game_state_copy, force_event)
   game_state_copy.level = new_level
   if(new_level.enemy_type === "boss"){
     game_state_copy.bosses_faced.push(new_level.enemies[0].name)
+  }
+  if(new_level.type === "event"){
+    game_state_copy.events_faced.push(new_level.event_name)
   }
   return game_state_copy
 }

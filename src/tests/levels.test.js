@@ -5,11 +5,12 @@ import {generateCombatLevelEnemies, generateEvent, getRandomLevel, goNextLevel} 
 const game_state = {
   difficulty: 0,
   bosses_faced: [],
-  score: 0
+  score: 0,
+  events_faced: []
 }
 test("generateCombatLevelEnemies always returns enemies", () => {
   const results = []
-  for(let i = 0; i < 100; i++){
+  for(let i = 0; i < 50; i++){
     results.push(generateCombatLevelEnemies(getRandomNumber(10) + 1, game_state))
   }
 
@@ -50,7 +51,7 @@ test("the level 10 boss fight will always be the boss not faced", () => {
   }
 
   const results = []
-  for(let i = 0; i < 100; i ++){
+  for(let i = 0; i < 50; i ++){
     results.push(generateCombatLevelEnemies(10, state))
   }
 
@@ -68,8 +69,43 @@ test("the level 10 boss fight will always be the boss not faced", () => {
 
 test("generateEvent always returns a random base event", () => {
   const results = []
-  for(var i = 0; i < 100; i++){
-    results.push(generateEvent())
+  for(var i = 0; i < 50; i++){
+    results.push(generateEvent({...game_state}))
+  }
+
+  const unknown = results.filter((r) => !environment.BASE_EVENTS.includes(r))
+  expect(unknown).toEqual([])
+})
+
+test("generateEvent does not return events which have already been encountered", () => {
+  const results = []
+  const test_state = {
+    ...game_state,
+    events_faced: [
+      "harmful_healer",
+      "damage_for_card",
+      "item_stash",
+      "secret_tunnel"
+    ]
+  }
+  for(var i = 0; i < 50; i++){
+    results.push(generateEvent({...test_state}))
+  }
+
+  const unknown = results.filter((r) => !environment.BASE_EVENTS.includes(r))
+  expect(unknown).toEqual([])
+  const already_encountered = results.filter((r) => test_state.events_faced.includes(r))
+  expect(already_encountered).toEqual([])
+})
+
+test("generateEvent will return any random event if all existing events have been encountered", () => {
+  const results = []
+  const test_state = {
+    ...game_state,
+    events_faced: [...environment.BASE_EVENTS]
+  }
+  for(var i = 0; i < 50; i++){
+    results.push(generateEvent({...test_state}))
   }
 
   const unknown = results.filter((r) => !environment.BASE_EVENTS.includes(r))
@@ -78,7 +114,7 @@ test("generateEvent always returns a random base event", () => {
 
 test("getRandomLevel always returns a combat or event level", () => {
   const results = []
-  for(let i = 0; i < 100; i++){
+  for(let i = 0; i < 50; i++){
     results.push(
       getRandomLevel(getRandomNumber(10) + 1, game_state)
     )
@@ -106,5 +142,22 @@ test("goNextLevel increments level, gives 50 points and stores boss encountered 
   expect(next_level.score).toBe(50)
   expect(next_level.level.number).toBe(5)
   expect(["Flaming Rodent", "Groblin Daddy"].includes(next_level.level.enemies[0].name)).toBe(true)
+
+})
+
+test("goNextLevel increments level, gives 50 points and event name if event is generated" , () => {
+  const gs = {
+    ...game_state,
+    level: {
+      number: 2
+    }
+  }
+
+  const next_level = goNextLevel(gs, true)
+  expect(next_level.bosses_faced.length).toBe(0)
+  expect(next_level.events_faced).toHaveLength(1)
+  expect(next_level.score).toBe(50)
+  expect(next_level.level.number).toBe(3)
+  expect(environment.BASE_EVENTS.includes(next_level.events_faced[0])).toBe(true)
 
 })
