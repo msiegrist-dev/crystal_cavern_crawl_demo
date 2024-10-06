@@ -11,21 +11,15 @@ const Modal = ({show_modal, setShowModal, children, permanent}) => {
     overflowY: "hidden"
   }
 
+  const CloseButton = () => <button className="yellow_action_button" onClick={(e) => setShowModal(false)}>Close</button>
+
   return (
     <div className={modal_class}
       style={style}
       >
-      {!permanent &&
-        <button onClick={(e) => setShowModal(false)}>
-          Close
-        </button>
-      }
+      {!permanent && <CloseButton />}
       {children}
-      {!permanent &&
-        <button onClick={(e) => setShowModal(false)}>
-          Close
-        </button>
-      }
+      {!permanent && <CloseButton />}
     </div>
   )
 }

@@ -105,7 +105,7 @@ const warrior_deck = [
     name: "Piercing Thrust",
     type: "attack",
     target_required: true,
-    value: 6,
+    value: 5,
     hits: 1,
     accuracy: 98,
     effects: [
@@ -228,7 +228,7 @@ const warrior_deck = [
     name: "Last Resort",
     type: "defend",
     target_required: false,
-    value: 7,
+    value: 5,
     effects: [
       {name: "give_doer_buff", value: 2, buff_name: "slowed"}
     ]

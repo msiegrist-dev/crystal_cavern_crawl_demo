@@ -112,6 +112,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal, setBackground}) => {
     setHand(processed.card_state.hand)
     setDrawPile(processed.card_state.draw_pile)
     setGraveyard(processed.card_state.graveyard)
+    setCombatLog(processed.combat_log)
     setTargetting(false)
     setSelectedCard(null)
   }
@@ -166,6 +167,7 @@ const Combat = ({game_state, setGameState, toggleDeckModal, setBackground}) => {
       const action = getEnemyAction(copy, enemy)
       const processed = processAction(copy, enemy, ["player"], action, combat_log, setCombatLog, combat_stats, setCombatStats, {draw_pile, hand, graveyard})
       setGameState(processed.game_state)
+      setCombatLog(processed.combat_log)
       if(processed.card_state){
         setHand(processed.card_state.hand)
         setDrawPile(processed.card_state.draw_pile)
@@ -220,9 +222,11 @@ const Combat = ({game_state, setGameState, toggleDeckModal, setBackground}) => {
       return defeat()
     }
     const all_dead = game_state.level.enemies.filter((ene) => ene.hp <= 0).length === game_state.level.enemies.length
-    if(all_dead){
-      setCombatEnded(true)
-      return combatVictory()
+    if(all_dead) setCombatEnded(true)
+    if(all_dead && !combat_ended){
+      setTimeout(() => {
+        combatVictory()
+      }, 2000)
     }
   }, [game_state, combat_ended, setGameState])
 

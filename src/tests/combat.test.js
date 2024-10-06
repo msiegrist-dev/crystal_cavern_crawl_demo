@@ -604,7 +604,13 @@ test("effect type actions will trigger all their effects", () => {
         slowed: 2
       }
     },
-    combat_log: []
+    combat_log: [
+      "undefined used give_doer_block on undefined",
+      "undefined used give_doer_buff on undefined",
+      "undefined used give_target_buff on undefined",
+      "undefined used give_doer_stat on undefined",
+      "undefined used remove_doer_hp on undefined",
+    ]
   })
 })
 

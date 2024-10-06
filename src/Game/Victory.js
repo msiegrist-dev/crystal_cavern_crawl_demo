@@ -30,8 +30,14 @@ const Victory = ({
   const use_message = type === "remove" && entity === "card" ? remove_card_message : reward_message
   const trade_message = entity === "random" ? "Would you like to trade?" : `Trade your ${entity}`
 
-  const grid_styles = `grid gap-4 ${selections.length === 3 ? "three_col_equal" : "two_col_equal"}`
-  const span_styles = `m-0 p-2 center_text ${selections.length === 3 ? "span_three_col" : "span_two_col"}`
+  const getGridStyles = () => {
+    if(type === "remove") return "three_col_equal overflow-y-scroll"
+    if(selections.length >= 3) return "three_col_equal"
+    return "two_col_equal"
+  }
+
+  const grid_styles = `grid ${getGridStyles()}`
+  const span_styles = `m-0 p-2 center_text ${selections.length === 3 || type === "remove" ? "span_three_col" : "span_two_col"}`
 
   const GemSelect = ({alt, gem_img, select_entity}) => {
     return (
@@ -119,7 +125,7 @@ const Victory = ({
           return (
             <div key={i} className="hov_pointer" onClick={(e) => onClickFunc(select_entity)} style={style}>
               {entity === "card" &&
-                <Card card={select_entity} playable={false} game_state={game_state} big_card={true}/>
+                <Card card={select_entity} playable={false} game_state={game_state} big_card={false}/>
               }
               {entity === "item" &&
                 <ItemSelect item={select_entity} />

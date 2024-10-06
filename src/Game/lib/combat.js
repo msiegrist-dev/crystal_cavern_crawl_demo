@@ -313,6 +313,7 @@ const processEffect = (doer, target, action, combat_log, setCombatLog) => {
   let target_copy = copyState(target)
   if(action.effects){
     for(let effect of action.effects){
+      combat_log_copy = combat_log_copy.concat([`${doer.name} used ${effect.name} on ${target.name}`])
       const processed = processActionEffect(effect, doer_copy, target_copy)
       doer_copy = processed.doer
       target_copy = processed.target
@@ -349,7 +350,8 @@ const processAction = (game_state, doer, target_keys, action, combat_log, setCom
     combat_log_copy = combat_log_copy.concat([`${doer.name} summoned new enemies to combat.`])
     return {
       game_state: game_state_copy,
-      card_state: card_state_copy
+      card_state: card_state_copy,
+      combat_log: combat_log_copy
     }
   }
 
@@ -414,12 +416,12 @@ const processAction = (game_state, doer, target_keys, action, combat_log, setCom
         game_state_copy.level.enemies[doer_enemy_index] = processed.doer
       }
     }
-    setCombatLog(combat_log_copy)
     setCombatStats(combat_stats_copy)
   }
   return {
     game_state: game_state_copy,
-    card_state: card_state_copy
+    card_state: card_state_copy,
+    combat_log: combat_log_copy
   }
 }
 
@@ -505,7 +507,8 @@ const playCard = (card, game_state, target_keys, hand, graveyard, combat_log, se
   )
   return {
     game_state: processed.game_state,
-    card_state: processed.card_state
+    card_state: processed.card_state,
+    combat_log: processed.combat_log
   }
 }
 

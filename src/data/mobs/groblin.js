@@ -13,7 +13,7 @@ const groblin =  {
     attack: [
       {
         type: "attack",
-        value: 2,
+        value: 3,
         hits: 1
       }
     ],
@@ -27,7 +27,7 @@ const groblin =  {
   override_odds: [
     {
       name: "attack",
-      value: 85
+      value: 90
     },
     {
       name: "defend",
