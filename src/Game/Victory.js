@@ -37,7 +37,7 @@ const Victory = ({
   }
 
   const grid_styles = `grid ${getGridStyles()}`
-  const span_styles = `m-0 p-2 center_text ${selections.length === 3 || type === "remove" ? "span_three_col" : "span_two_col"}`
+  const span_styles = `m-0 p-2 center_text ${selections.length >= 3 || type === "remove" ? "span_three_col" : "span_two_col"}`
 
   const GemSelect = ({alt, gem_img, select_entity}) => {
     return (

@@ -15,7 +15,7 @@ const groblin_daddy = {
     attack: [
       {
         type: "attack",
-        value: 6,
+        value: 7,
         hits: 1
       }
     ],

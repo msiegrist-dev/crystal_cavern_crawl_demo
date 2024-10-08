@@ -21,7 +21,7 @@ import CombatStatsTable from "./CombatStatsTable"
 import Buffs from "./Buffs"
 import CombatBar from "./CombatBar"
 
-const Combat = ({game_state, setGameState, toggleDeckModal, setBackground}) => {
+const Combat = ({game_state, setGameState, toggleDeckModal, setBackground, setPage}) => {
 
   const [message, setMessage] = useState("")
   const [turn_order, setTurnOrder] = useState(getTurnOrder(game_state))
@@ -276,9 +276,9 @@ const Combat = ({game_state, setGameState, toggleDeckModal, setBackground}) => {
       {combat_modal_open &&
         <Modal show_modal={combat_modal_open} setShowModal={setCombatModalOpen}>
           {combat_modal_mode === "combat_log" &&
-            <div className="grid two_col_equal center_all_items">
-              <div>
-                <h4>Combat Log</h4>
+            <div className="grid two_col_equal center_all_items w-90 m-4">
+              <div style={{height: "400px"}} className="overflow-y-scroll">
+                <h3 className="center_text">Combat Log</h3>
                 {combat_log.map((msg) => <p>{msg}</p>)}
               </div>
               <CombatStatsTable combat_stats={combat_stats} />
@@ -299,7 +299,12 @@ const Combat = ({game_state, setGameState, toggleDeckModal, setBackground}) => {
           <div className="grid w-80 m-4 center_all_items">
             <h2 className="center_text">You are defeated.</h2>
             <CombatStatsTable combat_stats={combat_stats} />
-            <button onClick={(e) => setGameState(default_game_state)}>
+            <button onClick={(e) => {
+                setGameState(default_game_state)
+                setPage("main_menu")
+                setBackground("newbg.png")
+              }
+            }>
               Return to Menu
             </button>
           </div>

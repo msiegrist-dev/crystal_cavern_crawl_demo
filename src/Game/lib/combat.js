@@ -334,7 +334,7 @@ const getBlockValue = (doer, action, can_be_increased) => {
   }
   block_value += defense_stat
   if(doer.buffs && doer.buffs["fortify"] > 0){
-    return roundToNearestInt(block_value + (block_value * .33))
+    return roundToNearestInt(block_value + (block_value * .2))
   }
   return block_value
 }

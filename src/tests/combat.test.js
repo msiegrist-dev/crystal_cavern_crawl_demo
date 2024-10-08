@@ -262,7 +262,7 @@ test("items add to character's base defense stat which is added to block action 
   expect(getBlockValue(given, {...defend_action}, true)).toBe(3)
 })
 
-test("state_increases add to base defense stat which is added to block action value", () => {
+test("stat increases add to base defense stat which is added to block action value", () => {
   const given = giveCharacterItem({...default_entity}, getItem("Poor Man's Shield"))
   given.flat_stat_increases = {
     defense: 2
@@ -270,11 +270,18 @@ test("state_increases add to base defense stat which is added to block action va
   expect(getBlockValue(given, {...defend_action}, true)).toBe(5)
 })
 
-test("fortify increaess final block value by 33% rounded", () => {
+test("fortify increaess final block value by 20% rounded", () => {
   const given = giveCharacterItem({...default_entity}, getItem("Poor Man's Shield"))
-  given.flat_stat_increases = {defense: 2}
+  given.flat_stat_increases = {defense: 1}
   given.buffs = {fortify: 1}
-  expect(getBlockValue(given, {...defend_action}, true)).toBe(7)
+  expect(getBlockValue(given, {...defend_action}, true)).toBe(5)
+})
+
+test("fortify increaess final block value by 20% rounded 2", () => {
+  const given = giveCharacterItem({...default_entity}, getItem("Poor Man's Shield"))
+  given.flat_stat_increases = {defense: 4}
+  given.buffs = {fortify: 1}
+  expect(getBlockValue(given, {...defend_action}, true)).toBe(8)
 })
 
 test("defeating an enemy while you have Lucky Groblin's Foot will draw a card if you have one - empty hand", () => {

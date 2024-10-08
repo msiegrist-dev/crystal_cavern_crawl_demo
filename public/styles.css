@@ -479,7 +479,7 @@ ul {
 }
 
 .combat_parent_div {
-  grid-template-rows: 35px 1fr 225px;
+  grid-template-rows: 35px 1fr 200px;
 }
 
 .h-35px {

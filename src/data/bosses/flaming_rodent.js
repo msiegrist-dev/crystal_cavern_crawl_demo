@@ -17,7 +17,7 @@ const flaming_rodent = {
       },
       {
         type: "attack",
-        value: 6,
+        value: 1,
         hits: 2
       }
     ],

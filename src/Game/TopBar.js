@@ -31,47 +31,49 @@ const TopBar = ({game_state, toggleDeckModal, toggleItemModal}) => {
     </tr>
   }
 
-  return <div className="gap-4 m-2 p-4 flex center_all_items w-98 mb-0 h-35px dark_opaque_bg">
-    {game_state.character &&
-      <>
-      <img src={game_state.character.icon}  className="mb-0 mt-0 block" style={{height: "35px"}} alt="Warrior"/>
-      <h3 className="mb-0 mt-0">{game_state.character.name}</h3>
-      <p className="mt-0 mb-0"><b>HP</b> : {game_state.character.hp} / {game_state.character.max_hp}</p>
-      <table>
-        <tbody>
-          <tr>
-            <StatRow stat_name="attack" />
-          </tr>
-          <tr>
-            <StatRow stat_name="defense" />
-          </tr>
-        </tbody>
-      </table>
-      <table>
-        <tbody>
-          <tr>
-            <StatRow stat_name="armor" />
-          </tr>
-          <tr>
-            <StatRow stat_name="speed" />
-          </tr>
-        </tbody>
-      </table>
-      <div className="grid two_col_60_40 gap-2">
-        <img alt="red gems" src="gem_red.png" style={{width: "35px", height: "35px"}} className="m-4 block" />
-        <p>x{game_state.character.gems.red}</p>
-      </div>
-      <div className="grid two_col_60_40 gap-2">
-        <img alt="blue gems" src="gem_blue.png" style={{width: "35px", height: "35px"}} className="m-4 block" />
-        <p>x{game_state.character.gems.blue}</p>
-      </div>
-      <button className="yellow_action_button w-100px" onClick={(e) => toggleDeckModal(game_state.character.deck)}>Deck</button>
-      <button className="yellow_action_button w-100px" onClick={(e) => toggleItemModal()}>Items</button>
-      <h3 className="center_text m-0">Level: {game_state.level.number}</h3>
-      <h3 className="center_text m-0">Score: {game_state.score}</h3>
-      </>
-    }
-  </div>
+  return (
+    <div className="gap-8 m-2 p-4 flex center_all_items w-98 mb-0 h-35px dark_opaque_bg">
+      {game_state.character &&
+        <>
+        <img src={game_state.character.icon}  className="mb-0 mt-0 block" style={{height: "35px"}} alt="Warrior"/>
+        <h3 className="mb-0 mt-0">{game_state.character.name}</h3>
+        <p className="mt-0 mb-0"><b>HP</b> : {game_state.character.hp} / {game_state.character.max_hp}</p>
+        <table>
+          <tbody>
+            <tr>
+              <StatRow stat_name="attack" />
+            </tr>
+            <tr>
+              <StatRow stat_name="defense" />
+            </tr>
+          </tbody>
+        </table>
+        <table>
+          <tbody>
+            <tr>
+              <StatRow stat_name="armor" />
+            </tr>
+            <tr>
+              <StatRow stat_name="speed" />
+            </tr>
+          </tbody>
+        </table>
+        <div className="grid two_col_60_40 gap-2">
+          <img alt="red gems" src="gem_red.png" style={{width: "35px", height: "35px"}} className="m-4 block" />
+          <p>x{game_state.character.gems.red}</p>
+        </div>
+        <div className="grid two_col_60_40 gap-2">
+          <img alt="blue gems" src="gem_blue.png" style={{width: "35px", height: "35px"}} className="m-4 block" />
+          <p>x{game_state.character.gems.blue}</p>
+        </div>
+        <button className="yellow_action_button w-100px" onClick={(e) => toggleDeckModal(game_state.character.deck)}>Deck</button>
+        <button className="yellow_action_button w-100px" onClick={(e) => toggleItemModal()}>Items</button>
+        <h3 className="center_text m-0">Level: {game_state.level.number}</h3>
+        <h3 className="center_text m-0">Score: {game_state.score}</h3>
+        </>
+      }
+    </div>
+  )
 }
 
 export default TopBar

@@ -121,7 +121,9 @@ const Game = ({setPage, setGameState, game_state, setBackground}) => {
         <Level0 game_state={game_state} setGameState={setGameState} setBackground={setBackground} />
       }
       {game_state.character && game_state.level.number >= 1 && !end_condition &&
-        <Level game_state={game_state} setGameState={setGameState} toggleDeckModal={toggleDeckModal} setBackground={setBackground}/>
+        <Level game_state={game_state} setGameState={setGameState} toggleDeckModal={toggleDeckModal} setBackground={setBackground}
+          setPage={setPage}
+        />
       }
       {end_condition &&
         <End game_state={game_state} setGameState={setGameState} setPage={setPage}/>

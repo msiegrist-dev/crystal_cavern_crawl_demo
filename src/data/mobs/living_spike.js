@@ -13,7 +13,7 @@ const living_spike =  {
     attack: [
       {
         type: "attack",
-        value: 2,
+        value: 3,
         hits: 2
       }
     ],

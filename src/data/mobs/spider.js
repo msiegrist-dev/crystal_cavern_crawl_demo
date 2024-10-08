@@ -13,7 +13,7 @@ const spider = {
     attack: [
       {
         type: "attack",
-        value: 6,
+        value: 7,
         hits: 1,
         effects: [
           {name: "give_target_buff", value: 2, buff_name: "slowed", trigger: "on_hit"}
